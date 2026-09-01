@@ -1,62 +1,39 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { groundedAssistantService, GroundedAssistantResponse } from '../services/groundedAssistantService';
-import { useDatasetMode } from '../context/DatasetModeContext';
 import {
   BotMessageSquare,
   Send,
   User,
-  Sparkles,
-  ExternalLink,
   ShieldCheck,
-  HelpCircle,
-  Clock,
   ArrowRight,
   RotateCcw,
-  CheckCircle2,
   Database,
 } from 'lucide-react';
 
 export const AssistantPage: React.FC = () => {
   const navigate = useNavigate();
-  const { isRealMode, isDemoMode } = useDatasetMode();
 
   const getInitialMessage = (): GroundedAssistantResponse => ({
     id: 'init-1',
     sender: 'assistant',
     timestamp: 'Just now',
-    content: isRealMode
-      ? `### Welcome to PAIMANA Predict Intelligence Copilot (Real Data Mode)
+    content: `### Welcome to PAIMANA Grounded Intelligence Copilot
 
-I am your **Grounded Infrastructure Assistant**, linked directly to the **1,981 authentic April 2026 PAIMANA projects** and multi-snapshot historical trajectory data.
+I am your **Grounded Infrastructure Assistant**, linked directly to the **1,981 authentic April 2026 PAIMANA projects** and **10 monthly historical reporting snapshots** from the Ministry of Statistics & Programme Implementation (MoSPI).
 
 **You can ask me to:**
-• **Lookup Real Projects:** *"Tell me about BharatNet (PAI-706775)"*
+• **Lookup Real Projects:** *"Tell me about BharatNet (PAI-706775)"* or *"Mumbai-Ahmedabad High Speed Rail (PAI-705728)"*
 • **Analyze Portfolio Metrics:** *"What is the April 2026 portfolio summary?"*
-• **Inspect Cost Escalations:** *"Which projects have the highest cost growth?"*
-• **Compare Multi-Period Trajectory:** *"What changed in BharatNet across reporting periods?"*`
-      : `### Welcome to PAIMANA Predict Intelligence Copilot (AI Demonstration Mode)
-
-I am your **Grounded Infrastructure Decision-Support Assistant**, linked directly to the enriched research telemetry database, ML prediction models, and the prescriptive risk engine.
-
-**You can ask me to:**
-• **Explain Project Risk:** *"Why is PJ-1042 high risk?"*
-• **Forecast Schedule Delay:** *"What is the predicted delay for PJ-1042?"*
-• **Prescribe Interventions:** *"What should we do about PJ-1042?"*
-• **Evaluate ML Performance:** *"Which model performs best?"*`,
-    suggestedQuestions: isRealMode
-      ? [
-          'Tell me about BharatNet (PAI-706775)',
-          'What is the April 2026 portfolio summary?',
-          'What is BharatNet\'s predicted 7-month delay?',
-          'Which model performs best on research data?',
-        ]
-      : [
-          'Why is PJ-1042 high risk?',
-          'What is the predicted delay for PJ-1042?',
-          'What should we do about PJ-1042?',
-          'Which model performs best?',
-        ],
+• **Inspect Cost Growth:** *"Which projects have the highest cost escalations?"*
+• **Query Sectoral Undertakings:** *"Show me Railways sector projects"* or *"Road Transport sector"*
+• **Review Multi-Snapshot Trajectories:** *"How many historical reporting snapshots are available?"*`,
+    suggestedQuestions: [
+      'Tell me about BharatNet (PAI-706775)',
+      'What is the April 2026 portfolio summary?',
+      'Which projects have the highest cost escalations?',
+      'Tell me about Mumbai-Ahmedabad High Speed Rail (PAI-705728)',
+    ],
   });
 
   const [messages, setMessages] = useState<GroundedAssistantResponse[]>([getInitialMessage()]);
@@ -91,7 +68,7 @@ I am your **Grounded Infrastructure Decision-Support Assistant**, linked directl
       const response = groundedAssistantService.processQuery(q);
       setMessages(prev => [...prev, response]);
       setIsProcessing(false);
-    }, 400);
+    }, 300);
   };
 
   return (
@@ -107,20 +84,13 @@ I am your **Grounded Infrastructure Decision-Support Assistant**, linked directl
               <h1 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                 PAIMANA Grounded Intelligence Assistant
               </h1>
-              {isRealMode ? (
-                <span className="text-[10px] font-mono px-2 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
-                  <Database className="w-2.5 h-2.5" />
-                  <span>REAL PAIMANA MODE (1,981 Projects)</span>
-                </span>
-              ) : (
-                <span className="text-[10px] font-mono px-2 py-0.2 rounded bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 flex items-center gap-1">
-                  <Sparkles className="w-2.5 h-2.5" />
-                  <span>SYNTHETIC AI DEMO MODE</span>
-                </span>
-              )}
+              <span className="text-[10px] font-mono px-2 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+                <Database className="w-2.5 h-2.5" />
+                <span>1,981 REAL PAIMANA PROJECTS</span>
+              </span>
             </div>
             <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Zero hallucination • Grounded in {isRealMode ? '1,981 authentic Table 6 project records' : 'research telemetry and ML models'}.
+              Zero hallucination • Directly grounded in 1,981 authentic Table 6 project records and 10 monthly snapshots.
             </p>
           </div>
         </div>
@@ -243,7 +213,7 @@ I am your **Grounded Infrastructure Decision-Support Assistant**, linked directl
         {isProcessing && (
           <div className="flex items-center gap-2 text-xs text-slate-500 font-mono italic">
             <BotMessageSquare className="w-4 h-4 animate-bounce text-blue-500" />
-            <span>Consulting project telemetry and grounding index...</span>
+            <span>Consulting project telemetry index...</span>
           </div>
         )}
         <div ref={messagesEndRef} />
@@ -258,11 +228,7 @@ I am your **Grounded Infrastructure Decision-Support Assistant**, linked directl
           onKeyDown={e => {
             if (e.key === 'Enter') handleSend();
           }}
-          placeholder={
-            isRealMode
-              ? "Ask about real projects (e.g., 'Tell me about BharatNet', 'April 2026 portfolio')..."
-              : "Ask about project risks, delay forecasts, ML models (e.g., 'Why is PJ-1042 high risk?')..."
-          }
+          placeholder="Ask about any project, sector, cost growth, or portfolio summary (e.g., 'Tell me about BharatNet')..."
           className="flex-1 bg-transparent px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none"
         />
 
