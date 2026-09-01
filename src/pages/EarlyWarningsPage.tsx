@@ -3,35 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { alertService } from '../services/alertService';
 import { paimanaDataService } from '../services/paimanaDataService';
 import { EarlyWarningAlert, AlertSeverity, AlertStatus } from '../types/alert';
-import { useDatasetMode } from '../context/DatasetModeContext';
 import {
   BellRing,
-  CheckCircle,
-  ShieldAlert,
-  Clock,
-  AlertTriangle,
-  UserCheck,
-  CheckCheck,
-  Zap,
-  ArrowRight,
-  Sparkles,
-  RotateCcw,
+  Database,
   Search,
   Timer,
-  Database,
-  Calendar,
+  Clock,
+  ArrowRight,
+  ShieldAlert,
 } from 'lucide-react';
 
 export const EarlyWarningsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { isRealMode, isDemoMode } = useDatasetMode();
   const [alerts, setAlerts] = useState<EarlyWarningAlert[]>(alertService.getAllAlerts());
   const [selectedSeverity, setSelectedSeverity] = useState<AlertSeverity | 'ALL'>('ALL');
   const [selectedStatus, setSelectedStatus] = useState<AlertStatus | 'ALL'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const heroAlert = alertService.getHeroAlert();
-  const summary = alertService.getAlertSummary();
   const realSummary = paimanaDataService.getPortfolioSummary();
 
   const handleStatusChange = (alertId: string, nextStatus: AlertStatus) => {
@@ -61,104 +49,65 @@ export const EarlyWarningsPage: React.FC = () => {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
-              {isRealMode ? (
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-mono flex items-center gap-1">
-                  <Database className="w-3 h-3" />
-                  <span>HISTORICAL DETERIORATION SIGNALS</span>
-                </span>
-              ) : (
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800 font-mono flex items-center gap-1">
-                  <BellRing className="w-3 h-3" />
-                  <span>AI EARLY WARNING ESCALATION ENGINE</span>
-                </span>
-              )}
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-mono flex items-center gap-1">
+                <Database className="w-3 h-3" />
+                <span>HISTORICAL DETERIORATION SIGNALS</span>
+              </span>
               <span className="text-xs text-slate-400">•</span>
               <span className="text-xs text-slate-500 dark:text-slate-400">
-                {isRealMode ? 'Observed Multi-Snapshot Telemetry' : 'Proactive Multi-Cycle Lead Time Triggers'}
+                Observed Multi-Snapshot Telemetry (10 Reporting Periods)
               </span>
             </div>
             <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              {isRealMode ? 'Portfolio Deterioration Signals & Watchlist' : 'Infrastructure Early Warning & Escalation Center'}
+              Portfolio Deterioration Signals & Watchlist
             </h1>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-3xl">
-              {isRealMode
-                ? 'Empirically derived deterioration signals detecting multi-cycle progress stagnation, cost revisions, and milestone shifts across 10 reporting periods.'
-                : 'The predictive engine detects operational divergence 3.5 to 6.0 months before statutory milestones are breached.'}
+              Empirically derived deterioration signals detecting multi-cycle progress stagnation, cost revisions, and milestone shifts across 10 monthly PAIMANA reporting periods.
             </p>
           </div>
 
           <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-950/80 p-3 rounded-lg border border-slate-200 dark:border-slate-800 shrink-0">
-            <Timer className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+            <Timer className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             <div className="text-xs font-mono">
               <span className="text-slate-500 dark:text-slate-400 text-[11px] block font-sans">
-                {isRealMode ? 'Tracking Depth' : 'Portfolio Avg Lead Time'}
+                Snapshot Depth
               </span>
-              <span className="text-base font-bold text-purple-600 dark:text-purple-400">
-                {isRealMode ? '10 Monthly Snapshots' : `+${summary.avgLeadTimeMonths} Months Ahead`}
+              <span className="text-base font-bold text-blue-600 dark:text-blue-400">
+                10 Monthly Reports
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Hero Signal/Alert Banner */}
-      {isRealMode ? (
-        <div className="bg-gradient-to-r from-blue-50 dark:from-blue-950/30 via-white dark:via-slate-900 to-white dark:to-slate-900 border-2 border-blue-400 dark:border-blue-600/60 rounded-xl p-5 shadow-sm space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-blue-600 text-white uppercase">
-                HISTORICAL SIGNAL • REAL HERO
-              </span>
-              <span className="font-mono text-xs font-bold text-blue-700 dark:text-blue-300">
-                PAI-706775 (BharatNet)
-              </span>
-            </div>
-            <span className="text-[11px] font-mono text-slate-500">
-              Coverage: 10 Monthly Reports
+      {/* Hero Signal Banner: BharatNet (PAI-706775) */}
+      <div className="bg-gradient-to-r from-blue-50 dark:from-blue-950/30 via-white dark:via-slate-900 to-white dark:to-slate-900 border-2 border-blue-400 dark:border-blue-600/60 rounded-xl p-5 shadow-sm space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-blue-600 text-white uppercase">
+              HISTORICAL SIGNAL • REAL HERO
+            </span>
+            <span className="font-mono text-xs font-bold text-blue-700 dark:text-blue-300">
+              PAI-706775 (BharatNet)
             </span>
           </div>
-          <p className="text-xs text-slate-700 dark:text-slate-300">
-            <strong>Observed Pattern:</strong> Significant cost escalation from original ₹61,109 Cr to ₹1,88,000 Cr (+207.6% cost growth) with physical execution currently reported at 82.4%.
-          </p>
-          <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
-            <span className="text-slate-500">Label: <strong>HISTORICAL SIGNAL (Observed from Snapshot Series)</strong></span>
-            <button
-              onClick={() => navigate('/projects/PAI-706775')}
-              className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded font-semibold transition"
-            >
-              Inspect BharatNet
-            </button>
-          </div>
+          <span className="text-[11px] font-mono text-slate-500">
+            Coverage: 10 Monthly Reports
+          </span>
         </div>
-      ) : (
-        <div className="bg-gradient-to-r from-red-50 dark:from-red-950/30 via-white dark:via-slate-900 to-white dark:to-slate-900 border-2 border-red-400 dark:border-red-600/60 rounded-xl p-5 shadow-sm space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-red-600 text-white uppercase animate-pulse">
-                CRITICAL HERO EARLY WARNING
-              </span>
-              <span className="font-mono text-xs font-bold text-red-700 dark:text-red-300">
-                PJ-1042 (Western HSR)
-              </span>
-            </div>
-            <span className="text-xs font-mono font-bold text-red-600 bg-red-100 dark:bg-red-950/80 px-2 py-0.5 rounded">
-              Lead Time: +4.3 Months Advance Notice
-            </span>
-          </div>
-          <p className="text-xs text-slate-700 dark:text-slate-300">
-            <strong>Trigger:</strong> Land acquisition deficit (38% gap) compounded by pending 400kV line shifting clearance projecting +7.0 months schedule slippage.
-          </p>
-          <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
-            <span className="text-slate-500">Status: <strong>DETECTED (Needs Taskforce Dispatch)</strong></span>
-            <button
-              onClick={() => navigate('/projects/PJ-1042')}
-              className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded font-semibold transition"
-            >
-              Dispatch Decision Directive
-            </button>
-          </div>
+        <p className="text-xs text-slate-700 dark:text-slate-300">
+          <strong>Observed Pattern:</strong> Significant cost escalation from original ₹61,109 Cr to ₹188,000 Cr (+207.6% cost growth) with physical execution currently reported at 82.4%.
+        </p>
+        <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+          <span className="text-slate-500">Label: <strong>HISTORICAL SIGNAL (Observed from Snapshot Series)</strong></span>
+          <button
+            onClick={() => navigate('/projects/PAI-706775')}
+            className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded font-semibold transition"
+          >
+            Inspect BharatNet
+          </button>
         </div>
-      )}
+      </div>
 
       {/* Filter and Search Bar */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 flex flex-col sm:flex-row items-center gap-3 shadow-sm">
@@ -168,7 +117,7 @@ export const EarlyWarningsPage: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search warnings by Project ID, title, trigger reason..."
+            placeholder="Search signals by Project ID, title, trigger reason..."
             className="w-full pl-9 pr-4 py-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
           />
         </div>
@@ -206,9 +155,9 @@ export const EarlyWarningsPage: React.FC = () => {
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-950/80 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-semibold uppercase text-[10px] font-mono">
                 <th className="py-3 px-4">Severity & ID</th>
-                <th className="py-3 px-3">Project & Trigger Reason</th>
-                <th className="py-3 px-3 font-mono">Lead Time Advance</th>
-                <th className="py-3 px-3">Lifecycle Status</th>
+                <th className="py-3 px-3">Project & Deterioration Trigger</th>
+                <th className="py-3 px-3 font-mono">Snapshot Coverage</th>
+                <th className="py-3 px-3">Monitoring Status</th>
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
@@ -236,10 +185,10 @@ export const EarlyWarningsPage: React.FC = () => {
                   </td>
 
                   <td className="py-3 px-3 font-mono">
-                    <span className="text-purple-600 dark:text-purple-400 font-bold">
-                      +{alert.lead_time_months.toFixed(1)} Months
+                    <span className="text-blue-600 dark:text-blue-400 font-bold">
+                      10 Snapshots
                     </span>
-                    <span className="block text-[10px] text-slate-400">Advance Trigger</span>
+                    <span className="block text-[10px] text-slate-400">Observed History</span>
                   </td>
 
                   <td className="py-3 px-3 font-mono">

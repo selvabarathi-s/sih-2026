@@ -5,31 +5,25 @@ import {
   FolderKanban,
   ShieldAlert,
   BellRing,
-  GitFork,
-  Cpu,
-  Scale,
   BarChart3,
   BotMessageSquare,
   ActivitySquare,
   Settings,
   Flame,
+  Database,
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
   const primaryNav = [
-    { name: 'Overview', path: '/', icon: LayoutDashboard },
-    { name: 'Projects', path: '/projects', icon: FolderKanban },
-    { name: 'Risk Intelligence', path: '/risk-intelligence', icon: ShieldAlert },
-    { name: 'Early Warnings', path: '/early-warnings', icon: BellRing, badge: '12' },
-    { name: 'Risk Network', path: '/risk-network', icon: GitFork },
-    { name: 'Predictions', path: '/predictions', icon: Cpu },
-    { name: 'Benchmarking', path: '/benchmarking', icon: Scale },
-    { name: 'Analytics', path: '/analytics', icon: BarChart3 },
-    { name: 'AI Assistant', path: '/assistant', icon: BotMessageSquare },
+    { name: 'Portfolio Overview', path: '/', icon: LayoutDashboard },
+    { name: 'Projects Directory (1,981)', path: '/projects', icon: FolderKanban },
+    { name: 'Deterioration Signals', path: '/early-warnings', icon: BellRing, badge: '20+' },
+    { name: 'Sector Analytics', path: '/predictions', icon: BarChart3 },
+    { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
   ];
 
   const secondaryNav = [
-    { name: 'Data Health', path: '/data-health', icon: ActivitySquare },
+    { name: 'Ingestion & Data Health', path: '/data-health', icon: ActivitySquare },
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
 
@@ -44,9 +38,9 @@ export const Sidebar: React.FC = () => {
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold tracking-tight text-slate-900 dark:text-white text-base font-mono">PAIMANA</span>
-              <span className="text-xs px-1.5 py-0.5 rounded bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-semibold uppercase tracking-wider">Predict</span>
+              <span className="text-xs px-1.5 py-0.5 rounded bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Live</span>
             </div>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight truncate">Infrastructure Risk Intelligence</p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight truncate">National Infrastructure Surveillance</p>
           </div>
         </div>
       </div>
@@ -54,15 +48,15 @@ export const Sidebar: React.FC = () => {
       {/* Hero Badge Tagline */}
       <div className="px-4 py-2 bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800/40">
         <p className="text-[11px] font-medium text-slate-600 dark:text-slate-400 flex items-center justify-between">
-          <span>Predict • Explain • Prevent</span>
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="System Status: Online" />
+          <span>April 2026 Baseline</span>
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Telemetry Status: Online" />
         </p>
       </div>
 
       {/* Navigation Links */}
       <nav className="flex-1 overflow-y-auto p-3 space-y-1">
         <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 py-1.5 font-mono">
-          Intelligence Modules
+          Monitoring Modules
         </div>
 
         {primaryNav.map(item => {
@@ -84,7 +78,7 @@ export const Sidebar: React.FC = () => {
                 <span>{item.name}</span>
               </div>
               {item.badge && (
-                <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-red-600 text-white">
+                <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-blue-600 text-white">
                   {item.badge}
                 </span>
               )}
@@ -93,7 +87,7 @@ export const Sidebar: React.FC = () => {
         })}
 
         <div className="pt-4 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 py-1.5 font-mono">
-          System & Data
+          Governance & Audit
         </div>
 
         {secondaryNav.map(item => {
@@ -117,14 +111,14 @@ export const Sidebar: React.FC = () => {
         })}
       </nav>
 
-      {/* Demo / Synthetic Dataset Disclaimer Footer */}
+      {/* PAIMANA Report Source Footer */}
       <div className="p-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400">
         <div className="flex items-center justify-between mb-1">
-          <span className="font-semibold text-slate-700 dark:text-slate-300">SIH 2026 Prototype</span>
-          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">PS: 26103</span>
+          <span className="font-semibold text-slate-700 dark:text-slate-300">MoSPI Flash Report</span>
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">Apr-2026</span>
         </div>
-        <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
-          Synthetic PAIMANA decision-support demonstration environment.
+        <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight font-mono">
+          1,981 Ongoing Projects (≥ ₹150 Cr)
         </p>
       </div>
     </aside>
