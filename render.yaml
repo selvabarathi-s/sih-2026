@@ -1,13 +1,12 @@
 services:
   - type: web
-    name: paimana-predict
-    runtime: static
+    name: sih-2026-paimana-predict
+    runtime: node
+    plan: free
+    region: oregon
     buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    startCommand: npm run start
+    healthCheckPath: /healthz
     envVars:
       - key: NODE_VERSION
-        value: 20.x
+        value: 20.18.0
