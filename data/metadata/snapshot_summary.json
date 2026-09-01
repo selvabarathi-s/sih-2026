@@ -1,0 +1,62 @@
+[
+  {
+    "period": "October 2025",
+    "date_key": "2025-10",
+    "filename": "FlashReport_October_2025.pdf",
+    "records_extracted": 798
+  },
+  {
+    "period": "November 2025",
+    "date_key": "2025-11",
+    "filename": "FlashReport_November_2025.pdf",
+    "records_extracted": 823
+  },
+  {
+    "period": "December 2025",
+    "date_key": "2025-12",
+    "filename": "FlashReport_December_2025.pdf",
+    "records_extracted": 1345
+  },
+  {
+    "period": "January 2026",
+    "date_key": "2026-01",
+    "filename": "FlashReport_January_2026.pdf",
+    "records_extracted": 1605
+  },
+  {
+    "period": "February 2026",
+    "date_key": "2026-02",
+    "filename": "FlashReport_February_2026.pdf",
+    "records_extracted": 1897
+  },
+  {
+    "period": "March 2026",
+    "date_key": "2026-03",
+    "filename": "FlashReport_March_2026.pdf",
+    "records_extracted": 1869
+  },
+  {
+    "period": "April 2026",
+    "date_key": "2026-04",
+    "filename": "FlashReport_April2026.pdf",
+    "records_extracted": 1981
+  },
+  {
+    "period": "May 2026",
+    "date_key": "2026-05",
+    "filename": "FlashReport_May2026.pdf",
+    "records_extracted": 1987
+  },
+  {
+    "period": "June 2026",
+    "date_key": "2026-06",
+    "filename": "FlashReport_June_2026.pdf",
+    "records_extracted": 1847
+  },
+  {
+    "period": "July 2026",
+    "date_key": "2026-07",
+    "filename": "FlashReport_July_2026.pdf",
+    "records_extracted": 1775
+  }
+]

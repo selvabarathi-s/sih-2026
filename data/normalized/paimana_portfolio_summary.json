@@ -1,0 +1,1464 @@
+{
+  "headline": {
+    "total_projects": 1981,
+    "original_cost_cr": 3712662.01,
+    "revised_cost_cr": 4278402.37,
+    "cumulative_expenditure_cr": 2036107.49,
+    "expenditure_ratio_pct": 47.59,
+    "average_physical_progress_pct": 60.21,
+    "cost_growth_total_cr": 565740.36,
+    "cost_growth_total_pct": 15.24,
+    "total_ministries": 16,
+    "total_sectors": 22,
+    "total_states": 107,
+    "projects_with_cost_growth": 533,
+    "projects_with_schedule_extension": 1245,
+    "report_period": "April 2026",
+    "source_authority": "PAIMANA Flash Report (April 2026), MoSPI"
+  },
+  "ministries": [
+    {
+      "ministry": "Ministry of Road Transport & Highways",
+      "project_count": 1137,
+      "original_cost": 1054522.8700000008,
+      "revised_cost": 1081116.4000000013,
+      "expenditure": 369901.5499999995
+    },
+    {
+      "ministry": "Ministry of Railways",
+      "project_count": 260,
+      "original_cost": 718136.2500000002,
+      "revised_cost": 869472.9999999999,
+      "expenditure": 578946.7999999998
+    },
+    {
+      "ministry": "Ministry of Coal",
+      "project_count": 128,
+      "original_cost": 245149.40999999997,
+      "revised_cost": 248665.57000000004,
+      "expenditure": 80005.47999999998
+    },
+    {
+      "ministry": "Ministry of Petroleum & Natural Gas",
+      "project_count": 112,
+      "original_cost": 451191.49000000005,
+      "revised_cost": 518871.3400000001,
+      "expenditure": 303291.49000000005
+    },
+    {
+      "ministry": "Ministry of Power",
+      "project_count": 102,
+      "original_cost": 495681.92999999993,
+      "revised_cost": 552653.9500000001,
+      "expenditure": 200895.90000000002
+    },
+    {
+      "ministry": "Ministry of Housing & Urban Affairs",
+      "project_count": 51,
+      "original_cost": 354143.6099999999,
+      "revised_cost": 375044.14999999997,
+      "expenditure": 200129.04
+    },
+    {
+      "ministry": "Department of Water Resources, River Development & GR",
+      "project_count": 48,
+      "original_cost": 121294.16,
+      "revised_cost": 225028.35000000003,
+      "expenditure": 161825.21000000005
+    },
+    {
+      "ministry": "Department of Higher Education",
+      "project_count": 30,
+      "original_cost": 15165.679999999998,
+      "revised_cost": 14908.23,
+      "expenditure": 8310.520000000002
+    },
+    {
+      "ministry": "Ministry of Civil Aviation",
+      "project_count": 26,
+      "original_cost": 21600.76,
+      "revised_cost": 22814.76,
+      "expenditure": 10762.010000000002
+    },
+    {
+      "ministry": "Ministry of Health & Family Welfare",
+      "project_count": 23,
+      "original_cost": 17252.190000000002,
+      "revised_cost": 21471.0,
+      "expenditure": 8356.63
+    },
+    {
+      "ministry": "Ministry of Steel",
+      "project_count": 19,
+      "original_cost": 19511.66,
+      "revised_cost": 22806.149999999998,
+      "expenditure": 10331.439999999999
+    },
+    {
+      "ministry": "Ministry of Ports, Shipping and Waterways",
+      "project_count": 15,
+      "original_cost": 35863.93,
+      "revised_cost": 36261.56,
+      "expenditure": 16848.769999999997
+    },
+    {
+      "ministry": "Department of Telecommunications",
+      "project_count": 12,
+      "original_cost": 151125.15,
+      "revised_cost": 273253.39,
+      "expenditure": 77035.70000000001
+    },
+    {
+      "ministry": "Ministry of Labour and Employment",
+      "project_count": 11,
+      "original_cost": 2871.72,
+      "revised_cost": 3080.24,
+      "expenditure": 1590.0
+    },
+    {
+      "ministry": "Ministry of Mines",
+      "project_count": 6,
+      "original_cost": 8244.73,
+      "revised_cost": 12342.54,
+      "expenditure": 7302.83
+    },
+    {
+      "ministry": "Department of Sports",
+      "project_count": 1,
+      "original_cost": 906.47,
+      "revised_cost": 611.74,
+      "expenditure": 574.12
+    }
+  ],
+  "sectors": [
+    {
+      "sector": "Roads & Highways",
+      "project_count": 1137,
+      "original_cost": 1054522.8700000008,
+      "revised_cost": 1081116.4000000013,
+      "expenditure": 369901.5499999995
+    },
+    {
+      "sector": "Railways",
+      "project_count": 262,
+      "original_cost": 721622.1100000001,
+      "revised_cost": 874475.8699999999,
+      "expenditure": 581285.7599999998
+    },
+    {
+      "sector": "Coal",
+      "project_count": 119,
+      "original_cost": 187695.90999999997,
+      "revised_cost": 185433.92000000004,
+      "expenditure": 49332.88999999999
+    },
+    {
+      "sector": "Oil & Gas",
+      "project_count": 96,
+      "original_cost": 370568.19,
+      "revised_cost": 399477.5200000001,
+      "expenditure": 201674.18999999997
+    },
+    {
+      "sector": "Transmission & Distribution",
+      "project_count": 69,
+      "original_cost": 208869.72999999998,
+      "revised_cost": 214833.3,
+      "expenditure": 69254.78
+    },
+    {
+      "sector": "Electricity Generation",
+      "project_count": 40,
+      "original_cost": 340779.83999999997,
+      "revised_cost": 396049.43,
+      "expenditure": 159974.74999999997
+    },
+    {
+      "sector": "Water Resources",
+      "project_count": 40,
+      "original_cost": 117255.03999999998,
+      "revised_cost": 220989.23,
+      "expenditure": 160182.16000000003
+    },
+    {
+      "sector": "Healthcare",
+      "project_count": 34,
+      "original_cost": 20123.91,
+      "revised_cost": 24551.239999999998,
+      "expenditure": 9946.629999999997
+    },
+    {
+      "sector": "Education",
+      "project_count": 31,
+      "original_cost": 16072.149999999998,
+      "revised_cost": 15519.97,
+      "expenditure": 8884.640000000003
+    },
+    {
+      "sector": "Urban Public Transport",
+      "project_count": 27,
+      "original_cost": 315168.4699999999,
+      "revised_cost": 335923.7,
+      "expenditure": 181938.72000000003
+    },
+    {
+      "sector": "Waste & Water",
+      "project_count": 27,
+      "original_cost": 8620.41,
+      "revised_cost": 8719.689999999999,
+      "expenditure": 5132.31
+    },
+    {
+      "sector": "Aviation & Aviation Infrastructure",
+      "project_count": 26,
+      "original_cost": 21600.76,
+      "revised_cost": 22814.76,
+      "expenditure": 10762.010000000002
+    },
+    {
+      "sector": "Steel",
+      "project_count": 18,
+      "original_cost": 17811.66,
+      "revised_cost": 21049.95,
+      "expenditure": 10073.029999999999
+    },
+    {
+      "sector": "Energy Storage",
+      "project_count": 16,
+      "original_cost": 80623.3,
+      "revised_cost": 119393.82,
+      "expenditure": 101617.30000000002
+    },
+    {
+      "sector": "Telecommunication",
+      "project_count": 12,
+      "original_cost": 151125.15,
+      "revised_cost": 273253.39,
+      "expenditure": 77035.70000000001
+    },
+    {
+      "sector": "Real Estate",
+      "project_count": 11,
+      "original_cost": 49336.1,
+      "revised_cost": 49382.13,
+      "expenditure": 15783.85
+    },
+    {
+      "sector": "Metals & Mining",
+      "project_count": 6,
+      "original_cost": 9689.36,
+      "revised_cost": 13843.37,
+      "expenditure": 7462.32
+    },
+    {
+      "sector": "Shipping",
+      "project_count": 5,
+      "original_cost": 13572.5,
+      "revised_cost": 13613.11,
+      "expenditure": 10569.439999999999
+    },
+    {
+      "sector": "Construction",
+      "project_count": 2,
+      "original_cost": 899.37,
+      "revised_cost": 899.37,
+      "expenditure": 260.49
+    },
+    {
+      "sector": "Inland Waterways",
+      "project_count": 1,
+      "original_cost": 5369.18,
+      "revised_cost": 5061.15,
+      "expenditure": 3990.06
+    },
+    {
+      "sector": "Tourism, Hospitality & Wellness",
+      "project_count": 1,
+      "original_cost": 573.0,
+      "revised_cost": 1238.05,
+      "expenditure": 614.91
+    },
+    {
+      "sector": "Logistics Infrastructure",
+      "project_count": 1,
+      "original_cost": 763.0,
+      "revised_cost": 763.0,
+      "expenditure": 430.0
+    }
+  ],
+  "states": [
+    {
+      "state": "Maharashtra",
+      "project_count": 185,
+      "original_cost": 296144.5599999999,
+      "revised_cost": 339816.0600000001,
+      "expenditure": 162759.78000000006
+    },
+    {
+      "state": "Uttar Pradesh",
+      "project_count": 141,
+      "original_cost": 224602.43000000005,
+      "revised_cost": 227535.07999999996,
+      "expenditure": 90710.53999999996
+    },
+    {
+      "state": "Andhra Pradesh",
+      "project_count": 109,
+      "original_cost": 148525.37,
+      "revised_cost": 197135.96999999994,
+      "expenditure": 109631.28999999998
+    },
+    {
+      "state": "Gujarat",
+      "project_count": 108,
+      "original_cost": 191802.03999999998,
+      "revised_cost": 215932.0700000001,
+      "expenditure": 123172.88999999996
+    },
+    {
+      "state": "Bihar",
+      "project_count": 102,
+      "original_cost": 185746.11000000004,
+      "revised_cost": 195426.88,
+      "expenditure": 75414.11000000002
+    },
+    {
+      "state": "Karnataka",
+      "project_count": 99,
+      "original_cost": 177359.88999999998,
+      "revised_cost": 191236.87999999998,
+      "expenditure": 83069.78
+    },
+    {
+      "state": "Madhya Pradesh",
+      "project_count": 98,
+      "original_cost": 193164.22999999992,
+      "revised_cost": 194473.64999999994,
+      "expenditure": 54026.24999999999
+    },
+    {
+      "state": "Odisha",
+      "project_count": 93,
+      "original_cost": 168558.99000000005,
+      "revised_cost": 179081.81,
+      "expenditure": 82527.04999999999
+    },
+    {
+      "state": "Assam",
+      "project_count": 79,
+      "original_cost": 78116.61999999998,
+      "revised_cost": 90842.10999999999,
+      "expenditure": 43985.18000000001
+    },
+    {
+      "state": "Jharkhand",
+      "project_count": 77,
+      "original_cost": 124412.6,
+      "revised_cost": 133750.37000000002,
+      "expenditure": 53280.720000000016
+    },
+    {
+      "state": "Telangana",
+      "project_count": 70,
+      "original_cost": 52676.63999999999,
+      "revised_cost": 68838.24,
+      "expenditure": 29125.48
+    },
+    {
+      "state": "Chhattisgarh",
+      "project_count": 67,
+      "original_cost": 116840.57000000002,
+      "revised_cost": 126214.06999999999,
+      "expenditure": 49166.219999999994
+    },
+    {
+      "state": "West Bengal",
+      "project_count": 59,
+      "original_cost": 84401.0,
+      "revised_cost": 92264.80000000002,
+      "expenditure": 36939.459999999985
+    },
+    {
+      "state": "Rajasthan",
+      "project_count": 55,
+      "original_cost": 97198.64,
+      "revised_cost": 132520.19999999998,
+      "expenditure": 95055.61999999997
+    },
+    {
+      "state": "Tamil Nadu",
+      "project_count": 53,
+      "original_cost": 151289.87000000005,
+      "revised_cost": 154910.23999999993,
+      "expenditure": 52966.36
+    },
+    {
+      "state": "Jammu and\nKashmir",
+      "project_count": 45,
+      "original_cost": 56816.109999999986,
+      "revised_cost": 62379.76999999999,
+      "expenditure": 30044.769999999997
+    },
+    {
+      "state": "Uttarakhand",
+      "project_count": 43,
+      "original_cost": 64990.54,
+      "revised_cost": 75148.7,
+      "expenditure": 47316.98
+    },
+    {
+      "state": "Punjab",
+      "project_count": 42,
+      "original_cost": 47039.65000000001,
+      "revised_cost": 52869.87999999999,
+      "expenditure": 24411.049999999996
+    },
+    {
+      "state": "Manipur",
+      "project_count": 34,
+      "original_cost": 27968.89,
+      "revised_cost": 35609.86,
+      "expenditure": 24620.189999999995
+    },
+    {
+      "state": "Kerala",
+      "project_count": 29,
+      "original_cost": 68424.97,
+      "revised_cost": 74156.26999999999,
+      "expenditure": 21723.340000000004
+    },
+    {
+      "state": "Himachal Pradesh",
+      "project_count": 29,
+      "original_cost": 27526.42,
+      "revised_cost": 37802.880000000005,
+      "expenditure": 14294.710000000003
+    },
+    {
+      "state": "Haryana",
+      "project_count": 23,
+      "original_cost": 64312.43999999999,
+      "revised_cost": 71015.32,
+      "expenditure": 39838.90999999999
+    },
+    {
+      "state": "Mizoram",
+      "project_count": 23,
+      "original_cost": 15121.08,
+      "revised_cost": 15265.64,
+      "expenditure": 2739.2000000000003
+    },
+    {
+      "state": "Nagaland",
+      "project_count": 21,
+      "original_cost": 6694.280000000001,
+      "revised_cost": 7248.330000000002,
+      "expenditure": 1215.0300000000002
+    },
+    {
+      "state": "Arunachal Pradesh",
+      "project_count": 19,
+      "original_cost": 66849.68999999999,
+      "revised_cost": 66849.67,
+      "expenditure": 6635.42
+    },
+    {
+      "state": "Delhi",
+      "project_count": 17,
+      "original_cost": 97878.18000000001,
+      "revised_cost": 101415.94,
+      "expenditure": 44532.67999999999
+    },
+    {
+      "state": "Meghalaya",
+      "project_count": 15,
+      "original_cost": 15939.720000000001,
+      "revised_cost": 15739.57,
+      "expenditure": 1902.0400000000002
+    },
+    {
+      "state": "Sikkim",
+      "project_count": 14,
+      "original_cost": 11418.3,
+      "revised_cost": 12746.609999999999,
+      "expenditure": 7399.99
+    },
+    {
+      "state": "Multi-States\n(Bihar, Jharkhand)",
+      "project_count": 12,
+      "original_cost": 30339.77,
+      "revised_cost": 30766.640000000007,
+      "expenditure": 8961.89
+    },
+    {
+      "state": "Tripura",
+      "project_count": 11,
+      "original_cost": 6946.71,
+      "revised_cost": 6893.42,
+      "expenditure": 1189.7
+    },
+    {
+      "state": "Multi-States\n(Andhra Pradesh,\nTelangana)",
+      "project_count": 10,
+      "original_cost": 16709.43,
+      "revised_cost": 18940.78,
+      "expenditure": 11837.150000000001
+    },
+    {
+      "state": "Multi-States\n(Bihar, Uttar\nPradesh)",
+      "project_count": 8,
+      "original_cost": 11531.53,
+      "revised_cost": 11658.69,
+      "expenditure": 3791.88
+    },
+    {
+      "state": "Offshore",
+      "project_count": 8,
+      "original_cost": 26708.58,
+      "revised_cost": 29966.749999999996,
+      "expenditure": 16713.469999999998
+    },
+    {
+      "state": "Multi-States\n(Madhya Pradesh,\nUttar Pradesh)",
+      "project_count": 7,
+      "original_cost": 30352.5,
+      "revised_cost": 30202.68,
+      "expenditure": 15147.98
+    },
+    {
+      "state": "Multi-States\n(Madhya Pradesh,\nRajasthan)",
+      "project_count": 7,
+      "original_cost": 19363.239999999998,
+      "revised_cost": 21734.239999999998,
+      "expenditure": 10249.37
+    },
+    {
+      "state": "Multi-States\n(Andhra Pradesh,\nTamil Nadu)",
+      "project_count": 7,
+      "original_cost": 10982.67,
+      "revised_cost": 10926.45,
+      "expenditure": 4322.79
+    },
+    {
+      "state": "Multi-States\n(Jharkhand, West\nBengal)",
+      "project_count": 7,
+      "original_cost": 11471.12,
+      "revised_cost": 11778.27,
+      "expenditure": 4252.82
+    },
+    {
+      "state": "Multi-States (Uttar\nPradesh,\nUttarakhand)",
+      "project_count": 7,
+      "original_cost": 8309.42,
+      "revised_cost": 8100.78,
+      "expenditure": 4217.71
+    },
+    {
+      "state": "Multi-States\n(Andhra Pradesh,\nKarnataka)",
+      "project_count": 6,
+      "original_cost": 14591.0,
+      "revised_cost": 14832.0,
+      "expenditure": 4542.68
+    },
+    {
+      "state": "PAN India",
+      "project_count": 6,
+      "original_cost": 141355.07,
+      "revised_cost": 263676.02,
+      "expenditure": 73544.16
+    },
+    {
+      "state": "Multi-States\n(Haryana, Punjab)",
+      "project_count": 6,
+      "original_cost": 7314.679999999999,
+      "revised_cost": 7509.44,
+      "expenditure": 3292.35
+    },
+    {
+      "state": "Goa",
+      "project_count": 5,
+      "original_cost": 3650.48,
+      "revised_cost": 3503.6800000000003,
+      "expenditure": 283.78999999999996
+    },
+    {
+      "state": "Multi-States\n(Andhra Pradesh,\nOdisha)",
+      "project_count": 5,
+      "original_cost": 13899.96,
+      "revised_cost": 15944.07,
+      "expenditure": 11387.05
+    },
+    {
+      "state": "Multi-States\n(Karnataka,\nMaharashtra)",
+      "project_count": 5,
+      "original_cost": 10780.75,
+      "revised_cost": 10249.39,
+      "expenditure": 6835.150000000001
+    },
+    {
+      "state": "Ladakh",
+      "project_count": 4,
+      "original_cost": 1664.27,
+      "revised_cost": 1824.27,
+      "expenditure": 1326.9
+    },
+    {
+      "state": "Multi-States\n(Arunachal\nPradesh, Assam)",
+      "project_count": 4,
+      "original_cost": 8641.29,
+      "revised_cost": 29246.460000000003,
+      "expenditure": 27631.05
+    },
+    {
+      "state": "Andaman &\nNicobar",
+      "project_count": 4,
+      "original_cost": 863.8499999999999,
+      "revised_cost": 1291.3600000000001,
+      "expenditure": 0.0
+    },
+    {
+      "state": "Multi-States\n(Karnataka, Tamil\nNadu)",
+      "project_count": 4,
+      "original_cost": 4194.71,
+      "revised_cost": 5527.83,
+      "expenditure": 3355.62
+    },
+    {
+      "state": "Multi-States\n(Chhattisgarh,\nOdisha)",
+      "project_count": 4,
+      "original_cost": 5446.57,
+      "revised_cost": 6446.129999999999,
+      "expenditure": 4066.22
+    },
+    {
+      "state": "Multi-States\n(Maharashtra,\nTelangana)",
+      "project_count": 4,
+      "original_cost": 5659.030000000001,
+      "revised_cost": 6855.9400000000005,
+      "expenditure": 5551.120000000001
+    },
+    {
+      "state": "Multi-States\n(Puducherry, Tamil\nNadu)",
+      "project_count": 4,
+      "original_cost": 6559.48,
+      "revised_cost": 6459.110000000001,
+      "expenditure": 2767.2
+    },
+    {
+      "state": "Multi-States\n(Bihar, West\nBengal)",
+      "project_count": 3,
+      "original_cost": 2314.42,
+      "revised_cost": 2207.14,
+      "expenditure": 678.26
+    },
+    {
+      "state": "Multi-States\n(Dadra & Nagar\nHaveli and Daman\n& Diu, Gujarat,\nMaharashtra)",
+      "project_count": 3,
+      "original_cost": 114456.0,
+      "revised_cost": 115198.5,
+      "expenditure": 95701.42
+    },
+    {
+      "state": "Multi-States\n(Gujarat,\nMaharashtra)",
+      "project_count": 3,
+      "original_cost": 26784.07,
+      "revised_cost": 26802.89,
+      "expenditure": 4102.27
+    },
+    {
+      "state": "Multi-States\n(Haryana,\nRajasthan)",
+      "project_count": 3,
+      "original_cost": 6118.64,
+      "revised_cost": 5999.64,
+      "expenditure": 1957.47
+    },
+    {
+      "state": "Multi-States\n(Karnataka,\nTelangana)",
+      "project_count": 3,
+      "original_cost": 3839.79,
+      "revised_cost": 3869.54,
+      "expenditure": 2428.03
+    },
+    {
+      "state": "Multi-States\n(Rajasthan, Uttar\nPradesh)",
+      "project_count": 3,
+      "original_cost": 9276.53,
+      "revised_cost": 9217.74,
+      "expenditure": 4440.43
+    },
+    {
+      "state": "Multi-States (Goa,\nKarnataka)",
+      "project_count": 3,
+      "original_cost": 6031.25,
+      "revised_cost": 6332.0599999999995,
+      "expenditure": 6577.11
+    },
+    {
+      "state": "Multi-States\n(Himachal\nPradesh, Punjab)",
+      "project_count": 3,
+      "original_cost": 16036.34,
+      "revised_cost": 15946.88,
+      "expenditure": 10005.85
+    },
+    {
+      "state": "Multi-States\n(Madhya Pradesh,\nMaharashtra)",
+      "project_count": 3,
+      "original_cost": 4890.51,
+      "revised_cost": 9666.06,
+      "expenditure": 7061.56
+    },
+    {
+      "state": "Multi-States\n(Haryana, Uttar\nPradesh)",
+      "project_count": 3,
+      "original_cost": 5414.07,
+      "revised_cost": 5631.6,
+      "expenditure": 1892.7000000000003
+    },
+    {
+      "state": "Multi-States (Delhi,\nRajasthan)",
+      "project_count": 2,
+      "original_cost": 2754.0,
+      "revised_cost": 2754.0,
+      "expenditure": 2233.0299999999997
+    },
+    {
+      "state": "Multi-States\n(Madhya Pradesh,\nRajasthan, Uttar\nPradesh)",
+      "project_count": 2,
+      "original_cost": 30961.0,
+      "revised_cost": 30961.0,
+      "expenditure": 5351.47
+    },
+    {
+      "state": "Multi-States (Delhi,\nHaryana)",
+      "project_count": 2,
+      "original_cost": 8459.25,
+      "revised_cost": 8529.36,
+      "expenditure": 1064.4099999999999
+    },
+    {
+      "state": "Dadra & Nagar\nHaveli and Daman\n& Diu",
+      "project_count": 2,
+      "original_cost": 408.06,
+      "revised_cost": 449.57,
+      "expenditure": 73.03
+    },
+    {
+      "state": "Multi-States\n(Jammu and\nKashmir, Punjab)",
+      "project_count": 2,
+      "original_cost": 3565.92,
+      "revised_cost": 4229.8099999999995,
+      "expenditure": 1853.83
+    },
+    {
+      "state": "Multi-States\n(Odisha, West\nBengal)",
+      "project_count": 2,
+      "original_cost": 3430.65,
+      "revised_cost": 4550.32,
+      "expenditure": 3572.11
+    },
+    {
+      "state": "Multi-States\n(Assam,\nNagaland)",
+      "project_count": 2,
+      "original_cost": 8786.7,
+      "revised_cost": 8786.7,
+      "expenditure": 6403.64
+    },
+    {
+      "state": "Multi-States\n(Chhattisgarh,\nMaharashtra)",
+      "project_count": 2,
+      "original_cost": 5767.530000000001,
+      "revised_cost": 5767.530000000001,
+      "expenditure": 3639.58
+    },
+    {
+      "state": "Multi-States\n(Gujarat, Madhya\nPradesh)",
+      "project_count": 2,
+      "original_cost": 2250.07,
+      "revised_cost": 5310.77,
+      "expenditure": 5977.39
+    },
+    {
+      "state": "Multi-States\n(Gujarat,\nRajasthan)",
+      "project_count": 2,
+      "original_cost": 5883.59,
+      "revised_cost": 5883.59,
+      "expenditure": 3218.05
+    },
+    {
+      "state": "Multi-States\n(Andhra Pradesh,\nBihar,\nChhattisgarh,\nJharkhand,\nMadhya Pradesh,\nMaharashtra,\nOdisha,\nTelangana, Uttar\nPradesh, West\nBengal)",
+      "project_count": 2,
+      "original_cost": 3462.17,
+      "revised_cost": 3462.17,
+      "expenditure": 1078.46
+    },
+    {
+      "state": "Multi-States\n(Karnataka,\nMaharashtra,\nTelangana, Uttar\nPradesh)",
+      "project_count": 1,
+      "original_cost": 500.48,
+      "revised_cost": 500.48,
+      "expenditure": 381.2
+    },
+    {
+      "state": "Multi-States\n(Arunachal\nPradesh, Sikkim)",
+      "project_count": 1,
+      "original_cost": 4754.42,
+      "revised_cost": 9129.32,
+      "expenditure": 8069.4
+    },
+    {
+      "state": "Multi-States\n(Assam, Manipur,\nMeghalaya,\nMizoram,\nNagaland, Tripura)",
+      "project_count": 1,
+      "original_cost": 5111.33,
+      "revised_cost": 6700.0,
+      "expenditure": 5577.75
+    },
+    {
+      "state": "Multi-States\n(Bihar, Odisha,\nWest Bengal)",
+      "project_count": 1,
+      "original_cost": 342.69,
+      "revised_cost": 342.69,
+      "expenditure": 102.8
+    },
+    {
+      "state": "Multi-States\n(Haryana, Punjab,\nRajasthan)",
+      "project_count": 1,
+      "original_cost": 5969.0,
+      "revised_cost": 5969.0,
+      "expenditure": 1313.18
+    },
+    {
+      "state": "Puducherry",
+      "project_count": 1,
+      "original_cost": 618.34,
+      "revised_cost": 544.34,
+      "expenditure": 543.74
+    },
+    {
+      "state": "Multi-States\n(Assam, Bihar,\nJharkhand,\nOdisha, West\nBengal)",
+      "project_count": 1,
+      "original_cost": 10228.0,
+      "revised_cost": 11407.0,
+      "expenditure": 10912.42
+    },
+    {
+      "state": "Multi-States\n(Gujarat, Haryana,\nRajasthan)",
+      "project_count": 1,
+      "original_cost": 9028.0,
+      "revised_cost": 9028.0,
+      "expenditure": 7160.82
+    },
+    {
+      "state": "Multi-States\n(Gujarat, Madhya\nPradesh, Uttar\nPradesh)",
+      "project_count": 1,
+      "original_cost": 10088.0,
+      "revised_cost": 10088.0,
+      "expenditure": 8529.58
+    },
+    {
+      "state": "Multi-States\n(Andhra Pradesh,\nChhattisgarh,\nOdisha)",
+      "project_count": 1,
+      "original_cost": 2212.0,
+      "revised_cost": 2212.0,
+      "expenditure": 498.11
+    },
+    {
+      "state": "Multi-States\n(Arunachal\nPradesh, Assam,\nManipur,\nMeghalaya,\nMizoram,\nNagaland, Sikkim,\nTripura, West\nBengal)",
+      "project_count": 1,
+      "original_cost": 9265.0,
+      "revised_cost": 9265.0,
+      "expenditure": 6877.97
+    },
+    {
+      "state": "Multi-States\n(Assam, Bihar,\nWest Bengal)",
+      "project_count": 1,
+      "original_cost": 680.0,
+      "revised_cost": 680.0,
+      "expenditure": 8.19
+    },
+    {
+      "state": "Multi-States\n(Chhattisgarh,\nMadhya Pradesh,\nMaharashtra,\nOdisha)",
+      "project_count": 1,
+      "original_cost": 7844.25,
+      "revised_cost": 8255.0,
+      "expenditure": 7070.1
+    },
+    {
+      "state": "Multi-States\n(Gujarat, Haryana,\nPunjab,\nRajasthan)",
+      "project_count": 1,
+      "original_cost": 7392.0,
+      "revised_cost": 7392.0,
+      "expenditure": 6354.05
+    },
+    {
+      "state": "Multi-States\n(Karnataka,\nKerala, Tamil\nNadu)",
+      "project_count": 1,
+      "original_cost": 2915.0,
+      "revised_cost": 5909.0,
+      "expenditure": 4790.3
+    },
+    {
+      "state": "Multi-States\n(Punjab,\nRajasthan)",
+      "project_count": 1,
+      "original_cost": 3207.0,
+      "revised_cost": 3207.0,
+      "expenditure": 414.52
+    },
+    {
+      "state": "Multi-States\n(Bihar, Jharkhand,\nUttar Pradesh,\nWest Bengal)",
+      "project_count": 1,
+      "original_cost": 5369.18,
+      "revised_cost": 5061.15,
+      "expenditure": 3990.06
+    },
+    {
+      "state": "Multi-States\n(Andhra Pradesh,\nMaharashtra,\nTelangana)",
+      "project_count": 1,
+      "original_cost": 4686.09,
+      "revised_cost": 4686.09,
+      "expenditure": 1938.02
+    },
+    {
+      "state": "Multi-States\n(Assam,\nMeghalaya)",
+      "project_count": 1,
+      "original_cost": 1304.62,
+      "revised_cost": 1304.62,
+      "expenditure": 1254.47
+    },
+    {
+      "state": "Multi-States\n(Bihar, Delhi,\nJharkhand, Uttar\nPradesh, West\nBengal)",
+      "project_count": 1,
+      "original_cost": 6684.81,
+      "revised_cost": 6684.81,
+      "expenditure": 127.03
+    },
+    {
+      "state": "Multi-States (Delhi,\nGujarat, Madhya\nPradesh,\nMaharashtra,\nRajasthan)",
+      "project_count": 1,
+      "original_cost": 6806.44,
+      "revised_cost": 8095.12,
+      "expenditure": 9480.86
+    },
+    {
+      "state": "Multi-States\n(Gujarat, Haryana,\nMaharashtra,\nRajasthan, Uttar\nPradesh)",
+      "project_count": 1,
+      "original_cost": 51101.0,
+      "revised_cost": 124005.0,
+      "expenditure": 124623.0
+    },
+    {
+      "state": "Multi-States\n(Haryana,\nHimachal Pradesh)",
+      "project_count": 1,
+      "original_cost": 1540.0,
+      "revised_cost": 1540.13,
+      "expenditure": 590.11
+    },
+    {
+      "state": "Multi-States\n(Jharkhand,\nOdisha)",
+      "project_count": 1,
+      "original_cost": 3029.0,
+      "revised_cost": 3029.04,
+      "expenditure": 2629.17
+    },
+    {
+      "state": "Multi-States\n(Jharkhand,\nOdisha, West\nBengal)",
+      "project_count": 1,
+      "original_cost": 1459.13,
+      "revised_cost": 1459.13,
+      "expenditure": 7.58
+    },
+    {
+      "state": "Multi-States\n(Kerala, Tamil\nNadu)",
+      "project_count": 1,
+      "original_cost": 1432.0,
+      "revised_cost": 3785.45,
+      "expenditure": 2909.77
+    },
+    {
+      "state": "Multi-States\n(Sikkim, West\nBengal)",
+      "project_count": 1,
+      "original_cost": 7877.0,
+      "revised_cost": 11775.0,
+      "expenditure": 10770.42
+    },
+    {
+      "state": "Multi-States (Uttar\nPradesh, West\nBengal)",
+      "project_count": 1,
+      "original_cost": 461.64,
+      "revised_cost": 461.64,
+      "expenditure": 291.24
+    },
+    {
+      "state": "Multi-States (Delhi,\nUttar Pradesh)",
+      "project_count": 1,
+      "original_cost": 1479.22,
+      "revised_cost": 1476.75,
+      "expenditure": 1343.18
+    },
+    {
+      "state": "Multi-States\n(Himachal\nPradesh,\nUttarakhand)",
+      "project_count": 1,
+      "original_cost": 524.54,
+      "revised_cost": 657.32,
+      "expenditure": 253.88
+    },
+    {
+      "state": "Multi-States\n(Jharkhand, Uttar\nPradesh)",
+      "project_count": 1,
+      "original_cost": 1436.49,
+      "revised_cost": 1465.55,
+      "expenditure": 830.18
+    },
+    {
+      "state": "Multi-States\n(Karnataka,\nKerala)",
+      "project_count": 1,
+      "original_cost": 1981.07,
+      "revised_cost": 2681.48,
+      "expenditure": 1060.49
+    },
+    {
+      "state": "Multi-States\n(Kerala,\nPuducherry)",
+      "project_count": 1,
+      "original_cost": 1181.12,
+      "revised_cost": 1573.18,
+      "expenditure": 710.24
+    },
+    {
+      "state": "Multi-States\n(Andhra Pradesh,\nChhattisgarh,\nJharkhand,\nMaharashtra,\nOdisha)",
+      "project_count": 1,
+      "original_cost": 3685.0,
+      "revised_cost": 3685.0,
+      "expenditure": 1457.51
+    },
+    {
+      "state": "Multi-States\n(Bihar, Madhya\nPradesh,\nRajasthan, Uttar\nPradesh)",
+      "project_count": 1,
+      "original_cost": 421.65,
+      "revised_cost": 228.94,
+      "expenditure": 152.96
+    }
+  ],
+  "top_cost_escalations": [
+    {
+      "project_id": "PAI-706775",
+      "project_name": "BharatNet",
+      "ministry": "Department of Telecommunications",
+      "sector": "Telecommunication",
+      "original_cost": 61109.0,
+      "revised_cost": 188000.0,
+      "cost_overrun_cr": 126891.0,
+      "cost_growth_pct": 207.65,
+      "physical_progress": 82.4
+    },
+    {
+      "project_id": "PAI-705237",
+      "project_name": "Western Dedicated Freight Corridor",
+      "ministry": "Ministry of Railways",
+      "sector": "Railways",
+      "original_cost": 51101.0,
+      "revised_cost": 124005.0,
+      "cost_overrun_cr": 72904.0,
+      "cost_growth_pct": 142.67,
+      "physical_progress": 96.0
+    },
+    {
+      "project_id": "PAI-701415",
+      "project_name": "Polavaram Irrigation Project",
+      "ministry": "Department of Water Resources, River Development & GR",
+      "sector": "Water Resources",
+      "original_cost": 10151.04,
+      "revised_cost": 55548.9,
+      "cost_overrun_cr": 45397.86,
+      "cost_growth_pct": 447.22,
+      "physical_progress": 86.14
+    },
+    {
+      "project_id": "PAI-701263",
+      "project_name": "Rajasthan Refinery Project",
+      "ministry": "Ministry of Petroleum & Natural Gas",
+      "sector": "Energy Storage",
+      "original_cost": 43129.0,
+      "revised_cost": 79459.0,
+      "cost_overrun_cr": 36330.0,
+      "cost_growth_pct": 84.24,
+      "physical_progress": 91.9
+    },
+    {
+      "project_id": "PAI-602096",
+      "project_name": "Subansiri Lower HE Project [2000 MW]",
+      "ministry": "Ministry of Power",
+      "sector": "Electricity Generation",
+      "original_cost": 6285.33,
+      "revised_cost": 26075.5,
+      "cost_overrun_cr": 19790.17,
+      "cost_growth_pct": 314.86,
+      "physical_progress": 97.64
+    },
+    {
+      "project_id": "PAI-702637",
+      "project_name": "Mumbai Metro Line 3",
+      "ministry": "Ministry of Housing & Urban Affairs",
+      "sector": "Urban Public Transport",
+      "original_cost": 23136.0,
+      "revised_cost": 37276.0,
+      "cost_overrun_cr": 14140.0,
+      "cost_growth_pct": 61.12,
+      "physical_progress": 97.79
+    },
+    {
+      "project_id": "PAI-701372",
+      "project_name": "Sardar Sarovar Project",
+      "ministry": "Department of Water Resources, River Development & GR",
+      "sector": "Water Resources",
+      "original_cost": 20718.17,
+      "revised_cost": 33412.5,
+      "cost_overrun_cr": 12694.33,
+      "cost_growth_pct": 61.27,
+      "physical_progress": 93.7
+    },
+    {
+      "project_id": "PAI-604791",
+      "project_name": "Numaligarh Refinery Expansion Project",
+      "ministry": "Ministry of Petroleum & Natural Gas",
+      "sector": "Oil & Gas",
+      "original_cost": 12366.0,
+      "revised_cost": 22494.0,
+      "cost_overrun_cr": 10128.0,
+      "cost_growth_pct": 81.9,
+      "physical_progress": 84.6
+    },
+    {
+      "project_id": "PAI-602185",
+      "project_name": "Tapovan-Vishnugad HEP [4x130 MW]",
+      "ministry": "Ministry of Power",
+      "sector": "Electricity Generation",
+      "original_cost": 2978.0,
+      "revised_cost": 10907.3,
+      "cost_overrun_cr": 7929.3,
+      "cost_growth_pct": 266.26,
+      "physical_progress": 77.0
+    },
+    {
+      "project_id": "PAI-705391",
+      "project_name": "Jiribam-Imphal new line project",
+      "ministry": "Ministry of Railways",
+      "sector": "Railways",
+      "original_cost": 14323.0,
+      "revised_cost": 21885.9,
+      "cost_overrun_cr": 7562.9,
+      "cost_growth_pct": 52.8,
+      "physical_progress": 72.1
+    },
+    {
+      "project_id": "PAI-701405",
+      "project_name": "J. Chokka Rao Devadula Lift Irrigation Scheme",
+      "ministry": "Department of Water Resources, River Development & GR",
+      "sector": "Water Resources",
+      "original_cost": 8200.71,
+      "revised_cost": 14730.0,
+      "cost_overrun_cr": 6529.29,
+      "cost_growth_pct": 79.62,
+      "physical_progress": 87.7
+    },
+    {
+      "project_id": "PAI-701376",
+      "project_name": "Subernarekha Multipurpose Project, Jharkhand",
+      "ministry": "Department of Water Resources, River Development & GR",
+      "sector": "Water Resources",
+      "original_cost": 3807.77,
+      "revised_cost": 9579.58,
+      "cost_overrun_cr": 5771.81,
+      "cost_growth_pct": 151.58,
+      "physical_progress": 70.0
+    },
+    {
+      "project_id": "PAI-701386",
+      "project_name": "Gosikhurd Project",
+      "ministry": "Department of Water Resources, River Development & GR",
+      "sector": "Water Resources",
+      "original_cost": 7196.47,
+      "revised_cost": 12770.1,
+      "cost_overrun_cr": 5573.63,
+      "cost_growth_pct": 77.45,
+      "physical_progress": 72.65
+    },
+    {
+      "project_id": "PAI-705730",
+      "project_name": "Joka-BBD Bag new metro project",
+      "ministry": "Ministry of Railways",
+      "sector": "Railways",
+      "original_cost": 4835.0,
+      "revised_cost": 10362.0,
+      "cost_overrun_cr": 5527.0,
+      "cost_growth_pct": 114.31,
+      "physical_progress": 51.0
+    },
+    {
+      "project_id": "PAI-705457",
+      "project_name": "Ratlam-Mhow-Khandwa-Akola Gauge Conversion",
+      "ministry": "Ministry of Railways",
+      "sector": "Railways",
+      "original_cost": 1656.25,
+      "revised_cost": 6499.86,
+      "cost_overrun_cr": 4843.61,
+      "cost_growth_pct": 292.44,
+      "physical_progress": 83.0
+    },
+    {
+      "project_id": "PAI-604795",
+      "project_name": "CBR 9 MMTPA Project",
+      "ministry": "Ministry of Petroleum & Natural Gas",
+      "sector": "Oil & Gas",
+      "original_cost": 31580.0,
+      "revised_cost": 36354.0,
+      "cost_overrun_cr": 4774.0,
+      "cost_growth_pct": 15.12,
+      "physical_progress": 10.2
+    },
+    {
+      "project_id": "PAI-602525",
+      "project_name": "Pakal Dul [Drangdhuran] Hydroelectric Project, 1000 MW",
+      "ministry": "Ministry of Power",
+      "sector": "Electricity Generation",
+      "original_cost": 8112.12,
+      "revised_cost": 12728.0,
+      "cost_overrun_cr": 4615.88,
+      "cost_growth_pct": 56.9,
+      "physical_progress": 80.5
+    },
+    {
+      "project_id": "PAI-400103",
+      "project_name": "Indiramma Flood Flow Canal Project",
+      "ministry": "Department of Water Resources, River Development & GR",
+      "sector": "Water Resources",
+      "original_cost": 1331.3,
+      "revised_cost": 5940.09,
+      "cost_overrun_cr": 4608.79,
+      "cost_growth_pct": 346.19,
+      "physical_progress": 92.0
+    },
+    {
+      "project_id": "PAI-400259",
+      "project_name": "Ghatampur Thermal Power Plant 3 X 660 MW",
+      "ministry": "Ministry of Coal",
+      "sector": "Electricity Generation",
+      "original_cost": 17237.8,
+      "revised_cost": 21780.9,
+      "cost_overrun_cr": 4543.1,
+      "cost_growth_pct": 26.36,
+      "physical_progress": 95.68
+    },
+    {
+      "project_id": "PAI-602223",
+      "project_name": "Comprehensive Scheme for Strengthening of Transmission and Distribution [T&D] Systems [CSST&DS] in Arunachal Pradesh and Sikkim",
+      "ministry": "Ministry of Power",
+      "sector": "Transmission & Distribution",
+      "original_cost": 4754.42,
+      "revised_cost": 9129.32,
+      "cost_overrun_cr": 4374.9,
+      "cost_growth_pct": 92.02,
+      "physical_progress": 83.4
+    }
+  ],
+  "top_schedule_extensions": [
+    {
+      "project_id": "PAI-705493",
+      "project_name": "Hubli-Ankola New Line Project [164.44 km]",
+      "ministry": "Ministry of Railways",
+      "sector": "Railways",
+      "target_completion_date": "03/2005",
+      "revised_completion_date": "03/2030",
+      "schedule_extension_months": 300.0,
+      "physical_progress": 4.7
+    },
+    {
+      "project_id": "PAI-619084",
+      "project_name": "Start of Karur Bypass - Dindigul from km. 292.600 to km. 305.600 Contract Package No. NS2/BOT/TN-4",
+      "ministry": "Ministry of Road Transport & Highways",
+      "sector": "Roads & Highways",
+      "target_completion_date": "04/2009",
+      "revised_completion_date": "10/2026",
+      "schedule_extension_months": 210.0,
+      "physical_progress": 100.0
+    },
+    {
+      "project_id": "PAI-619083",
+      "project_name": "Thumbipadi-Namakkal from km. 180.00 to km. 248.625 Package No. NS-2/BOT/TN- 02",
+      "ministry": "Ministry of Road Transport & Highways",
+      "sector": "Roads & Highways",
+      "target_completion_date": "02/2009",
+      "revised_completion_date": "08/2026",
+      "schedule_extension_months": 210.0,
+      "physical_progress": 100.0
+    },
+    {
+      "project_id": "PAI-602185",
+      "project_name": "Tapovan-Vishnugad HEP [4x130 MW]",
+      "ministry": "Ministry of Power",
+      "sector": "Electricity Generation",
+      "target_completion_date": "03/2013",
+      "revised_completion_date": "04/2029",
+      "schedule_extension_months": 193.0,
+      "physical_progress": 77.0
+    },
+    {
+      "project_id": "PAI-618874",
+      "project_name": "Four Laning of Trichy - Dindigul from km. 333.00 to km. 421.273 of NH-45",
+      "ministry": "Ministry of Road Transport & Highways",
+      "sector": "Roads & Highways",
+      "target_completion_date": "07/2010",
+      "revised_completion_date": "05/2026",
+      "schedule_extension_months": 190.0,
+      "physical_progress": 100.0
+    },
+    {
+      "project_id": "PAI-602096",
+      "project_name": "Subansiri Lower HE Project [2000 MW]",
+      "ministry": "Ministry of Power",
+      "sector": "Electricity Generation",
+      "target_completion_date": "09/2010",
+      "revised_completion_date": "05/2026",
+      "schedule_extension_months": 188.0,
+      "physical_progress": 97.64
+    },
+    {
+      "project_id": "PAI-705394",
+      "project_name": "Tetlia-Byrnihat New Railway Line",
+      "ministry": "Ministry of Railways",
+      "sector": "Railways",
+      "target_completion_date": "11/2011",
+      "revised_completion_date": "06/2027",
+      "schedule_extension_months": 187.0,
+      "physical_progress": 86.16
+    },
+    {
+      "project_id": "PAI-618943",
+      "project_name": "Salem - Ulundurpet section from km 0.313 to km 136.670 of NH-68",
+      "ministry": "Ministry of Road Transport & Highways",
+      "sector": "Roads & Highways",
+      "target_completion_date": "01/2011",
+      "revised_completion_date": "05/2026",
+      "schedule_extension_months": 184.0,
+      "physical_progress": 100.0
+    },
+    {
+      "project_id": "PAI-701228",
+      "project_name": "Kochi - Koottanad - Bangalore - Mangalore Pipeline Phase-II",
+      "ministry": "Ministry of Petroleum & Natural Gas",
+      "sector": "Oil & Gas",
+      "target_completion_date": "12/2012",
+      "revised_completion_date": "09/2026",
+      "schedule_extension_months": 165.0,
+      "physical_progress": 96.6
+    },
+    {
+      "project_id": "PAI-706779",
+      "project_name": "Mumbai Urban Transport Project [MUTP] - PHASE II",
+      "ministry": "Ministry of Railways",
+      "sector": "Railways",
+      "target_completion_date": "03/2014",
+      "revised_completion_date": "12/2027",
+      "schedule_extension_months": 165.0,
+      "physical_progress": 90.0
+    },
+    {
+      "project_id": "PAI-619086",
+      "project_name": "Chengapalli km 102.035 to Neelambur Km144.680 and Madukkarai Km 170.880 to Walayar K183.010 Package No. NS-2/BOT/TN-08",
+      "ministry": "Ministry of Road Transport & Highways",
+      "sector": "Roads & Highways",
+      "target_completion_date": "03/2013",
+      "revised_completion_date": "10/2026",
+      "schedule_extension_months": 163.0,
+      "physical_progress": 100.0
+    },
+    {
+      "project_id": "PAI-618625",
+      "project_name": "Indore - Gujarat / MP Border from km. Km 9.500 to Km 171.000 of NH-59 in MP",
+      "ministry": "Ministry of Road Transport & Highways",
+      "sector": "Roads & Highways",
+      "target_completion_date": "02/2013",
+      "revised_completion_date": "05/2026",
+      "schedule_extension_months": 159.0,
+      "physical_progress": 99.93
+    },
+    {
+      "project_id": "PAI-619317",
+      "project_name": "4L of Hajipur-Muzaffarpur Section of the existing NH-77 from Km. 0000 Ramashish Chowk to Km. 46300 and new bypass starting at Km. 46300 and connecting NH-28 of E-W Corridor at Km. 515045",
+      "ministry": "Ministry of Road Transport & Highways",
+      "sector": "Roads & Highways",
+      "target_completion_date": "02/2013",
+      "revised_completion_date": "05/2026",
+      "schedule_extension_months": 159.0,
+      "physical_progress": 99.45
+    },
+    {
+      "project_id": "PAI-618904",
+      "project_name": "Chhapra - Hajipur from km. 143.200 to km. 209.200",
+      "ministry": "Ministry of Road Transport & Highways",
+      "sector": "Roads & Highways",
+      "target_completion_date": "07/2013",
+      "revised_completion_date": "04/2026",
+      "schedule_extension_months": 153.0,
+      "physical_progress": 89.81
+    },
+    {
+      "project_id": "PAI-613808",
+      "project_name": "MURAIDIH UG PROJECT",
+      "ministry": "Ministry of Coal",
+      "sector": "Coal",
+      "target_completion_date": "04/2014",
+      "revised_completion_date": "12/2026",
+      "schedule_extension_months": 152.0,
+      "physical_progress": 70.47
+    },
+    {
+      "project_id": "PAI-705432",
+      "project_name": "Sivok-Rangpo New Rail Line",
+      "ministry": "Ministry of Railways",
+      "sector": "Railways",
+      "target_completion_date": "05/2015",
+      "revised_completion_date": "12/2027",
+      "schedule_extension_months": 151.0,
+      "physical_progress": 93.0
+    },
+    {
+      "project_id": "PAI-619320",
+      "project_name": "Muzaffarpur - Sonbarsa Section of NH-77 from km 2.800 to km 89.000",
+      "ministry": "Ministry of Road Transport & Highways",
+      "sector": "Roads & Highways",
+      "target_completion_date": "11/2013",
+      "revised_completion_date": "06/2026",
+      "schedule_extension_months": 151.0,
+      "physical_progress": 100.0
+    },
+    {
+      "project_id": "PAI-619074",
+      "project_name": "6-laning of Krishnagiri Km.0.000 to Walajahpet Km.148.300 section on NH-46 under NHDP-V",
+      "ministry": "Ministry of Road Transport & Highways",
+      "sector": "Roads & Highways",
+      "target_completion_date": "12/2013",
+      "revised_completion_date": "06/2026",
+      "schedule_extension_months": 150.0,
+      "physical_progress": 99.99
+    },
+    {
+      "project_id": "PAI-619070",
+      "project_name": "Tumkur-Chitradurga",
+      "ministry": "Ministry of Road Transport & Highways",
+      "sector": "Roads & Highways",
+      "target_completion_date": "12/2013",
+      "revised_completion_date": "06/2026",
+      "schedule_extension_months": 150.0,
+      "physical_progress": 100.0
+    },
+    {
+      "project_id": "PAI-705494",
+      "project_name": "Rayadurg-Tumkur via Kalyandurg New Line [207 km]",
+      "ministry": "Ministry of Railways",
+      "sector": "Railways",
+      "target_completion_date": "09/2015",
+      "revised_completion_date": "02/2028",
+      "schedule_extension_months": 149.0,
+      "physical_progress": 72.0
+    }
+  ]
+}

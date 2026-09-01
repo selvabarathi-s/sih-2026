@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg-primary: #ffffff;
+    --color-bg-secondary: #f8fafc;
+    --color-bg-card: #ffffff;
+    --color-border: #e2e8f0;
+    --color-text-primary: #0f172a;
+    --color-text-secondary: #475569;
+  }
+
+  .dark {
+    --color-bg-primary: #070d18;
+    --color-bg-secondary: #0f172a;
+    --color-bg-card: #0f172a;
+    --color-border: #334155;
+    --color-text-primary: #f8fafc;
+    --color-text-secondary: #94a3b8;
+  }
+
+  html {
+    background-color: #ffffff;
+    color: #0f172a;
+    /* 120% text size scaling and 90% screen zoom scaling */
+    font-size: 120%;
+    zoom: 0.9;
+  }
+
+  html.dark {
+    background-color: #070d18;
+    color: #f8fafc;
+  }
+
+  body {
+    background-color: #ffffff;
+    color: var(--color-text-primary);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .dark body {
+    background-color: #070d18;
+    color: #f8fafc;
+  }
+}
+
+/* Custom crisp scrollbars for enterprise data tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #0b1324;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #27354f;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;
+}
+
+/* Government institutional badges and indicators */
+.data-table-row {
+  transition: all 0.15s ease-in-out;
+}
+
+.data-table-row:hover {
+  background-color: rgba(241, 245, 249, 0.9);
+}
+
+.dark .data-table-row:hover {
+  background-color: rgba(30, 41, 59, 0.7);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+}
+
+.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+}
+
+.gov-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+}
+
+.dark .gov-card {
+  background: #0f1a2e;
+  border: 1px solid #1e2e4a;
+  border-radius: 0.5rem;
+}

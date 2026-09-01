@@ -1,0 +1,126 @@
+import { ModelPerformanceMetric, VariableImportance } from '../types/prediction';
+
+export const MODEL_PERFORMANCE_METRICS: ModelPerformanceMetric[] = [
+  {
+    model_name: 'Multivariate Logistic / OLS Regression',
+    model_type: 'Statistical Baseline',
+    cost_auc: 0.74,
+    time_auc: 0.71,
+    accuracy: 0.72,
+    precision: 0.68,
+    recall: 0.65,
+    f1_score: 0.66,
+    early_warning_lead_time_months: 2.1,
+    description: 'Standard parametric baseline fitting linear decision boundaries over standardized CUF cost and duration variables.',
+  },
+  {
+    model_name: 'Random Forest Ensemble (100 Trees)',
+    model_type: 'Classical ML',
+    cost_auc: 0.82,
+    time_auc: 0.80,
+    accuracy: 0.81,
+    precision: 0.78,
+    recall: 0.76,
+    f1_score: 0.77,
+    early_warning_lead_time_months: 3.4,
+    description: 'Non-linear bagging ensemble capturing multi-way feature interactions across milestone delays and fund utilization lags.',
+  },
+  {
+    model_name: 'Extreme Gradient Boosting (XGBoost) + SHAP',
+    model_type: 'Gradient Boosting / Ensemble',
+    cost_auc: 0.89,
+    time_auc: 0.87,
+    accuracy: 0.88,
+    precision: 0.85,
+    recall: 0.84,
+    f1_score: 0.84,
+    early_warning_lead_time_months: 4.8,
+    description: 'Optimized tree boosting with regularization, handling non-linear threshold effects, temporal lag features, and missing clearance variables.',
+  },
+];
+
+export const CUF_VS_EXPANDED_COMPARISON = {
+  cuf_only: {
+    name: 'Model A: Standard CUF Fields Only',
+    variables_count: 8,
+    cost_auc: 0.78,
+    time_auc: 0.75,
+    f1_score: 0.71,
+    lead_time_months: 2.3,
+    description: 'Uses only basic OCMS fields: Original/Revised Cost, Expenditure, Physical Progress, Approved Date, Target Date.',
+  },
+  expanded_model: {
+    name: 'Model B: CUF + Operational Risk Variables',
+    variables_count: 22,
+    cost_auc: 0.89,
+    time_auc: 0.87,
+    f1_score: 0.84,
+    lead_time_months: 4.8,
+    description: 'Enriched with Land Acquisition RoW %, Utility Shifting Status, Environmental Clearances, Milestone Slippage Sequence, and Contractor Velocity.',
+  },
+  gain: {
+    cost_auc_gain_pct: '+14.1%',
+    time_auc_gain_pct: '+16.0%',
+    f1_gain_pct: '+18.3%',
+    lead_time_gain_mo: '+2.5 months',
+  },
+};
+
+export const VARIABLE_IMPORTANCE_LIST: VariableImportance[] = [
+  {
+    variable_name: 'Land Acquisition Deficit (Target - Actual %)',
+    category: 'Expanded Risk Variable',
+    importance_score: 94,
+    correlation_with_delay: 0.72,
+    description: 'Leading indicator of critical path civil works stoppage and contractor idling.',
+  },
+  {
+    variable_name: 'Consecutive Milestone Slippage Count',
+    category: 'Expanded Risk Variable',
+    importance_score: 88,
+    correlation_with_delay: 0.68,
+    description: 'Measures momentum loss across sequential intermediate engineering deliverables.',
+  },
+  {
+    variable_name: 'Physical vs Financial Progress Trajectory Gap',
+    category: 'CUF Standard',
+    importance_score: 81,
+    correlation_with_delay: 0.59,
+    description: 'Discrepancy between reported physical progress and actual capital disbursement.',
+  },
+  {
+    variable_name: 'Utility Shifting & Transmission Line Relocation Status',
+    category: 'Expanded Risk Variable',
+    importance_score: 76,
+    correlation_with_delay: 0.54,
+    description: 'External inter-agency dependencies blocking superstructure construction.',
+  },
+  {
+    variable_name: 'Historical Cost Revision Multiplier (Revised / Original)',
+    category: 'CUF Standard',
+    importance_score: 72,
+    correlation_with_delay: 0.48,
+    description: 'Past escalation frequency indicating structural scope changes.',
+  },
+  {
+    variable_name: 'Statutory Environmental & Forest Clearance Lag',
+    category: 'Expanded Risk Variable',
+    importance_score: 69,
+    correlation_with_delay: 0.51,
+    description: 'Regulatory approval hold-ups affecting reserve forest and riverbed crossings.',
+  },
+  {
+    variable_name: 'Contractor Labour Mobilization Deficit',
+    category: 'Expanded Risk Variable',
+    importance_score: 63,
+    correlation_with_delay: 0.44,
+    description: 'Daily peak-to-actual workforce deployment ratio on site.',
+  },
+  {
+    variable_name: 'Planned Project Duration (Months)',
+    category: 'CUF Standard',
+    importance_score: 51,
+    correlation_with_delay: 0.32,
+    description: 'Scale complexity proxy — longer gestation periods experience higher volatility.',
+  },
+];
