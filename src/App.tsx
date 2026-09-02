@@ -16,32 +16,35 @@ import { SettingsPage } from './pages/SettingsPage';
 
 import { ThemeProvider } from './context/ThemeContext';
 import { DatasetModeProvider } from './context/DatasetModeContext';
+import { AuthProvider } from './context/AuthContext';
 
 export function App() {
   return (
     <ThemeProvider>
       <DatasetModeProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<AppLayout />}>
-              <Route index element={<OverviewPage />} />
-              <Route path="overview" element={<Navigate to="/" replace />} />
-              <Route path="projects" element={<ProjectsPage />} />
-              <Route path="projects/:id" element={<ProjectDetailPage />} />
-              <Route path="risk-intelligence" element={<RiskIntelligencePage />} />
-              <Route path="early-warnings" element={<EarlyWarningsPage />} />
-              <Route path="risk-network" element={<RiskNetworkPage />} />
-              <Route path="predictions" element={<PredictionsPage />} />
-              <Route path="benchmarking" element={<BenchmarkingPage />} />
-              <Route path="analytics" element={<AnalyticsPage />} />
-              <Route path="assistant" element={<AssistantPage />} />
-              <Route path="data-health" element={<DataHealthPage />} />
-              <Route path="settings" element={<SettingsPage />} />
-              {/* Catch-all route redirects to overview */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<AppLayout />}>
+                <Route index element={<OverviewPage />} />
+                <Route path="overview" element={<Navigate to="/" replace />} />
+                <Route path="projects" element={<ProjectsPage />} />
+                <Route path="projects/:id" element={<ProjectDetailPage />} />
+                <Route path="risk-intelligence" element={<RiskIntelligencePage />} />
+                <Route path="early-warnings" element={<EarlyWarningsPage />} />
+                <Route path="risk-network" element={<RiskNetworkPage />} />
+                <Route path="predictions" element={<PredictionsPage />} />
+                <Route path="benchmarking" element={<BenchmarkingPage />} />
+                <Route path="analytics" element={<AnalyticsPage />} />
+                <Route path="assistant" element={<AssistantPage />} />
+                <Route path="data-health" element={<DataHealthPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+                {/* Catch-all route redirects to overview */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
       </DatasetModeProvider>
     </ThemeProvider>
   );

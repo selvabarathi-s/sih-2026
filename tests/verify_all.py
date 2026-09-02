@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-PAIMANA PREDICT: UNIFIED COMPREHENSIVE TEST SUITE
-Runs Ingestion, Dataset Modes, Theme System, ML Benchmarks, and Auth/RBAC State Machines.
+PAIMANA PREDICT: MASTER UNIFIED COMPREHENSIVE TEST SUITE
+Runs Ingestion, Dataset Modes, Theme System, ML Benchmarks, Auth/RBAC State Machines, and Database Persistence & REST API Suite.
 """
 
 import json
@@ -69,9 +69,14 @@ def run_all_tests():
     print("\n--- Running Auth, RBAC & State Machine Suite ---")
     ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_auth_rbac.py')])
     assert ret.returncode == 0, "Auth & RBAC tests failed!"
+
+    # 6. Database Persistence & REST API Suite
+    print("\n--- Running Database Persistence & REST API Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_database_api.py')])
+    assert ret.returncode == 0, "Database API tests failed!"
     
     print("\n==================================================")
-    print("ALL TEST SUITES COMPLETED AND PASSED (100% SUCCESS)!")
+    print("ALL 6 MASTER TEST SUITES COMPLETED AND PASSED (100% SUCCESS)!")
     print("==================================================")
 
 if __name__ == '__main__':

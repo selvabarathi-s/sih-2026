@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { config } from '../config/index.js';
+import { dbAdapter } from '../database/dbAdapter.js';
 
 class ProjectRepository {
   constructor() {
@@ -36,8 +37,10 @@ class ProjectRepository {
       state,
       costEscalatedOnly,
       scheduleExtendedOnly,
-      limit = 50,
-      offset = 0,
+      page = 1,
+      pageSize = 20,
+      limit,
+      offset,
       sortBy = 'revised_cost',
       sortOrder = 'desc',
     } = options;
@@ -77,6 +80,12 @@ class ProjectRepository {
 
     const total = results.length;
 
+    // Calculate pagination parameters
+    const finalLimit = limit ? Number(limit) : Number(pageSize);
+    const finalOffset = offset !== undefined ? Number(offset) : (Number(page) - 1) * finalLimit;
+    const finalPage = offset !== undefined ? Math.floor(finalOffset / finalLimit) + 1 : Number(page);
+    const totalPages = Math.ceil(total / finalLimit) || 1;
+
     // Sort
     results.sort((a, b) => {
       const aVal = a[sortBy] ?? 0;
@@ -87,22 +96,24 @@ class ProjectRepository {
       return sortOrder === 'asc' ? Number(aVal) - Number(bVal) : Number(bVal) - Number(aVal);
     });
 
-    const paginated = results.slice(Number(offset), Number(offset) + Number(limit));
+    const paginated = results.slice(finalOffset, finalOffset + finalLimit);
 
     return {
       data: paginated,
-      pagination: {
+      meta: {
         total,
-        limit: Number(limit),
-        offset: Number(offset),
-        hasMore: Number(offset) + Number(limit) < total,
+        page: finalPage,
+        pageSize: finalLimit,
+        totalPages,
+        hasMore: finalOffset + finalLimit < total,
       },
+      error: null,
     };
   }
 
   async findById(id) {
     if (!this.projectsCache) this.loadData();
-    const cleanId = id.trim();
+    const cleanId = (id || '').trim();
     return (this.projectsCache || []).find(
       p =>
         p.project_id.toLowerCase() === cleanId.toLowerCase() ||
