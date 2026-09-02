@@ -10,28 +10,117 @@ import {
   ActivitySquare,
   Settings,
   Flame,
-  Database,
   KeyRound,
-  ShieldCheck,
+  Network,
+  Award,
+  TrendingUp,
+  Cpu,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { ROLE_DISPLAY_NAMES } from '../../types/auth';
 
 export const Sidebar: React.FC = () => {
   const { user, currentRole } = useAuth();
 
-  const primaryNav = [
-    { name: 'Portfolio Overview', path: '/', icon: LayoutDashboard },
-    { name: 'Projects Directory (1,981)', path: '/projects', icon: FolderKanban },
-    { name: 'Deterioration Signals', path: '/early-warnings', icon: BellRing, badge: '20+' },
-    { name: 'Sector Analytics', path: '/predictions', icon: BarChart3 },
-    { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
-  ];
+  const roleMeta = ROLE_DISPLAY_NAMES[currentRole] || {
+    title: currentRole,
+    workspace: 'General Workspace',
+  };
 
-  const secondaryNav = [
-    { name: 'Role Workspaces (5 Logins)', path: '/login', icon: KeyRound },
-    { name: 'Ingestion & Data Health', path: '/data-health', icon: ActivitySquare },
-    { name: 'Settings & Audit Trail', path: '/settings', icon: Settings },
-  ];
+  const roleClean = (currentRole || '').toLowerCase().replace(/_/g, '');
+
+  // Dynamic Navigation Configuration tailored to each role
+  const getNavItems = () => {
+    if (roleClean.includes('monitoring')) {
+      return {
+        primary: [
+          { name: 'Portfolio Surveillance', path: '/', icon: LayoutDashboard },
+          { name: 'Projects Directory (1,981)', path: '/projects', icon: FolderKanban },
+          { name: 'Deterioration Signals', path: '/early-warnings', icon: BellRing, badge: '20+' },
+          { name: 'Risk Network Topology', path: '/risk-network', icon: Network },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [
+          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
+        ],
+      };
+    }
+
+    if (roleClean.includes('project') || roleClean.includes('nodal')) {
+      return {
+        primary: [
+          { name: 'My Assigned Projects', path: '/', icon: LayoutDashboard },
+          { name: 'All Projects (Read-Only)', path: '/projects', icon: FolderKanban },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [
+          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
+        ],
+      };
+    }
+
+    if (roleClean.includes('system') || roleClean.includes('sysadmin')) {
+      return {
+        primary: [
+          { name: 'System Overview', path: '/', icon: LayoutDashboard },
+          { name: 'Projects Directory (1,981)', path: '/projects', icon: FolderKanban },
+          { name: 'Data Health & Ingestion', path: '/data-health', icon: ActivitySquare },
+          { name: 'Admin & Audit Trail', path: '/settings', icon: Settings },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [
+          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
+        ],
+      };
+    }
+
+    if (roleClean.includes('analyst') || roleClean.includes('data')) {
+      return {
+        primary: [
+          { name: 'Analytics Dashboard', path: '/', icon: LayoutDashboard },
+          { name: 'ML Model Registry', path: '/predictions', icon: Cpu },
+          { name: 'Sector Benchmarks', path: '/benchmarking', icon: BarChart3 },
+          { name: 'Macro Analytics', path: '/analytics', icon: TrendingUp },
+          { name: 'Risk Propagation', path: '/risk-network', icon: Network },
+          { name: 'Data Health Checks', path: '/data-health', icon: ActivitySquare },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [
+          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
+        ],
+      };
+    }
+
+    if (roleClean.includes('decision') || roleClean.includes('secretary')) {
+      return {
+        primary: [
+          { name: 'Executive Portfolio Brief', path: '/risk-intelligence', icon: Award },
+          { name: 'National Overview', path: '/', icon: LayoutDashboard },
+          { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
+          { name: 'Sector Benchmarking', path: '/benchmarking', icon: BarChart3 },
+          { name: 'Portfolio Analytics', path: '/analytics', icon: TrendingUp },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [
+          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
+        ],
+      };
+    }
+
+    // Default fallback
+    return {
+      primary: [
+        { name: 'Portfolio Overview', path: '/', icon: LayoutDashboard },
+        { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
+        { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+      ],
+      secondary: [
+        { name: 'Role Workspaces', path: '/login', icon: KeyRound },
+      ],
+    };
+  };
+
+  const nav = getNavItems();
 
   return (
     <aside className="w-64 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800/80 flex flex-col h-screen select-none shrink-0 sticky top-0 transition-colors duration-200">
@@ -51,21 +140,26 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* Hero Badge Tagline */}
-      <div className="px-4 py-2 bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800/40">
-        <p className="text-[11px] font-medium text-slate-600 dark:text-slate-400 flex items-center justify-between">
-          <span>April 2026 Baseline</span>
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Telemetry Status: Online" />
+      {/* Role Workspace Banner */}
+      <div className="px-4 py-2.5 bg-blue-50/70 dark:bg-blue-950/40 border-b border-blue-100 dark:border-blue-900/50">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-mono uppercase font-bold text-blue-800 dark:text-blue-300">
+            {roleMeta.title}
+          </span>
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Session: Active" />
+        </div>
+        <p className="text-[10px] font-medium text-blue-600 dark:text-blue-400 truncate mt-0.5">
+          {roleMeta.workspace}
         </p>
       </div>
 
       {/* Navigation Links */}
       <nav className="flex-1 overflow-y-auto p-3 space-y-1">
         <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 py-1.5 font-mono">
-          Monitoring Modules
+          Authorized Modules
         </div>
 
-        {primaryNav.map(item => {
+        {nav.primary.map(item => {
           const Icon = item.icon;
           return (
             <NavLink
@@ -93,10 +187,10 @@ export const Sidebar: React.FC = () => {
         })}
 
         <div className="pt-4 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 py-1.5 font-mono">
-          Governance & Workspaces
+          Account & Portal
         </div>
 
-        {secondaryNav.map(item => {
+        {nav.secondary.map(item => {
           const Icon = item.icon;
           return (
             <NavLink
@@ -117,14 +211,14 @@ export const Sidebar: React.FC = () => {
         })}
       </nav>
 
-      {/* PAIMANA Report Source Footer */}
+      {/* Footer */}
       <div className="p-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400">
         <div className="flex items-center justify-between mb-1">
-          <span className="font-semibold text-slate-700 dark:text-slate-300">MoSPI Flash Report</span>
-          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">Apr-2026</span>
+          <span className="font-semibold text-slate-700 dark:text-slate-300 font-mono text-[10px]">{user?.fullName || 'User'}</span>
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">RBAC Active</span>
         </div>
-        <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight font-mono">
-          1,981 Ongoing Projects (≥ ₹150 Cr)
+        <p className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
+          {user?.department || 'MoSPI National Cell'}
         </p>
       </div>
     </aside>

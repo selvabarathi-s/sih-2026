@@ -1,12 +1,11 @@
 import express from 'express';
 import { getAuditLogs, createAuditLog } from '../../controllers/auditController.js';
-import { requireAuth, requirePermission } from '../../middleware/rbac.js';
-import { PERMISSIONS } from '../../models/userModel.js';
+import { authenticate, requireAuth, requireRole } from '../../middleware/rbac.js';
 
 const router = express.Router();
 
-// System Admins and authorized roles can inspect audit logs
-router.get('/', requireAuth, requirePermission(PERMISSIONS.INSPECT_AUDIT), getAuditLogs);
-router.post('/log', requireAuth, createAuditLog);
+// Audit logs inspection is strictly restricted to System Administrator
+router.get('/', authenticate, requireAuth, requireRole('system_admin'), getAuditLogs);
+router.post('/log', authenticate, requireAuth, createAuditLog);
 
 export default router;

@@ -97,7 +97,7 @@ def run_database_api_tests():
         assert status == 200, f"Officer login failed: {status}"
         officer_token = auth_res.get("token")
         assert officer_token, "No token returned for officer"
-        assert auth_res.get("user", {}).get("role") == "MONITORING_OFFICER", "Officer role incorrect"
+        assert auth_res.get("user", {}).get("role") in ["MONITORING_OFFICER", "monitoring_officer"], "Officer role incorrect"
         print(f"PASS: /api/v1/auth/login verified for Monitoring Officer ({auth_res['user']['fullName']})")
 
         # Test 4: Authentication (Project Admin / Nodal Login)

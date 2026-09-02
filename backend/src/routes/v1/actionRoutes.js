@@ -1,12 +1,15 @@
 import express from 'express';
 import { listActions, assignAction, updateActionStatus } from '../../controllers/actionController.js';
-import { authenticate, requireAnyPermission, requirePermission } from '../../middleware/rbac.js';
-import { PERMISSIONS } from '../../models/userModel.js';
+import { authenticate, requireAuth, requireRole, requireAnyRole } from '../../middleware/rbac.js';
 
 const router = express.Router();
 
 router.get('/', authenticate, listActions);
-router.post('/assign', authenticate, requirePermission(PERMISSIONS.ASSIGN_INTERVENTIONS), assignAction);
-router.patch('/:id/status', authenticate, requireAnyPermission(PERMISSIONS.UPDATE_ACTIONS, PERMISSIONS.ASSIGN_INTERVENTIONS, PERMISSIONS.MONITOR_ACTIONS), updateActionStatus);
+
+// Assigning intervention is strictly permitted ONLY to Monitoring Officer
+router.post('/assign', authenticate, requireAuth, requireRole('monitoring_officer'), assignAction);
+
+// Updating intervention status is restricted to Project Admin and Monitoring Officer
+router.patch('/:id/status', authenticate, requireAuth, requireRole('monitoring_officer', 'project_admin'), updateActionStatus);
 
 export default router;
