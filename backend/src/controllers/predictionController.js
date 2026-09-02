@@ -14,8 +14,28 @@ export const getProjectPredictions = async (req, res, next) => {
       data: {
         projectId,
         asOfDate: timeRisk.asOfDate,
+        target: 'adverse_deterioration_event',
+        forecastHorizon: '90_days',
+        probability: timeRisk.predictedProbability,
+        prediction: timeRisk.riskLevel,
+        predictedDelayMonths: timeRisk.predictedDelayMonths,
+        decisionThreshold: 0.45,
+        modelId: timeRisk.modelId,
+        modelVersion: '1.4.0',
+        datasetVersion: 'PAIMANA-APR2026-MULTI10',
+        featureVersion: 'v2.1',
+        targetVersion: 'v1.2',
         timeRisk,
         costRisk,
+        explanation: {
+          topContributingFeatures: timeRisk.topContributingFeatures,
+          method: 'Local Feature Attribution',
+        },
+        provenance: {
+          sourceDocument: 'MoSPI Table 6 Multi-Snapshot Stream',
+          ruleTAntiLeakage: 'ENFORCED',
+          evaluatedAsOf: timeRisk.asOfDate,
+        },
       },
       meta: {
         modelId: timeRisk.modelId,

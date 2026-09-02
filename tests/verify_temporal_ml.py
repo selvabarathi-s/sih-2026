@@ -59,7 +59,7 @@ def run_tests():
     with open(model_artifact, "r", encoding="utf-8") as f:
         model_data = json.load(f)
 
-    metrics = model_data.get("metrics", {})
+    metrics = model_data.get("classification_metrics") or model_data.get("metrics", {})
     assert metrics.get("roc_auc", 0) >= 0.85, f"ROC-AUC too low: {metrics.get('roc_auc')}"
     assert metrics.get("baseline_lr_auc", 0) >= 0.70, f"Baseline LR AUC too low"
     print(f"TEST 2: Model Performance Metrics Verified (GBM AUC = {metrics.get('roc_auc')}, Baseline LR = {metrics.get('baseline_lr_auc')}) -> PASS")

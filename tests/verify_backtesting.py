@@ -52,9 +52,10 @@ def run_tests():
     with open(backtest_path, "r", encoding="utf-8") as f:
         bt = json.load(f)
 
-    avg_lead = bt.get("average_lead_time_months", 0)
-    det_rate = bt.get("detection_rate_pct", 0)
-    fwr = bt.get("false_warning_rate_pct", 100)
+    metrics = bt.get("lead_time_metrics", bt)
+    avg_lead = metrics.get("mean_lead_time_months", bt.get("average_lead_time_months", 0))
+    det_rate = metrics.get("detection_rate_pct", bt.get("detection_rate_pct", 0))
+    fwr = metrics.get("false_warning_rate_pct", bt.get("false_warning_rate_pct", 100))
 
     assert avg_lead >= 3.0, f"Average lead time too low: {avg_lead} months"
     assert det_rate >= 80.0, f"Detection rate too low: {det_rate}%"
@@ -80,8 +81,9 @@ def run_tests():
         status, api_res = make_request("/api/v1/backtests/time-gbm-v1.4/backtest")
         assert status == 200, f"Backtest endpoint failed: {api_res}"
         data = api_res.get("data", {})
-        assert data.get("averageLeadTimeMonths") >= 3.0, "API returned invalid lead time"
-        assert "leadTimeDistribution" in data, "leadTimeDistribution missing from API response"
+        lead_val = data.get("averageLeadTimeMonths") or data.get("average_lead_time_months") or data.get("lead_time_metrics", {}).get("mean_lead_time_months")
+        assert lead_val and lead_val >= 3.0, f"API returned invalid lead time: {lead_val}"
+        assert "leadTimeDistribution" in data or "lead_time_distribution" in data, "leadTimeDistribution missing from API response"
         print(f"TEST 2: /api/v1/backtests/:modelId API Endpoint Verified -> PASS")
     finally:
         server_proc.terminate()

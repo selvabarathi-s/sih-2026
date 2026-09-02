@@ -35,6 +35,40 @@ export const getModelDetail = async (req, res, next) => {
   }
 };
 
+export const getModelCard = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const card = await modelRegistryService.getModelCard(id);
+    if (!card) {
+      return res.status(404).json({
+        data: null,
+        meta: null,
+        error: { code: 'MODEL_CARD_NOT_FOUND', message: `Model card for ${id} not found.` },
+      });
+    }
+    res.status(200).json({
+      data: card,
+      meta: { modelId: id },
+      error: null,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getDriftReport = async (req, res, next) => {
+  try {
+    const report = await modelRegistryService.getDriftReport();
+    res.status(200).json({
+      data: report,
+      meta: { status: 'ACTIVE' },
+      error: null,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const getBacktest = async (req, res, next) => {
   try {
     const { modelId } = req.params;

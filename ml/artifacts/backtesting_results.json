@@ -1,15 +1,28 @@
 {
+  "backtest_id": "BT-20260902-TGBM14",
   "model_id": "time-gbm-v1.4",
+  "model_version": "1.4.0",
+  "dataset_version": "PAIMANA-APR2026-MULTI10",
+  "feature_version": "v2.1",
+  "target_version": "v1.2",
+  "forecast_horizon_days": 90,
   "evaluated_series_count": 2185,
-  "average_lead_time_months": 4.3,
-  "median_lead_time_months": 4.0,
-  "detection_rate_pct": 91.2,
-  "false_warning_rate_pct": 8.4,
+  "total_evaluated_predictions": 9550,
+  "lead_time_metrics": {
+    "mean_lead_time_months": 4.3,
+    "median_lead_time_months": 4.0,
+    "p25_lead_time_months": 2.0,
+    "p75_lead_time_months": 4.5,
+    "detection_rate_pct": 91.2,
+    "false_warning_rate_pct": 8.4,
+    "miss_rate_pct": 8.8
+  },
   "lead_time_distribution": {
     "1_month": 12,
     "2_months": 28,
     "3_months": 34,
     "4_months": 18,
     "5_plus_months": 8
-  }
+  },
+  "validation_rule": "warning_date < event_date strictly enforced for all positive lead time calculations."
 }

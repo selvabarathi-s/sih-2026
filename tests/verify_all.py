@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 PAIMANA PREDICT: UNIFIED COMPREHENSIVE PRODUCTION VERIFICATION SUITE
-Runs Ingestion, Dataset Modes, Theme System, ML Benchmarks, Auth/RBAC, Database Persistence, Stage 3 Workflows, Temporal ML, Backtesting, and Weak Signals.
+Runs all 15 test suites covering Ingestion, Governance, Multi-Role Workflows, Temporal ML, Anti-Leakage, Calibration, and Anomaly Integrity.
 """
 
 import json
@@ -14,7 +14,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 def run_all_tests():
     print("==================================================")
-    print("PAIMANA PREDICT: UNIFIED COMPREHENSIVE PRODUCTION VERIFICATION SUITE")
+    print("PAIMANA PREDICT: UNIFIED COMPREHENSIVE PRODUCTION VERIFICATION SUITE (15 SUITES)")
     print("==================================================")
     
     # 1. Core ML Model Metrics & Benchmarks
@@ -97,9 +97,34 @@ def run_all_tests():
     print("\n--- Running Stage 4 Weak Signals & Anomaly Suite ---")
     ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_weak_signals.py')])
     assert ret.returncode == 0, "Weak Signals tests failed!"
+
+    # 11. Stage 5 ML Governance & Model Cards Suite
+    print("\n--- Running Stage 5 ML Governance & Model Cards Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_ml_governance.py')])
+    assert ret.returncode == 0, "ML Governance tests failed!"
+
+    # 12. Stage 5 Temporal Labels & Horizon Suite
+    print("\n--- Running Stage 5 Temporal Labels & Horizon Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_temporal_labels.py')])
+    assert ret.returncode == 0, "Temporal Labels tests failed!"
+
+    # 13. Stage 5 Probability Calibration & Thresholds Suite
+    print("\n--- Running Stage 5 Probability Calibration & Thresholds Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_calibration.py')])
+    assert ret.returncode == 0, "Calibration tests failed!"
+
+    # 14. Stage 5 Anomaly Methodology & Integrity Suite
+    print("\n--- Running Stage 5 Anomaly Methodology & Integrity Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_anomaly_methodology.py')])
+    assert ret.returncode == 0, "Anomaly Methodology tests failed!"
+
+    # 15. Stage 5 Backtest Lineage & Percentiles Suite
+    print("\n--- Running Stage 5 Backtest Lineage & Percentiles Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_backtest_reproducibility.py')])
+    assert ret.returncode == 0, "Backtest Reproducibility tests failed!"
     
     print("\n==================================================")
-    print("ALL 10 VERIFICATION SUITES COMPLETED AND PASSED (100% SUCCESS)!")
+    print("ALL 15 COMPREHENSIVE VERIFICATION SUITES COMPLETED AND PASSED (100% SUCCESS)!")
     print("==================================================")
 
 if __name__ == '__main__':
