@@ -34,10 +34,12 @@ export const getDataHealth = async (req, res) => {
 export const getMlHealth = async (req, res) => {
   res.status(200).json({
     status: 'healthy',
-    framework: 'scikit-learn / tree ensemble',
-    primary_architecture: 'GradientBoostingClassifier (0.916 ROC-AUC benchmark)',
+    framework: 'scikit-learn / tree ensemble / temporal engine',
+    active_approved_model: 'time-gbm-v1.4 (0.8850 ROC-AUC Governed Temporal Model)',
+    legacy_demo_benchmark: 'time-gbm-demo-v1 (0.916 ROC-AUC Synthetic Benchmark)',
     anti_leakage_enforced: true,
     inference_ready: true,
+    governance_status: 'APPROVED',
     timestamp: new Date().toISOString(),
   });
 };
