@@ -20,8 +20,23 @@ export const getProjectRiskScore = async (req, res, next) => {
 
 export const getPortfolioRisk = async (req, res, next) => {
   try {
-    // If pagination or filtering query params are passed, return ranked portfolio list
-    if (req.query.page || req.query.sort || req.query.minRisk || req.query.maxRisk || req.query.riskBand || req.query.sector) {
+    // If pagination, ranking or filtering query params are passed, return ranked portfolio list
+    const hasRankParams = (
+      req.query.page !== undefined ||
+      req.query.pageSize !== undefined ||
+      req.query.limit !== undefined ||
+      req.query.sort !== undefined ||
+      req.query.order !== undefined ||
+      req.query.minRisk !== undefined ||
+      req.query.maxRisk !== undefined ||
+      req.query.riskBand !== undefined ||
+      req.query.sector !== undefined ||
+      req.query.ministry !== undefined ||
+      req.query.state !== undefined ||
+      req.query.search !== undefined
+    );
+
+    if (hasRankParams) {
       const ranked = await riskService.getRankedPortfolio(req.query);
       return res.status(200).json({
         data: ranked,
