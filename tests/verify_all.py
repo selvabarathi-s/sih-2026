@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-PAIMANA PREDICT: MASTER UNIFIED COMPREHENSIVE TEST SUITE
-Runs Ingestion, Dataset Modes, Theme System, ML Benchmarks, Auth/RBAC State Machines, and Database Persistence & REST API Suite.
+PAIMANA PREDICT: MASTER MASTER MASTER MASTER MASTER MASTER TEST SUITE
+Runs Ingestion, Dataset Modes, Theme System, ML Benchmarks, Auth/RBAC, Database Persistence, and Full Stage 3 Multi-Role Workflows.
 """
 
 import json
@@ -11,7 +11,7 @@ import subprocess
 
 def run_all_tests():
     print("==================================================")
-    print("PAIMANA PREDICT: MASTER TEST SUITE")
+    print("PAIMANA PREDICT: MASTER MASTER MASTER MASTER MASTER TEST SUITE")
     print("==================================================")
     
     # 1. Core ML Model Metrics & Benchmarks
@@ -74,9 +74,14 @@ def run_all_tests():
     print("\n--- Running Database Persistence & REST API Suite ---")
     ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_database_api.py')])
     assert ret.returncode == 0, "Database API tests failed!"
+
+    # 7. Stage 3 Full Dynamic Multi-Role Workflows Suite
+    print("\n--- Running Stage 3 Multi-Role Workflows Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_stage3_workflows.py')])
+    assert ret.returncode == 0, "Stage 3 Workflows tests failed!"
     
     print("\n==================================================")
-    print("ALL 6 MASTER TEST SUITES COMPLETED AND PASSED (100% SUCCESS)!")
+    print("ALL 7 MASTER MASTER MASTER TEST SUITES COMPLETED AND PASSED (100% SUCCESS)!")
     print("==================================================")
 
 if __name__ == '__main__':

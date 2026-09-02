@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { assistantApi } from '../api/assistant';
 import { groundedAssistantService, GroundedAssistantResponse } from '../services/groundedAssistantService';
 import {
   BotMessageSquare,
@@ -9,6 +10,7 @@ import {
   ArrowRight,
   RotateCcw,
   Database,
+  ExternalLink,
 } from 'lucide-react';
 
 export const AssistantPage: React.FC = () => {
@@ -49,7 +51,7 @@ I am your **Grounded Infrastructure Assistant**, linked directly to the **1,981 
     scrollToBottom();
   }, [messages, isProcessing]);
 
-  const handleSend = (textToSend?: string) => {
+  const handleSend = async (textToSend?: string) => {
     const q = textToSend || inputQuery;
     if (!q.trim() || isProcessing) return;
 
@@ -64,11 +66,31 @@ I am your **Grounded Infrastructure Assistant**, linked directly to the **1,981 
     setInputQuery('');
     setIsProcessing(true);
 
+    try {
+      // 1. Try backend API query
+      const apiRes = await assistantApi.query(q, 'REAL_PAIMANA');
+      if (apiRes.data?.answer) {
+        const botMsg: GroundedAssistantResponse = {
+          id: `bot-${Date.now()}`,
+          sender: 'assistant',
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          content: apiRes.data.answer,
+          evidence: apiRes.data.evidence as any,
+        };
+        setMessages(prev => [...prev, botMsg]);
+        setIsProcessing(false);
+        return;
+      }
+    } catch (err) {
+      console.warn('Backend assistant query failed, using local grounding:', err);
+    }
+
+    // 2. Fallback to local grounding engine
     setTimeout(() => {
       const response = groundedAssistantService.processQuery(q);
       setMessages(prev => [...prev, response]);
       setIsProcessing(false);
-    }, 300);
+    }, 200);
   };
 
   return (
@@ -81,120 +103,96 @@ I am your **Grounded Infrastructure Assistant**, linked directly to the **1,981 
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
+              <h1 className="text-base font-bold text-slate-900 dark:text-white">
                 PAIMANA Grounded Intelligence Assistant
               </h1>
-              <span className="text-[10px] font-mono px-2 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
-                <Database className="w-2.5 h-2.5" />
-                <span>1,981 REAL PAIMANA PROJECTS</span>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-semibold flex items-center gap-1">
+                <Database className="w-3 h-3" />
+                <span>REAL PAIMANA MODE (1,981 Projects)</span>
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Zero hallucination • Directly grounded in 1,981 authentic Table 6 project records and 10 monthly snapshots.
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Zero hallucination • Grounded in 1,981 authentic Table 6 project records.
             </p>
           </div>
         </div>
 
         <button
           onClick={() => setMessages([getInitialMessage()])}
-          className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-50 dark:bg-slate-950 rounded border border-slate-200 dark:border-slate-800 text-xs flex items-center gap-1 transition"
-          title="Reset Conversation"
+          className="p-1.5 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white border border-slate-200 dark:border-slate-800 rounded hover:bg-slate-50 dark:hover:bg-slate-800 transition text-xs flex items-center gap-1 font-medium"
         >
           <RotateCcw className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Reset</span>
+          <span>Reset</span>
         </button>
       </div>
 
-      {/* Chat Messages Scrollable Canvas */}
-      <div className="flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-4 overflow-y-auto space-y-4 shadow-inner">
+      {/* Messages Feed */}
+      <div className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-4 overflow-y-auto space-y-4 shadow-sm">
         {messages.map(msg => (
           <div
             key={msg.id}
-            className={`flex items-start gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+            className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             {msg.sender === 'assistant' && (
-              <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 mt-1 shadow-md">
+              <div className="w-7 h-7 rounded bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
                 <BotMessageSquare className="w-4 h-4" />
               </div>
             )}
 
             <div
-              className={`max-w-[85%] rounded-xl p-4 text-xs space-y-3 leading-relaxed shadow-sm ${
+              className={`max-w-2xl rounded-lg p-4 text-xs ${
                 msg.sender === 'user'
-                  ? 'bg-blue-600 text-white rounded-tr-none'
-                  : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-tl-none'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 shadow-sm'
               }`}
             >
-              <div className="flex items-center justify-between text-[10px] opacity-70 pb-1 border-b border-black/10 dark:border-white/10">
-                <span className="font-semibold">{msg.sender === 'user' ? 'You' : 'PAIMANA Copilot'}</span>
-                <span>{msg.timestamp}</span>
+              <div className="flex items-center justify-between gap-4 mb-2 pb-1.5 border-b border-slate-200/50 dark:border-slate-800/80">
+                <span className="font-semibold text-[11px] font-mono opacity-90">
+                  {msg.sender === 'user' ? 'You' : 'PAIMANA Copilot'}
+                </span>
+                <span className="text-[10px] font-mono opacity-70">{msg.timestamp}</span>
               </div>
 
-              {/* Message Markdown-like Content */}
-              <div className="space-y-2 whitespace-pre-line leading-relaxed font-sans">
-                {msg.content}
-              </div>
+              <div className="whitespace-pre-line leading-relaxed font-sans">{msg.content}</div>
 
-              {/* Grounded Evidence Card */}
-              {msg.evidence && (
-                <div className="mt-3 p-3 bg-slate-50 dark:bg-slate-950/80 rounded-lg border border-slate-200 dark:border-slate-800 space-y-2 text-[11px] font-mono">
-                  <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 font-bold uppercase text-[10px]">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>Grounded Evidence Matrix</span>
-                  </div>
-
-                  {msg.evidence.metrics && (
-                    <div className="grid grid-cols-2 gap-2 pt-1">
-                      {Object.entries(msg.evidence.metrics).map(([k, v]) => (
-                        <div key={k} className="p-1.5 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800">
-                          <span className="text-slate-400 text-[9px] block uppercase">{k}</span>
-                          <span className="text-slate-900 dark:text-white font-bold">{v}</span>
-                        </div>
-                      ))}
+              {/* Evidence and Project Links */}
+              {Array.isArray(msg.evidence) && msg.evidence.length > 0 && (
+                <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-800 space-y-1.5">
+                  <span className="text-[10px] font-mono uppercase font-bold text-slate-400 block">
+                    Grounded Project Telemetry Evidence:
+                  </span>
+                  {(msg.evidence as any[]).map((ev: any, idx: number) => (
+                    <div
+                      key={idx}
+                      className="flex items-center justify-between p-2 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800 text-[11px]"
+                    >
+                      <span className="font-semibold">{ev.project_name || ev.projectId} ({ev.project_id || ev.projectId})</span>
+                      <button
+                        onClick={() => navigate(`/projects/${ev.project_id || ev.projectId}`)}
+                        className="text-blue-600 hover:text-blue-500 flex items-center gap-1 font-semibold"
+                      >
+                        <span>View Project</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </button>
                     </div>
-                  )}
-
-                  {msg.evidence.dataSource && (
-                    <div className="text-[10px] text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-200 dark:border-slate-800 font-sans">
-                      Source: <strong>{msg.evidence.dataSource}</strong>
-                    </div>
-                  )}
+                  ))}
                 </div>
               )}
 
-              {/* Navigation Action Button */}
-              {msg.navigationAction && (
-                <button
-                  onClick={() => {
-                    if (msg.navigationAction?.type === 'PROJECT' && msg.navigationAction.targetId) {
-                      navigate(`/projects/${msg.navigationAction.targetId}`);
-                    } else if (msg.navigationAction?.type === 'PREDICTIONS') {
-                      navigate('/predictions');
-                    } else if (msg.navigationAction?.type === 'HEALTH') {
-                      navigate('/data-health');
-                    }
-                  }}
-                  className="w-full mt-2 py-2 px-3 bg-blue-50 dark:bg-blue-950 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-semibold rounded-md border border-blue-200 dark:border-blue-800 flex items-center justify-between transition"
-                >
-                  <span>{msg.navigationAction.label}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              )}
-
-              {/* Suggested Follow-up Questions */}
+              {/* Suggested Questions */}
               {msg.suggestedQuestions && msg.suggestedQuestions.length > 0 && (
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block font-mono">
+                <div className="mt-4 pt-3 border-t border-slate-200/60 dark:border-slate-800/80">
+                  <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 font-mono">
                     Suggested Next Inquiries
-                  </span>
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
-                    {msg.suggestedQuestions.map((sq, idx) => (
+                    {msg.suggestedQuestions.map((q, idx) => (
                       <button
                         key={idx}
-                        onClick={() => handleSend(sq)}
-                        className="text-left px-2.5 py-1 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded text-[11px] text-slate-700 dark:text-slate-200 transition font-medium"
+                        onClick={() => handleSend(q)}
+                        className="text-left px-2.5 py-1 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-500 text-[11px] text-slate-700 dark:text-slate-300 font-medium transition"
                       >
-                        "{sq}"
+                        "{q}"
                       </button>
                     ))}
                   </div>
@@ -203,7 +201,7 @@ I am your **Grounded Infrastructure Assistant**, linked directly to the **1,981 
             </div>
 
             {msg.sender === 'user' && (
-              <div className="w-8 h-8 rounded-lg bg-slate-700 text-white flex items-center justify-center shrink-0 mt-1 shadow-md">
+              <div className="w-7 h-7 rounded bg-slate-800 dark:bg-slate-700 text-white flex items-center justify-center shrink-0 shadow-sm mt-0.5">
                 <User className="w-4 h-4" />
               </div>
             )}
@@ -211,34 +209,44 @@ I am your **Grounded Infrastructure Assistant**, linked directly to the **1,981 
         ))}
 
         {isProcessing && (
-          <div className="flex items-center gap-2 text-xs text-slate-500 font-mono italic">
-            <BotMessageSquare className="w-4 h-4 animate-bounce text-blue-500" />
-            <span>Consulting project telemetry index...</span>
+          <div className="flex gap-3 justify-start items-center">
+            <div className="w-7 h-7 rounded bg-blue-600 text-white flex items-center justify-center shadow-sm">
+              <BotMessageSquare className="w-4 h-4 animate-pulse" />
+            </div>
+            <div className="p-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-500 font-mono">
+              Retrieving telemetry across 1,981 projects...
+            </div>
           </div>
         )}
+
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Composer */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-2.5 shrink-0 flex items-center gap-2 shadow-sm">
-        <input
-          type="text"
-          value={inputQuery}
-          onChange={e => setInputQuery(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === 'Enter') handleSend();
+      {/* Input Bar */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3 shrink-0 shadow-sm">
+        <form
+          onSubmit={e => {
+            e.preventDefault();
+            handleSend();
           }}
-          placeholder="Ask about any project, sector, cost growth, or portfolio summary (e.g., 'Tell me about BharatNet')..."
-          className="flex-1 bg-transparent px-3 py-1.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none"
-        />
-
-        <button
-          onClick={() => handleSend()}
-          disabled={!inputQuery.trim() || isProcessing}
-          className="p-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-md transition shadow-sm"
+          className="flex items-center gap-2"
         >
-          <Send className="w-4 h-4" />
-        </button>
+          <input
+            type="text"
+            value={inputQuery}
+            onChange={e => setInputQuery(e.target.value)}
+            placeholder="Ask anything about 1,981 projects (e.g. 'Tell me about BharatNet PAI-706775' or 'What is total cost growth?')..."
+            className="flex-1 px-3.5 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+          />
+          <button
+            type="submit"
+            disabled={!inputQuery.trim() || isProcessing}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-semibold rounded-md transition flex items-center gap-1.5 shadow-sm"
+          >
+            <span>Ask</span>
+            <Send className="w-3.5 h-3.5" />
+          </button>
+        </form>
       </div>
     </div>
   );

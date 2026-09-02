@@ -9,6 +9,9 @@ import auditRoutes from './auditRoutes.js';
 import notificationRoutes from './notificationRoutes.js';
 import predictionRoutes from './predictionRoutes.js';
 import assistantRoutes from './assistantRoutes.js';
+import riskRoutes from './riskRoutes.js';
+import benchmarkingRoutes from './benchmarkingRoutes.js';
+import analyticsRoutes from './analyticsRoutes.js';
 
 const router = express.Router();
 
@@ -23,5 +26,8 @@ router.use('/audit', auditRoutes);
 router.use('/notifications', notificationRoutes);
 router.use('/predictions', predictionRoutes);
 router.use('/assistant', assistantRoutes);
+router.use('/risk', riskRoutes);
+router.use('/benchmarking', benchmarkingRoutes);
+router.use('/analytics', analyticsRoutes);
 
 export default router;

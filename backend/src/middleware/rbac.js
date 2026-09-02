@@ -64,7 +64,7 @@ export const requireRole = (...allowedRoles) => {
 };
 
 /**
- * Require specific permission(s)
+ * Require ALL specific permission(s)
  */
 export const requirePermission = (...requiredPermissions) => {
   return (req, res, next) => {
@@ -86,6 +86,37 @@ export const requirePermission = (...requiredPermissions) => {
           message: `Access forbidden: Missing required permission(s).`,
           statusCode: 403,
           requiredPermissions,
+        },
+      });
+    }
+
+    next();
+  };
+};
+
+/**
+ * Require AT LEAST ONE permission from list
+ */
+export const requireAnyPermission = (...permissions) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({
+        error: {
+          message: 'Authentication required',
+          statusCode: 401,
+        },
+      });
+    }
+
+    const userPermissions = req.user.permissions || [];
+    const hasAny = permissions.some(p => userPermissions.includes(p));
+
+    if (!hasAny) {
+      return res.status(403).json({
+        error: {
+          message: `Access forbidden: Requires at least one of [${permissions.join(', ')}].`,
+          statusCode: 403,
+          requiredPermissions: permissions,
         },
       });
     }

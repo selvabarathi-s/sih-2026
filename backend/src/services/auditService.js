@@ -57,6 +57,10 @@ class AuditService {
     return logEntry;
   }
 
+  async log(eventData) {
+    return this.logEvent(eventData);
+  }
+
   async getLogs(filters = {}) {
     let result = [...this.logs];
     const { action, userId, resourceType, limit = 50 } = filters;
