@@ -2,7 +2,7 @@
 """
 PAIMANA PREDICT: UNIFIED COMPREHENSIVE PRODUCTION VERIFICATION SUITE
 Audits both Governed Production Temporal Models (v1.4) and Synthetic AI Demo Benchmarks (v1.0-demo).
-Runs all 16 comprehensive suites with 100% verification coverage.
+Runs all 17 comprehensive suites with 100% verification coverage.
 """
 
 import json
@@ -15,7 +15,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 def run_all_tests():
     print("==================================================")
-    print("PAIMANA PREDICT: UNIFIED COMPREHENSIVE PRODUCTION VERIFICATION SUITE (16 SUITES)")
+    print("PAIMANA PREDICT: UNIFIED COMPREHENSIVE PRODUCTION VERIFICATION SUITE (17 SUITES)")
     print("==================================================")
     
     # 1. Core ML Model Metrics & Lineage Audit
@@ -135,9 +135,14 @@ def run_all_tests():
     print("\n--- Running Strict RBAC & Resource Authorization Suite ---")
     ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_strict_rbac.py')])
     assert ret.returncode == 0, "Strict RBAC tests failed!"
+
+    # 17. Risk Score Prioritization Engine Suite
+    print("\n--- Running Risk Score Prioritization Engine Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_risk_score_engine.py')])
+    assert ret.returncode == 0, "Risk Score Prioritization tests failed!"
     
     print("\n==================================================")
-    print("ALL 16 COMPREHENSIVE VERIFICATION SUITES COMPLETED AND PASSED (100% SUCCESS)!")
+    print("ALL 17 COMPREHENSIVE VERIFICATION SUITES COMPLETED AND PASSED (100% SUCCESS)!")
     print("==================================================")
 
 if __name__ == '__main__':

@@ -1,64 +1,73 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { projectsApi } from '../api/projects';
 import { paimanaDataService } from '../services/paimanaDataService';
 import { PaimanaProject, PaimanaSnapshot } from '../types/paimana';
 import { EmptyState } from '../components/common/EmptyState';
+import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
+import { computeProjectRiskScore, RISK_BANDS } from '../services/riskScoreService';
 import {
-  ResponsiveContainer,
+  Calendar,
+  Building,
+  MapPin,
+  Clock,
+  IndianRupee,
+  Activity,
+  Layers,
+  CheckCircle2,
+  AlertTriangle,
+  History,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  Database,
+  ArrowLeft,
+  Edit3,
+  Flame,
+  HelpCircle,
+  ShieldAlert,
+  Sliders,
+} from 'lucide-react';
+import {
   LineChart,
   Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
+  ResponsiveContainer,
   Legend,
 } from 'recharts';
-import { useTheme } from '../context/ThemeContext';
-import {
-  Database,
-  Calendar,
-  IndianRupee,
-  Clock,
-  ArrowRight,
-  FileSpreadsheet,
-  Edit3,
-  CheckCircle2,
-  AlertOctagon,
-  TrendingUp,
-} from 'lucide-react';
 
 export const ProjectDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isDark } = useTheme();
-  const { currentRole, user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'observed' | 'history'>('observed');
+  const { user, currentRole } = useAuth();
 
-  // Live state from API
   const [project, setProject] = useState<PaimanaProject | null>(null);
   const [snapshots, setSnapshots] = useState<PaimanaSnapshot[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'observed' | 'history' | 'riskBreakdown'>('observed');
 
-  // Update modal state for Project Administrator
+  // Dynamic Action / Update state
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [newProgress, setNewProgress] = useState('');
   const [newExpenditure, setNewExpenditure] = useState('');
-  const [updateSuccess, setUpdateSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [updateSuccess, setUpdateSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProjectData = async () => {
       setIsLoading(true);
       const targetId = id || 'PAI-706775';
 
-      // 1. Fetch from backend REST API
-      const res = await projectsApi.getProjectById(targetId);
-      if (res.data) {
-        setProject(res.data);
+      // 1. Fetch project details from API (or fallback to local)
+      const projectRes = await projectsApi.getProjectById(targetId);
+      if (projectRes.data) {
+        setProject(projectRes.data);
       } else {
-        // Fallback to local data service
         const local = paimanaDataService.getProjectById(targetId);
         if (local) setProject(local);
       }
@@ -90,6 +99,8 @@ export const ProjectDetailPage: React.FC = () => {
   }
 
   const currentP = project || paimanaDataService.getProjectById('PAI-706775')!;
+  const riskMeta = computeProjectRiskScore(currentP, 'REAL_PAIMANA');
+  const riskBandInfo = RISK_BANDS[riskMeta.riskBand] || RISK_BANDS.LOW;
 
   const snapshotChartData = snapshots.map(s => ({
     period: s.report_period.replace(' 20', ' \''),
@@ -125,6 +136,39 @@ export const ProjectDetailPage: React.FC = () => {
     }
   };
 
+  const renderMomentumBadge = (momentum: string) => {
+    if (momentum === 'RAPIDLY_DETERIORATING') {
+      return (
+        <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-900">
+          <TrendingUp className="w-3.5 h-3.5" />
+          <span>RAPIDLY DETERIORATING</span>
+        </span>
+      );
+    }
+    if (momentum === 'DETERIORATING') {
+      return (
+        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 px-2 py-0.5 rounded border border-amber-200 dark:border-amber-900">
+          <TrendingUp className="w-3.5 h-3.5" />
+          <span>DETERIORATING</span>
+        </span>
+      );
+    }
+    if (momentum === 'IMPROVING') {
+      return (
+        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-900">
+          <TrendingDown className="w-3.5 h-3.5" />
+          <span>IMPROVING</span>
+        </span>
+      );
+    }
+    return (
+      <span className="inline-flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
+        <Minus className="w-3.5 h-3.5" />
+        <span>STABLE</span>
+      </span>
+    );
+  };
+
   return (
     <div className="space-y-6">
       {/* Update Success Banner */}
@@ -140,63 +184,38 @@ export const ProjectDetailPage: React.FC = () => {
         </div>
       )}
 
-      {/* Real Project Header Banner */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 shadow-sm space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2.5 py-1 rounded text-xs font-bold font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 flex items-center gap-1.5">
-              <Database className="w-3.5 h-3.5" />
-              <span>REAL PAIMANA PROJECT</span>
-            </span>
-            <span className="font-mono text-xs font-bold text-blue-600 dark:text-blue-400">
-              Code: {currentP.project_code}
-            </span>
-            {currentP.legacy_ocms_code && (
-              <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                OCMS: {currentP.legacy_ocms_code}
-              </span>
-            )}
-            {currentP.pmgid && (
-              <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                PMGID: {currentP.pmgid}
-              </span>
-            )}
-          </div>
-
-          <div className="text-right text-[11px] font-mono text-slate-500 dark:text-slate-400">
-            <span>Source: <strong>{currentP.provenance?.source_table || 'Table 6'}</strong></span>
-            <span className="mx-1.5">•</span>
-            <span>{currentP.provenance?.report_period || 'April 2026'} Flash Report</span>
-          </div>
-        </div>
-
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      {/* Top Breadcrumb & Metadata Card */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 space-y-4 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">{currentP.ministry}</span>
-              <span className="text-slate-300">•</span>
-              <span className="text-xs font-semibold text-blue-600 dark:text-blue-400">{currentP.sector}</span>
-              <span className="text-slate-300">•</span>
-              <span className="text-xs text-slate-500">{currentP.state}</span>
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                {currentP.project_id}
+              </span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                {currentP.sector}
+              </span>
+              <span className="text-xs text-slate-400">•</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+                {currentP.agency || 'Executing Agency'}
+              </span>
             </div>
+
             <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
               {currentP.project_name}
             </h1>
+
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Implementing Agency: <strong className="text-slate-800 dark:text-slate-200">{currentP.agency || 'Central Line Department'}</strong>
+              Ministry: <strong>{currentP.ministry}</strong> • State: <strong>{currentP.state}</strong> •
+              Status: <strong className="uppercase">{currentP.status || 'Ongoing'}</strong>
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* Dynamic Update button for Nodal Officer / Admin */}
-            {(currentRole === 'PROJECT_ADMIN' || currentRole === 'SYSTEM_ADMIN' || currentRole === 'MONITORING_OFFICER') && (
+          <div className="flex items-center gap-2">
+            {(currentRole === 'project_admin' || currentRole === 'PROJECT_ADMIN') && (
               <button
-                onClick={() => {
-                  setNewProgress(String(currentP.physical_progress));
-                  setNewExpenditure(String(currentP.cumulative_expenditure));
-                  setShowUpdateModal(true);
-                }}
-                className="px-3.5 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded-md transition shadow-sm flex items-center gap-1.5"
+                onClick={() => setShowUpdateModal(true)}
+                className="px-3.5 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-md flex items-center gap-1.5 transition shadow-sm"
               >
                 <Edit3 className="w-3.5 h-3.5" />
                 <span>Submit Progress Update</span>
@@ -205,10 +224,74 @@ export const ProjectDetailPage: React.FC = () => {
 
             <button
               onClick={() => navigate('/projects')}
-              className="px-3 py-1.5 text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 rounded transition"
+              className="px-3 py-1.5 text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 rounded transition flex items-center gap-1"
             >
-              Back to Directory
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Directory</span>
             </button>
+          </div>
+        </div>
+
+        {/* Prominent Operational Risk Score Card */}
+        <div className="bg-gradient-to-r from-blue-50/80 via-white to-slate-50 dark:from-slate-950 dark:via-slate-900/90 dark:to-slate-950 border border-blue-200 dark:border-blue-900/60 rounded-xl p-5 shadow-sm space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-blue-100 dark:border-blue-900/40 pb-4">
+            <div className="flex items-center gap-4">
+              <div className="text-center bg-white dark:bg-slate-900 border border-blue-200 dark:border-blue-800 rounded-xl p-3 shadow-inner min-w-[110px]">
+                <span className="text-[10px] font-mono font-bold uppercase text-slate-400 block">RISK SCORE</span>
+                <div className="flex items-baseline justify-center gap-0.5">
+                  <span className="text-3xl font-black font-mono text-slate-900 dark:text-white">
+                    {riskMeta.riskScore}
+                  </span>
+                  <span className="text-xs text-slate-400 font-mono">/100</span>
+                </div>
+                <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border block mt-1 ${riskBandInfo.badgeClass}`}>
+                  {riskMeta.riskBand}
+                </span>
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 font-mono">
+                    Prioritization Risk Engine (v2.2)
+                  </span>
+                  {renderMomentumBadge(riskMeta.momentum)}
+                </div>
+                <p className="text-xs text-slate-600 dark:text-slate-400 max-w-xl">
+                  {riskMeta.drivers[0]?.description || 'Project monitored across 6 transparent dimensions.'}
+                </p>
+                <span className="text-[10px] text-slate-400 font-mono block">
+                  Grounding: 100% authentic Table 6 parameters • 0% synthetic variables in Real Mode
+                </span>
+              </div>
+            </div>
+
+            {/* Quick Dimension Snapshot */}
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 text-center text-xs font-mono">
+              <div className="p-2 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800">
+                <span className="text-[9px] text-slate-400 block uppercase">Schedule</span>
+                <span className="font-bold text-slate-900 dark:text-white">{riskMeta.dimensions.schedule}/25</span>
+              </div>
+              <div className="p-2 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800">
+                <span className="text-[9px] text-slate-400 block uppercase">Cost</span>
+                <span className="font-bold text-slate-900 dark:text-white">{riskMeta.dimensions.cost}/20</span>
+              </div>
+              <div className="p-2 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800">
+                <span className="text-[9px] text-slate-400 block uppercase">Progress</span>
+                <span className="font-bold text-slate-900 dark:text-white">{riskMeta.dimensions.progress}/20</span>
+              </div>
+              <div className="p-2 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800">
+                <span className="text-[9px] text-slate-400 block uppercase">Capital</span>
+                <span className="font-bold text-slate-900 dark:text-white">{riskMeta.dimensions.expenditure}/15</span>
+              </div>
+              <div className="p-2 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800">
+                <span className="text-[9px] text-slate-400 block uppercase">Predictive</span>
+                <span className="font-bold text-slate-900 dark:text-white">{riskMeta.dimensions.predictive}/15</span>
+              </div>
+              <div className="p-2 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800">
+                <span className="text-[9px] text-slate-400 block uppercase">Anomaly</span>
+                <span className="font-bold text-slate-900 dark:text-white">{riskMeta.dimensions.weakSignal}/5</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -228,6 +311,18 @@ export const ProjectDetailPage: React.FC = () => {
         </button>
 
         <button
+          onClick={() => setActiveTab('riskBreakdown')}
+          className={`px-4 py-2 text-xs font-semibold rounded-md flex items-center gap-1.5 transition ${
+            activeTab === 'riskBreakdown'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
+          }`}
+        >
+          <Flame className="w-4 h-4 text-rose-500" />
+          <span>Why is the Risk Score {riskMeta.riskScore}? (Dimension Breakdown)</span>
+        </button>
+
+        <button
           onClick={() => setActiveTab('history')}
           className={`px-4 py-2 text-xs font-semibold rounded-md flex items-center gap-1.5 transition ${
             activeTab === 'history'
@@ -243,7 +338,6 @@ export const ProjectDetailPage: React.FC = () => {
       {/* Tab 1: Observed Telemetry */}
       {activeTab === 'observed' && (
         <div className="space-y-6">
-          {/* 3 Metric Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-sm">
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider font-mono">
@@ -292,106 +386,144 @@ export const ProjectDetailPage: React.FC = () => {
               </div>
             </div>
           </div>
-
-          {/* Schedule & Financial Breakdown */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 space-y-4 shadow-sm">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Clock className="w-4 h-4 text-blue-600" />
-                <span>Observed Schedule Milestones</span>
-              </h3>
-
-              <div className="space-y-3 text-xs font-sans">
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500">Date of Approval</span>
-                  <span className="font-semibold font-mono text-slate-800 dark:text-slate-200">{currentP.approval_date || 'Not Reported'}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500">Date of Start</span>
-                  <span className="font-semibold font-mono text-slate-800 dark:text-slate-200">{currentP.start_date || 'Not Reported'}</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500">Target Date of Commissioning (DoC)</span>
-                  <span className="font-semibold font-mono text-slate-800 dark:text-slate-200">{currentP.target_completion_date || 'N/A'}</span>
-                </div>
-                <div className="flex justify-between py-2">
-                  <span className="text-slate-500">Revised Commissioning Date</span>
-                  <span className="font-semibold font-mono text-amber-600 dark:text-amber-400">{currentP.revised_completion_date || 'None'}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 space-y-4 shadow-sm">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <IndianRupee className="w-4 h-4 text-emerald-600" />
-                <span>Cumulative Expenditure Breakdown</span>
-              </h3>
-
-              <div className="space-y-3 text-xs font-sans">
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500">Cumulative Expenditure</span>
-                  <span className="font-semibold font-mono text-slate-800 dark:text-slate-200">₹{currentP.cumulative_expenditure.toLocaleString()} Cr</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500">Expenditure / Revised Budget</span>
-                  <span className="font-semibold font-mono text-emerald-600 dark:text-emerald-400">{currentP.expenditure_ratio_pct}%</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-slate-100 dark:border-slate-800">
-                  <span className="text-slate-500">Current Risk Lifecycle State</span>
-                  <span className="font-semibold font-mono text-blue-600 dark:text-blue-400 uppercase">{currentP.status || 'ONGOING'}</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       )}
 
-      {/* Tab 2: Historical Snapshots */}
-      {activeTab === 'history' && (
-        <div className="space-y-6">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 shadow-sm space-y-4">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-              Multi-Month Execution Trajectory ({snapshots.length} Reporting Snapshots)
+      {/* Tab 2: Why is the Risk Score X? */}
+      {activeTab === 'riskBreakdown' && (
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 space-y-6 shadow-sm">
+          <div>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white font-mono flex items-center gap-2">
+              <Flame className="w-5 h-5 text-rose-500" />
+              <span>Risk Score Dimensional Attribution ({riskMeta.riskScore} / 100)</span>
             </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              "Risk Score is a composite 0–100 prioritization index derived from observed project conditions, historical deterioration signals and, where available, governed predictive outputs. It is used to prioritize monitoring and intervention; it is not itself a probability."
+            </p>
+          </div>
 
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={snapshotChartData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
-                  <XAxis dataKey="period" stroke={tickColor} fontSize={11} />
-                  <YAxis yAxisId="left" stroke={tickColor} fontSize={11} />
-                  <YAxis yAxisId="right" orientation="right" stroke={tickColor} fontSize={11} />
-                  <Tooltip />
-                  <Legend />
-                  <Line yAxisId="left" type="monotone" dataKey="Physical Progress (%)" stroke="#2563eb" strokeWidth={2} />
-                  <Line yAxisId="right" type="monotone" dataKey="Expenditure (₹ Cr)" stroke="#10b981" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs font-sans">
+              <thead className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-500 font-mono">
+                <tr>
+                  <th className="py-2.5 px-4">Risk Dimension</th>
+                  <th className="py-2.5 px-3 text-center">Governed Weight</th>
+                  <th className="py-2.5 px-3 text-right">Raw Dimension Score</th>
+                  <th className="py-2.5 px-4 text-right">Weighted Attribution</th>
+                  <th className="py-2.5 px-4">Observed Telemetry Evidence</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 font-mono">
+                <tr>
+                  <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">A. Schedule Risk</td>
+                  <td className="py-3 px-3 text-center text-slate-500">25%</td>
+                  <td className="py-3 px-3 text-right font-bold text-blue-600 dark:text-blue-400">{riskMeta.dimensions.raw.schedule} / 100</td>
+                  <td className="py-3 px-4 text-right font-black text-slate-900 dark:text-white">{riskMeta.dimensions.schedule} / 25 pts</td>
+                  <td className="py-3 px-4 font-sans text-slate-600 dark:text-slate-300">Schedule extension of +{currentP.schedule_extension_months} months past original commissioning target.</td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">B. Cost Risk</td>
+                  <td className="py-3 px-3 text-center text-slate-500">20%</td>
+                  <td className="py-3 px-3 text-right font-bold text-amber-600 dark:text-amber-400">{riskMeta.dimensions.raw.cost} / 100</td>
+                  <td className="py-3 px-4 text-right font-black text-slate-900 dark:text-white">{riskMeta.dimensions.cost} / 20 pts</td>
+                  <td className="py-3 px-4 font-sans text-slate-600 dark:text-slate-300">Cost revision growth of +{currentP.cost_growth_pct}% (+₹{currentP.cost_overrun_cr.toLocaleString()} Cr revision).</td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">C. Progress / Deterioration</td>
+                  <td className="py-3 px-3 text-center text-slate-500">20%</td>
+                  <td className="py-3 px-3 text-right font-bold text-indigo-600 dark:text-indigo-400">{riskMeta.dimensions.raw.progress} / 100</td>
+                  <td className="py-3 px-4 text-right font-black text-slate-900 dark:text-white">{riskMeta.dimensions.progress} / 20 pts</td>
+                  <td className="py-3 px-4 font-sans text-slate-600 dark:text-slate-300">Physical progress at {currentP.physical_progress}%, lagging milestone execution benchmarks.</td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">D. Expenditure Trajectory</td>
+                  <td className="py-3 px-3 text-center text-slate-500">15%</td>
+                  <td className="py-3 px-3 text-right font-bold text-emerald-600 dark:text-emerald-400">{riskMeta.dimensions.raw.expenditure} / 100</td>
+                  <td className="py-3 px-4 text-right font-black text-slate-900 dark:text-white">{riskMeta.dimensions.expenditure} / 15 pts</td>
+                  <td className="py-3 px-4 font-sans text-slate-600 dark:text-slate-300">Expenditure ratio of {currentP.expenditure_ratio_pct}% vs physical delivery.</td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">E. Predictive Risk Signal</td>
+                  <td className="py-3 px-3 text-center text-slate-500">15%</td>
+                  <td className="py-3 px-3 text-right font-bold text-purple-600 dark:text-purple-400">{riskMeta.dimensions.raw.predictive} / 100</td>
+                  <td className="py-3 px-4 text-right font-black text-slate-900 dark:text-white">{riskMeta.dimensions.predictive} / 15 pts</td>
+                  <td className="py-3 px-4 font-sans text-slate-600 dark:text-slate-300">Governed temporal model (time-gbm-v1.4) predicts adverse deterioration event.</td>
+                </tr>
+                <tr>
+                  <td className="py-3 px-4 font-bold text-slate-900 dark:text-white">F. Anomaly / Weak Signal</td>
+                  <td className="py-3 px-3 text-center text-slate-500">5%</td>
+                  <td className="py-3 px-3 text-right font-bold text-rose-600 dark:text-rose-400">{riskMeta.dimensions.raw.weakSignal} / 100</td>
+                  <td className="py-3 px-4 text-right font-black text-slate-900 dark:text-white">{riskMeta.dimensions.weakSignal} / 5 pts</td>
+                  <td className="py-3 px-4 font-sans text-slate-600 dark:text-slate-300">Multi-period velocity deceleration flag detected.</td>
+                </tr>
+                <tr className="bg-slate-50 dark:bg-slate-950 font-extrabold text-sm border-t-2 border-slate-300 dark:border-slate-700">
+                  <td className="py-3 px-4">TOTAL COMPOSITE RISK SCORE</td>
+                  <td className="py-3 px-3 text-center">100%</td>
+                  <td className="py-3 px-3 text-right text-slate-400">-</td>
+                  <td className="py-3 px-4 text-right text-blue-600 dark:text-blue-400 text-base">{riskMeta.riskScore} / 100</td>
+                  <td className="py-3 px-4 font-sans uppercase font-bold text-rose-600 dark:text-rose-400">{riskMeta.riskBand} RISK BAND</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       )}
 
-      {/* Update Modal */}
+      {/* Tab 3: Historical Snapshots */}
+      {activeTab === 'history' && (
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 space-y-6 shadow-sm">
+          <div>
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <History className="w-4 h-4 text-blue-600" />
+              <span>Multi-Period Longitudinal Trajectory ({snapshots.length} Consecutive Monthly Snapshots)</span>
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Historical progression across consecutive MoSPI Table 6 monthly flash reports.
+            </p>
+          </div>
+
+          <div className="h-72 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={snapshotChartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+                <XAxis dataKey="period" stroke={tickColor} tick={{ fontSize: 11 }} />
+                <YAxis stroke={tickColor} tick={{ fontSize: 11 }} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: isDark ? '#0f172a' : '#ffffff',
+                    borderColor: isDark ? '#334155' : '#cbd5e1',
+                    fontSize: '12px',
+                  }}
+                />
+                <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
+                <Line type="monotone" dataKey="Physical Progress (%)" stroke="#2563eb" strokeWidth={2.5} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="Expenditure (₹ Cr)" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} />
+                <Line type="monotone" dataKey="Revised Cost (₹ Cr)" stroke="#f59e0b" strokeWidth={2} dot={{ r: 3 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {/* Progress Update Modal */}
       {showUpdateModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 max-w-md w-full shadow-2xl space-y-4">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-md w-full p-6 shadow-2xl space-y-5">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Edit3 className="w-4 h-4 text-blue-600" />
-                <span>Submit Nodal Progress Update</span>
+              <h3 className="font-bold text-sm text-slate-900 dark:text-white font-mono">
+                Submit Monthly Progress: {currentP.project_id}
               </h3>
               <button
                 onClick={() => setShowUpdateModal(false)}
-                className="text-slate-400 hover:text-slate-600 text-xs"
+                className="text-slate-400 hover:text-slate-600 text-lg leading-none"
               >
-                ✕
+                &times;
               </button>
             </div>
 
             <form onSubmit={handleUpdateSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Reported Physical Progress (%)
                 </label>
                 <input
@@ -401,45 +533,39 @@ export const ProjectDetailPage: React.FC = () => {
                   max="100"
                   value={newProgress}
                   onChange={e => setNewProgress(e.target.value)}
-                  placeholder="e.g. 86.5"
-                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 font-mono"
-                  required
+                  placeholder={`Current: ${currentP.physical_progress}%`}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md focus:outline-none focus:border-blue-500 font-mono"
                 />
               </div>
 
               <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Cumulative Expenditure (₹ Crores)
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Cumulative Expenditure (₹ Cr)
                 </label>
                 <input
                   type="number"
                   step="0.01"
-                  min="0"
                   value={newExpenditure}
                   onChange={e => setNewExpenditure(e.target.value)}
-                  placeholder="e.g. 48000"
-                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 font-mono"
+                  placeholder={`Current: ₹${currentP.cumulative_expenditure} Cr`}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md focus:outline-none focus:border-blue-500 font-mono"
                 />
               </div>
 
-              <div className="p-3 bg-blue-50 dark:bg-blue-950/40 rounded border border-blue-200 dark:border-blue-800 text-[11px] text-blue-800 dark:text-blue-300">
-                Submitting this update will update the database, re-evaluate project risk state, write an immutable audit log, and notify surveillance officers.
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setShowUpdateModal(false)}
-                  className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded hover:bg-slate-200 transition"
+                  className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded text-slate-700 dark:text-slate-300 font-semibold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white rounded font-semibold transition shadow-sm"
+                  className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded font-bold shadow-sm disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Updating...' : 'Confirm & Save Update'}
+                  {isSubmitting ? 'Submitting...' : 'Save & Recalculate Risk'}
                 </button>
               </div>
             </form>

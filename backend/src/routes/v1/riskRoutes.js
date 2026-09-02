@@ -1,11 +1,10 @@
 import { Router } from 'express';
-import { getPortfolioRisk, getRiskNetwork } from '../../controllers/riskController.js';
-import { getProjectRisk } from '../../controllers/predictionController.js';
+import { getPortfolioRisk, getRiskNetwork, getProjectRiskScore } from '../../controllers/riskController.js';
 
 const router = Router();
 
 router.get('/portfolio', getPortfolioRisk);
 router.get('/network', getRiskNetwork);
-router.get('/:projectId', getProjectRisk);
+router.get('/:projectId', getProjectRiskScore);
 
 export default router;
