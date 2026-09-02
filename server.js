@@ -1,26 +1,48 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createApp } from './backend/src/app.js';
+import { config } from './backend/src/config/index.js';
+import { errorHandler } from './backend/src/middleware/errorHandler.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+// Initialize backend application instance
+const app = createApp();
 
-// Serve static assets from dist folder
+// Serve static frontend assets from dist folder
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// Health check endpoint for Render monitoring
-app.get('/healthz', (req, res) => {
-  res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() });
-});
-
-// SPA fallback for all React Router client routes (Universal Express 4/5 compatible)
-app.use((req, res) => {
+// SPA client-side fallback for frontend React routes (excluding /api routes)
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/') || req.path.startsWith('/health')) {
+    return next();
+  }
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`PAIMANA Predict Web Service running on port ${PORT}`);
+// Centralized Error Handling Middleware
+app.use(errorHandler);
+
+const server = app.listen(config.port, config.host, () => {
+  console.log(`================================================================================`);
+  console.log(`PAIMANA PREDICT: Unified Full-Stack Application Running`);
+  console.log(`• Environment: ${config.env}`);
+  console.log(`• Web Service: http://${config.host}:${config.port}`);
+  console.log(`• API v1 Root: http://${config.host}:${config.port}${config.apiPrefix}`);
+  console.log(`• Health Check: http://${config.host}:${config.port}/health`);
+  console.log(`• Data Health: http://${config.host}:${config.port}/health/data`);
+  console.log(`• ML Health:   http://${config.host}:${config.port}/health/ml`);
+  console.log(`================================================================================`);
 });
+
+// Graceful shutdown handling
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing HTTP server');
+  server.close(() => {
+    console.log('HTTP server closed');
+  });
+});
+
+export default app;
