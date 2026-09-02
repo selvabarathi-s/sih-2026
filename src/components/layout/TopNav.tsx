@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Bell, ShieldCheck, UserCheck, RefreshCw, Sun, Moon, Database, LogIn, ChevronDown, KeyRound } from 'lucide-react';
+import { Search, Bell, ShieldCheck, UserCheck, RefreshCw, Sun, Moon, Database, LogIn, ChevronDown, KeyRound, Check } from 'lucide-react';
 import { paimanaDataService } from '../../services/paimanaDataService';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
-import { ROLES } from '../../types/auth';
+import { ROLES, ROLE_METADATA } from '../../types/auth';
 
 export const TopNav: React.FC = () => {
   const navigate = useNavigate();
@@ -13,6 +13,8 @@ export const TopNav: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showRoleMenu, setShowRoleMenu] = useState(false);
+
+  const roleMeta = ROLE_METADATA[currentRole] || ROLE_METADATA.monitoring_officer;
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,14 +99,14 @@ export const TopNav: React.FC = () => {
             title="Click to Switch Role Workspace"
           >
             <ShieldCheck className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-            <span className="capitalize">{currentRole.replace(/_/g, ' ')}</span>
+            <span className="font-mono text-[11px] font-semibold">{roleMeta.title}</span>
             <ChevronDown className="w-3 h-3 text-slate-400" />
           </button>
 
           {showRoleMenu && (
-            <div className="absolute right-0 mt-1.5 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl py-1.5 z-50 text-xs font-sans">
+            <div className="absolute right-0 mt-1.5 w-72 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl py-1.5 z-50 text-xs font-sans">
               <div className="px-3 py-1.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Role Workspaces</span>
+                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Switch Role Workspace</span>
                 <button
                   onClick={() => {
                     setShowRoleMenu(false);
@@ -113,15 +115,15 @@ export const TopNav: React.FC = () => {
                   className="text-[10px] text-blue-600 dark:text-blue-400 font-bold hover:underline flex items-center gap-1"
                 >
                   <KeyRound className="w-3 h-3" />
-                  <span>Login Portal</span>
+                  <span>Portal</span>
                 </button>
               </div>
               {[
-                { role: ROLES.MONITORING_OFFICER, label: 'Monitoring Officer', desc: 'Surveillance & Signals' },
-                { role: ROLES.PROJECT_ADMIN, label: 'Project Administrator', desc: 'Progress Update & Response' },
-                { role: ROLES.SYSTEM_ADMIN, label: 'System Administrator', desc: 'Admin & Audit Trail' },
-                { role: ROLES.DATA_ANALYST, label: 'Risk / Data Analyst', desc: 'ML Models & Trends' },
-                { role: ROLES.DECISION_MAKER, label: 'Senior Decision Maker', desc: 'Executive Portfolio Brief' },
+                { role: ROLES.MONITORING_OFFICER, label: 'Monitoring Officer', focus: 'Portfolio Surveillance', value: 'MONITOR + ALERT' },
+                { role: ROLES.PROJECT_ADMIN, label: 'Project Administrator', focus: 'Project Execution', value: 'UPDATE + ACT' },
+                { role: ROLES.DATA_ANALYST, label: 'Risk / Data Analyst', focus: 'Predictive Intelligence', value: 'PREDICT + EXPLAIN' },
+                { role: ROLES.DECISION_MAKER, label: 'Senior Decision Maker', focus: 'Strategic Decisions', value: 'PRIORITIZE + DECIDE' },
+                { role: ROLES.SYSTEM_ADMIN, label: 'System Administrator', focus: 'System Governance', value: 'GOVERN + SECURE' },
               ].map(item => (
                 <button
                   key={item.role}
@@ -129,12 +131,20 @@ export const TopNav: React.FC = () => {
                     switchRole(item.role);
                     setShowRoleMenu(false);
                   }}
-                  className={`w-full text-left px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition flex flex-col ${
-                    currentRole === item.role ? 'bg-blue-50/50 dark:bg-blue-950/30 text-blue-600 font-semibold' : 'text-slate-700 dark:text-slate-300'
+                  className={`w-full text-left px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition flex items-center justify-between ${
+                    currentRole === item.role ? 'bg-blue-50/70 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-semibold' : 'text-slate-700 dark:text-slate-300'
                   }`}
                 >
-                  <span className="font-medium">{item.label}</span>
-                  <span className="text-[10px] text-slate-400">{item.desc}</span>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-medium text-slate-900 dark:text-white">{item.label}</span>
+                      <span className="text-[9px] px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-800 font-mono text-slate-500 dark:text-slate-400 font-bold">
+                        {item.value}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400">{item.focus}</span>
+                  </div>
+                  {currentRole === item.role && <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />}
                 </button>
               ))}
 
@@ -177,10 +187,10 @@ export const TopNav: React.FC = () => {
           </div>
           <div className="hidden lg:block">
             <p className="text-xs font-semibold text-slate-900 dark:text-white leading-none">
-              {user?.fullName || 'Monitoring Officer'}
+              {user?.fullName || roleMeta.persona}
             </p>
             <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-none mt-0.5 truncate max-w-[140px]">
-              {user?.department || 'MoSPI Monitoring Cell'}
+              {user?.department || roleMeta.department}
             </p>
           </div>
         </button>

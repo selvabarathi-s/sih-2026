@@ -15,29 +15,30 @@ import {
   Award,
   TrendingUp,
   Cpu,
+  Sliders,
+  Eye,
+  Activity,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { ROLE_DISPLAY_NAMES } from '../../types/auth';
+import { ROLE_METADATA } from '../../types/auth';
 
 export const Sidebar: React.FC = () => {
   const { user, currentRole } = useAuth();
 
-  const roleMeta = ROLE_DISPLAY_NAMES[currentRole] || {
-    title: currentRole,
-    workspace: 'General Workspace',
-  };
-
+  const roleMeta = ROLE_METADATA[currentRole] || ROLE_METADATA.monitoring_officer;
   const roleClean = (currentRole || '').toLowerCase().replace(/_/g, '');
 
   // Dynamic Navigation Configuration tailored to each role
   const getNavItems = () => {
-    if (roleClean.includes('monitoring')) {
+    // 1. Monitoring Officer: Portfolio Surveillance
+    if (roleClean.includes('monitoring') || roleClean.includes('officer')) {
       return {
         primary: [
           { name: 'Portfolio Surveillance', path: '/', icon: LayoutDashboard },
           { name: 'Projects Directory (1,981)', path: '/projects', icon: FolderKanban },
           { name: 'Deterioration Signals', path: '/early-warnings', icon: BellRing, badge: '20+' },
           { name: 'Risk Network Topology', path: '/risk-network', icon: Network },
+          { name: 'Sector Benchmarks', path: '/benchmarking', icon: BarChart3 },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
         secondary: [
@@ -46,10 +47,12 @@ export const Sidebar: React.FC = () => {
       };
     }
 
+    // 2. Project Administrator: Project Execution
     if (roleClean.includes('project') || roleClean.includes('nodal')) {
       return {
         primary: [
-          { name: 'My Assigned Projects', path: '/', icon: LayoutDashboard },
+          { name: 'Project Execution', path: '/', icon: LayoutDashboard },
+          { name: 'Assigned (BharatNet)', path: '/projects/PAI-706775', icon: Activity },
           { name: 'All Projects (Read-Only)', path: '/projects', icon: FolderKanban },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
@@ -59,30 +62,16 @@ export const Sidebar: React.FC = () => {
       };
     }
 
-    if (roleClean.includes('system') || roleClean.includes('sysadmin')) {
-      return {
-        primary: [
-          { name: 'System Overview', path: '/', icon: LayoutDashboard },
-          { name: 'Projects Directory (1,981)', path: '/projects', icon: FolderKanban },
-          { name: 'Data Health & Ingestion', path: '/data-health', icon: ActivitySquare },
-          { name: 'Admin & Audit Trail', path: '/settings', icon: Settings },
-          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
-        ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
-      };
-    }
-
+    // 3. Risk / Data Analyst: Predictive Intelligence
     if (roleClean.includes('analyst') || roleClean.includes('data')) {
       return {
         primary: [
-          { name: 'Analytics Dashboard', path: '/', icon: LayoutDashboard },
-          { name: 'ML Model Registry', path: '/predictions', icon: Cpu },
+          { name: 'Predictive Intelligence', path: '/predictions', icon: Cpu },
           { name: 'Sector Benchmarks', path: '/benchmarking', icon: BarChart3 },
           { name: 'Macro Analytics', path: '/analytics', icon: TrendingUp },
           { name: 'Risk Propagation', path: '/risk-network', icon: Network },
           { name: 'Data Health Checks', path: '/data-health', icon: ActivitySquare },
+          { name: 'National Overview', path: '/', icon: LayoutDashboard },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
         secondary: [
@@ -91,7 +80,8 @@ export const Sidebar: React.FC = () => {
       };
     }
 
-    if (roleClean.includes('decision') || roleClean.includes('secretary')) {
+    // 4. Senior Decision Maker: Executive Portfolio Brief
+    if (roleClean.includes('decision') || roleClean.includes('secretary') || roleClean.includes('senior')) {
       return {
         primary: [
           { name: 'Executive Portfolio Brief', path: '/risk-intelligence', icon: Award },
@@ -99,6 +89,23 @@ export const Sidebar: React.FC = () => {
           { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
           { name: 'Sector Benchmarking', path: '/benchmarking', icon: BarChart3 },
           { name: 'Portfolio Analytics', path: '/analytics', icon: TrendingUp },
+          { name: 'PAIMANA Grounded Copilot', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [
+          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
+        ],
+      };
+    }
+
+    // 5. System Administrator: System Governance
+    if (roleClean.includes('system') || roleClean.includes('sysadmin')) {
+      return {
+        primary: [
+          { name: 'System Governance', path: '/', icon: LayoutDashboard },
+          { name: 'Data Health & Ingestion', path: '/data-health', icon: ActivitySquare },
+          { name: 'Admin & Audit Trail', path: '/settings', icon: Settings },
+          { name: 'ML Model Registry', path: '/predictions', icon: Cpu },
+          { name: 'Projects Directory (1,981)', path: '/projects', icon: FolderKanban },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
         secondary: [
@@ -110,7 +117,7 @@ export const Sidebar: React.FC = () => {
     // Default fallback
     return {
       primary: [
-        { name: 'Portfolio Overview', path: '/', icon: LayoutDashboard },
+        { name: 'Portfolio Surveillance', path: '/', icon: LayoutDashboard },
         { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
         { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
       ],
@@ -146,10 +153,12 @@ export const Sidebar: React.FC = () => {
           <span className="text-[10px] font-mono uppercase font-bold text-blue-800 dark:text-blue-300">
             {roleMeta.title}
           </span>
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Session: Active" />
+          <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-blue-200/60 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-bold">
+            {roleMeta.valueTag}
+          </span>
         </div>
-        <p className="text-[10px] font-medium text-blue-600 dark:text-blue-400 truncate mt-0.5">
-          {roleMeta.workspace}
+        <p className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 truncate mt-0.5">
+          {roleMeta.focus}
         </p>
       </div>
 
@@ -218,7 +227,7 @@ export const Sidebar: React.FC = () => {
           <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">RBAC Active</span>
         </div>
         <p className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
-          {user?.department || 'MoSPI National Cell'}
+          {user?.department || 'MoSPI National Surveillance Cell'}
         </p>
       </div>
     </aside>
