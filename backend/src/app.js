@@ -3,6 +3,7 @@ import cors from 'cors';
 import { config } from './config/index.js';
 import { requestLogger } from './middleware/requestLogger.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { authenticate } from './middleware/rbac.js';
 import v1Routes from './routes/v1/index.js';
 import { getHealth, getDataHealth, getMlHealth } from './controllers/healthController.js';
 
@@ -14,6 +15,7 @@ export const createApp = () => {
   app.use(express.urlencoded({ extended: true }));
   app.use(cors(config.cors));
   app.use(requestLogger);
+  app.use(authenticate); // Populate req.user from Authorization headers across all endpoints
 
   // Root & Health Probes (Direct & Versioned)
   app.get('/health', getHealth);

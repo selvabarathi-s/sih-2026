@@ -1,12 +1,20 @@
+#!/usr/bin/env python3
+"""
+PAIMANA PREDICT: UNIFIED COMPREHENSIVE TEST SUITE
+Runs Ingestion, Dataset Modes, Theme System, ML Benchmarks, and Auth/RBAC State Machines.
+"""
+
 import json
 import os
 import sys
+import subprocess
 
-def run_system_verification():
+def run_all_tests():
     print("==================================================")
-    print("PAIMANA PREDICT: SYSTEM VERIFICATION TEST SUITE")
+    print("PAIMANA PREDICT: MASTER TEST SUITE")
     print("==================================================")
     
+    # 1. Core ML Model Metrics & Benchmarks
     metrics_path = os.path.join(os.path.dirname(__file__), '..', 'src', 'data', 'computedModelMetrics.json')
     if not os.path.exists(metrics_path):
         print("FAIL: computedModelMetrics.json not found!")
@@ -15,7 +23,6 @@ def run_system_verification():
     with open(metrics_path, 'r', encoding='utf-8') as f:
         metrics = json.load(f)
         
-    # 1. Verify Model Metrics
     cost_models = metrics.get('cost_overrun_models', {})
     time_models = metrics.get('time_overrun_models', {})
     cuf_comp = metrics.get('cuf_vs_expanded_comparison', {})
@@ -28,27 +35,44 @@ def run_system_verification():
         time_models['Gradient Boosting (GBM / XGBoost Equivalent)']['roc_auc']
     ))
     
-    # 2. Verify CUF Delta
     auc_delta = cuf_comp['time_overrun']['auc_delta']
     lead_time_delta = cuf_comp['time_overrun']['lead_time_delta_months']
     assert auc_delta > 0, "AUC delta must be positive!"
     assert lead_time_delta > 1.0, "Lead time delta must be positive!"
     print(f"TEST 2: CUF vs Expanded Operational Variables Gain (+{auc_delta} AUC, +{lead_time_delta} Mo Lead Time) -> PASS")
     
-    # 3. Verify Feature Importances
     feat_imp = metrics.get('feature_importance', {}).get('time_overrun', [])
     assert len(feat_imp) >= 10, "Feature importance list too short!"
     top_feature = feat_imp[0]
     print(f"TEST 3: Feature Importance Verification (Top Feature: {top_feature['label']} with {top_feature['importance_score']}%) -> PASS")
     
-    # 4. Verify Scientific Honesty / Disclaimer
     disclaimer = metrics.get('metadata', {}).get('synthetic_dataset_disclaimer', '')
     assert len(disclaimer) > 10, "Disclaimer must be populated!"
     print(f"TEST 4: Scientific Honesty Policy Verified: '{disclaimer}' -> PASS")
+
+    # 2. Ingestion Test Suite
+    print("\n--- Running Authentic Ingestion & Governance Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_real_paimana_ingestion.py')])
+    assert ret.returncode == 0, "Ingestion tests failed!"
+
+    # 3. Dataset Modes & Isolation Suite
+    print("\n--- Running Dataset Modes & Isolation Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_dataset_modes.py')])
+    assert ret.returncode == 0, "Dataset modes tests failed!"
+
+    # 4. Theme System Suite
+    print("\n--- Running Theme Behavior Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_theme_behavior.py')])
+    assert ret.returncode == 0, "Theme behavior tests failed!"
+
+    # 5. Auth, RBAC & State Machine Suite
+    print("\n--- Running Auth, RBAC & State Machine Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_auth_rbac.py')])
+    assert ret.returncode == 0, "Auth & RBAC tests failed!"
     
-    print("==================================================")
-    print("ALL 4 CRITICAL CORE TESTS PASSED SUCCESSFULLY!")
+    print("\n==================================================")
+    print("ALL TEST SUITES COMPLETED AND PASSED (100% SUCCESS)!")
     print("==================================================")
 
 if __name__ == '__main__':
-    run_system_verification()
+    run_all_tests()
