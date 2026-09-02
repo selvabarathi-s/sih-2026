@@ -103,12 +103,13 @@ export const ROLE_PERMISSIONS = {
   ],
 };
 
-// Seed Users for All 5 Roles
+// Seed Users for All 5 Roles with aliases for easy login
 export const SEED_USERS = [
   {
     id: 'usr-admin-01',
     username: 'admin',
-    passwordHash: 'admin123', // In production, bcrypt hash
+    aliases: ['sysadmin', 'admin'],
+    passwordHash: 'admin123',
     fullName: 'Rajesh Sharma',
     email: 'admin.infra@gov.in',
     role: ROLES.SYSTEM_ADMIN,
@@ -116,8 +117,20 @@ export const SEED_USERS = [
     designation: 'Director (System Administration)',
   },
   {
+    id: 'usr-sysadmin-01',
+    username: 'sysadmin',
+    aliases: ['sysadmin', 'admin'],
+    passwordHash: 'sysadmin123',
+    fullName: 'Rajesh Sharma',
+    email: 'sysadmin.infra@gov.in',
+    role: ROLES.SYSTEM_ADMIN,
+    department: 'PMO Infrastructure Cell',
+    designation: 'Director (System Administration)',
+  },
+  {
     id: 'usr-officer-01',
     username: 'officer',
+    aliases: ['officer', 'monitoring'],
     passwordHash: 'officer123',
     fullName: 'Priya Iyer',
     email: 'priya.monitoring@mospi.gov.in',
@@ -128,6 +141,7 @@ export const SEED_USERS = [
   {
     id: 'usr-nodal-01',
     username: 'nodal',
+    aliases: ['nodal', 'projadmin', 'projectadmin'],
     passwordHash: 'nodal123',
     fullName: 'Amitabh Verma',
     email: 'amitabh.verma@bbnl.gov.in',
@@ -139,6 +153,7 @@ export const SEED_USERS = [
   {
     id: 'usr-analyst-01',
     username: 'analyst',
+    aliases: ['analyst', 'riskanalyst', 'dataanalyst'],
     passwordHash: 'analyst123',
     fullName: 'Dr. Neha Kulkarni',
     email: 'neha.analyst@niti.gov.in',
@@ -149,6 +164,7 @@ export const SEED_USERS = [
   {
     id: 'usr-secretary-01',
     username: 'secretary',
+    aliases: ['secretary', 'decisionmaker', 'seniordecisionmaker'],
     passwordHash: 'secretary123',
     fullName: 'V. K. Sundaram',
     email: 'secretary.infra@cabinet.gov.in',

@@ -11,9 +11,14 @@ import {
   Settings,
   Flame,
   Database,
+  KeyRound,
+  ShieldCheck,
 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 
 export const Sidebar: React.FC = () => {
+  const { user, currentRole } = useAuth();
+
   const primaryNav = [
     { name: 'Portfolio Overview', path: '/', icon: LayoutDashboard },
     { name: 'Projects Directory (1,981)', path: '/projects', icon: FolderKanban },
@@ -23,8 +28,9 @@ export const Sidebar: React.FC = () => {
   ];
 
   const secondaryNav = [
+    { name: 'Role Workspaces (5 Logins)', path: '/login', icon: KeyRound },
     { name: 'Ingestion & Data Health', path: '/data-health', icon: ActivitySquare },
-    { name: 'Settings', path: '/settings', icon: Settings },
+    { name: 'Settings & Audit Trail', path: '/settings', icon: Settings },
   ];
 
   return (
@@ -87,7 +93,7 @@ export const Sidebar: React.FC = () => {
         })}
 
         <div className="pt-4 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 py-1.5 font-mono">
-          Governance & Audit
+          Governance & Workspaces
         </div>
 
         {secondaryNav.map(item => {

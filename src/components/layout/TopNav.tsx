@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Bell, ShieldCheck, UserCheck, RefreshCw, Sun, Moon, Database, LogIn, ChevronDown } from 'lucide-react';
+import { Search, Bell, ShieldCheck, UserCheck, RefreshCw, Sun, Moon, Database, LogIn, ChevronDown, KeyRound } from 'lucide-react';
 import { paimanaDataService } from '../../services/paimanaDataService';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
@@ -102,9 +102,19 @@ export const TopNav: React.FC = () => {
           </button>
 
           {showRoleMenu && (
-            <div className="absolute right-0 mt-1.5 w-60 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl py-1.5 z-50 text-xs font-sans">
-              <div className="px-3 py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Switch Role Workspace</span>
+            <div className="absolute right-0 mt-1.5 w-64 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-xl py-1.5 z-50 text-xs font-sans">
+              <div className="px-3 py-1.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Role Workspaces</span>
+                <button
+                  onClick={() => {
+                    setShowRoleMenu(false);
+                    navigate('/login');
+                  }}
+                  className="text-[10px] text-blue-600 dark:text-blue-400 font-bold hover:underline flex items-center gap-1"
+                >
+                  <KeyRound className="w-3 h-3" />
+                  <span>Login Portal</span>
+                </button>
               </div>
               {[
                 { role: ROLES.MONITORING_OFFICER, label: 'Monitoring Officer', desc: 'Surveillance & Signals' },
@@ -127,6 +137,19 @@ export const TopNav: React.FC = () => {
                   <span className="text-[10px] text-slate-400">{item.desc}</span>
                 </button>
               ))}
+
+              <div className="border-t border-slate-100 dark:border-slate-800 mt-1 pt-1 px-2">
+                <button
+                  onClick={() => {
+                    setShowRoleMenu(false);
+                    navigate('/login');
+                  }}
+                  className="w-full py-1.5 px-2 text-center rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-[11px] flex items-center justify-center gap-1.5 transition"
+                >
+                  <LogIn className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  <span>Open Dedicated Login Screen</span>
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -143,12 +166,16 @@ export const TopNav: React.FC = () => {
           </span>
         </button>
 
-        {/* Authenticated User Pill */}
-        <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
+        {/* Authenticated User Pill & Login Link */}
+        <button
+          onClick={() => navigate('/login')}
+          className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800 hover:opacity-80 transition text-left"
+          title="Click to Switch Account or Login"
+        >
           <div className="w-7 h-7 rounded bg-blue-100 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-300">
             <UserCheck className="w-4 h-4" />
           </div>
-          <div className="hidden lg:block text-left">
+          <div className="hidden lg:block">
             <p className="text-xs font-semibold text-slate-900 dark:text-white leading-none">
               {user?.fullName || 'Monitoring Officer'}
             </p>
@@ -156,7 +183,7 @@ export const TopNav: React.FC = () => {
               {user?.department || 'MoSPI Monitoring Cell'}
             </p>
           </div>
-        </div>
+        </button>
       </div>
     </header>
   );

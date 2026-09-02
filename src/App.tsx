@@ -13,6 +13,7 @@ import { AnalyticsPage } from './pages/AnalyticsPage';
 import { AssistantPage } from './pages/AssistantPage';
 import { DataHealthPage } from './pages/DataHealthPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { LoginPage } from './pages/LoginPage';
 
 import { ThemeProvider } from './context/ThemeContext';
 import { DatasetModeProvider } from './context/DatasetModeContext';
@@ -25,6 +26,10 @@ export function App() {
         <AuthProvider>
           <BrowserRouter>
             <Routes>
+              {/* Standalone Login Route */}
+              <Route path="/login" element={<LoginPage />} />
+
+              {/* Main Application Layout */}
               <Route path="/" element={<AppLayout />}>
                 <Route index element={<OverviewPage />} />
                 <Route path="overview" element={<Navigate to="/" replace />} />
