@@ -1,0 +1,86 @@
+[
+  {
+    "feature": "physical_progress",
+    "real_paimana": true,
+    "time_varying": true,
+    "safe_for_prediction": true,
+    "source": "Table 6 Monthly Snapshots"
+  },
+  {
+    "feature": "progress_velocity_1m",
+    "real_paimana": true,
+    "time_varying": true,
+    "safe_for_prediction": true,
+    "source": "Derived Multi-Snapshot Delta (t <= T)"
+  },
+  {
+    "feature": "progress_velocity_3m",
+    "real_paimana": true,
+    "time_varying": true,
+    "safe_for_prediction": true,
+    "source": "Derived 3-Period Moving Velocity (t <= T)"
+  },
+  {
+    "feature": "progress_momentum",
+    "real_paimana": true,
+    "time_varying": true,
+    "safe_for_prediction": true,
+    "source": "Derived 2nd Order Velocity Acceleration"
+  },
+  {
+    "feature": "expenditure_ratio",
+    "real_paimana": true,
+    "time_varying": true,
+    "safe_for_prediction": true,
+    "source": "Cumulative Expenditure / Revised Budget"
+  },
+  {
+    "feature": "exp_progress_alignment",
+    "real_paimana": true,
+    "time_varying": true,
+    "safe_for_prediction": true,
+    "source": "Spending Velocity vs Execution Velocity"
+  },
+  {
+    "feature": "cost_growth_pct",
+    "real_paimana": true,
+    "time_varying": true,
+    "safe_for_prediction": true,
+    "source": "Observed Revision as of Cutoff T"
+  },
+  {
+    "feature": "progress_volatility",
+    "real_paimana": true,
+    "time_varying": true,
+    "safe_for_prediction": true,
+    "source": "Standard Deviation of Historical Progress Changes"
+  },
+  {
+    "feature": "consecutive_stagnant_periods",
+    "real_paimana": true,
+    "time_varying": true,
+    "safe_for_prediction": true,
+    "source": "Count of consecutive periods with < 0.5% progress"
+  },
+  {
+    "feature": "land_acquisition_percent",
+    "real_paimana": false,
+    "time_varying": false,
+    "safe_for_prediction": false,
+    "source": "PROHIBITED in Real PAIMANA (Synthetic AI Demo Only)"
+  },
+  {
+    "feature": "contractor_performance_score",
+    "real_paimana": false,
+    "time_varying": false,
+    "safe_for_prediction": false,
+    "source": "PROHIBITED in Real PAIMANA (Synthetic AI Demo Only)"
+  },
+  {
+    "feature": "labor_availability_score",
+    "real_paimana": false,
+    "time_varying": false,
+    "safe_for_prediction": false,
+    "source": "PROHIBITED in Real PAIMANA (Synthetic AI Demo Only)"
+  }
+]

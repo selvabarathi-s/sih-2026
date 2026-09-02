@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-PAIMANA PREDICT: MASTER MASTER MASTER MASTER MASTER MASTER TEST SUITE
-Runs Ingestion, Dataset Modes, Theme System, ML Benchmarks, Auth/RBAC, Database Persistence, and Full Stage 3 Multi-Role Workflows.
+PAIMANA PREDICT: UNIFIED COMPREHENSIVE PRODUCTION VERIFICATION SUITE
+Runs Ingestion, Dataset Modes, Theme System, ML Benchmarks, Auth/RBAC, Database Persistence, Stage 3 Workflows, Temporal ML, Backtesting, and Weak Signals.
 """
 
 import json
@@ -9,9 +9,12 @@ import os
 import sys
 import subprocess
 
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+
 def run_all_tests():
     print("==================================================")
-    print("PAIMANA PREDICT: MASTER MASTER MASTER MASTER MASTER TEST SUITE")
+    print("PAIMANA PREDICT: UNIFIED COMPREHENSIVE PRODUCTION VERIFICATION SUITE")
     print("==================================================")
     
     # 1. Core ML Model Metrics & Benchmarks
@@ -79,9 +82,24 @@ def run_all_tests():
     print("\n--- Running Stage 3 Multi-Role Workflows Suite ---")
     ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_stage3_workflows.py')])
     assert ret.returncode == 0, "Stage 3 Workflows tests failed!"
+
+    # 8. Stage 4 Temporal ML & Anti-Leakage Suite
+    print("\n--- Running Stage 4 Temporal ML & Anti-Leakage Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_temporal_ml.py')])
+    assert ret.returncode == 0, "Temporal ML tests failed!"
+
+    # 9. Stage 4 Temporal Backtesting Suite
+    print("\n--- Running Stage 4 Temporal Backtesting Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_backtesting.py')])
+    assert ret.returncode == 0, "Backtesting tests failed!"
+
+    # 10. Stage 4 Weak Signals, Anomaly & Momentum Suite
+    print("\n--- Running Stage 4 Weak Signals & Anomaly Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_weak_signals.py')])
+    assert ret.returncode == 0, "Weak Signals tests failed!"
     
     print("\n==================================================")
-    print("ALL 7 MASTER MASTER MASTER TEST SUITES COMPLETED AND PASSED (100% SUCCESS)!")
+    print("ALL 10 VERIFICATION SUITES COMPLETED AND PASSED (100% SUCCESS)!")
     print("==================================================")
 
 if __name__ == '__main__':

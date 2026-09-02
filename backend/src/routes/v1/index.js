@@ -12,6 +12,9 @@ import assistantRoutes from './assistantRoutes.js';
 import riskRoutes from './riskRoutes.js';
 import benchmarkingRoutes from './benchmarkingRoutes.js';
 import analyticsRoutes from './analyticsRoutes.js';
+import modelRoutes from './modelRoutes.js';
+import signalRoutes from './signalRoutes.js';
+import anomalyRoutes from './anomalyRoutes.js';
 
 const router = express.Router();
 
@@ -29,5 +32,10 @@ router.use('/assistant', assistantRoutes);
 router.use('/risk', riskRoutes);
 router.use('/benchmarking', benchmarkingRoutes);
 router.use('/analytics', analyticsRoutes);
+router.use('/models', modelRoutes);
+router.use('/signals', signalRoutes);
+router.use('/anomalies', anomalyRoutes);
+router.use('/backtests', modelRoutes);
+router.use('/features', modelRoutes);
 
 export default router;
