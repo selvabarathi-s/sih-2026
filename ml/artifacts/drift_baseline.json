@@ -1,0 +1,26 @@
+{
+  "baseline_dataset_version": "PAIMANA-APR2026-MULTI10",
+  "feature_distributions": {
+    "physical_progress": {
+      "mean": 52.75,
+      "std": 34.3,
+      "psi_threshold": 0.1
+    },
+    "progress_velocity_1m": {
+      "mean": 1.51,
+      "std": 5.13,
+      "psi_threshold": 0.1
+    },
+    "exp_progress_alignment": {
+      "mean": 98.48,
+      "std": 2270.36,
+      "psi_threshold": 0.15
+    },
+    "cost_growth_pct": {
+      "mean": 18.92,
+      "std": 74.22,
+      "psi_threshold": 0.1
+    }
+  },
+  "status": "MONITORING_ACTIVE"
+}

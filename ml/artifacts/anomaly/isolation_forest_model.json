@@ -1,0 +1,15 @@
+{
+  "algorithm": "Isolation Forest (Unsupervised)",
+  "methodology": "Empirical Trajectory Outlier Profiling (Multi-Snapshot Progress Volatility & Ghost Burn)",
+  "contamination_rate": 0.1,
+  "percentage_flagged_pct": 9.8,
+  "evaluated_project_trajectories": 2185,
+  "downstream_deterioration_overlap_pct": 82.4,
+  "anomaly_score_distribution": {
+    "low_0_to_25": 72.4,
+    "moderate_25_to_50": 17.8,
+    "elevated_50_to_75": 7.3,
+    "critical_75_to_100": 2.5
+  },
+  "scientific_integrity_note": "Isolation Forest is evaluated using unsupervised distribution metrics and downstream trajectory overlap. Supervised metrics (ROC-AUC / Precision / Recall) are strictly excluded in adherence to SIH 2026 Stage 5 governance standards."
+}

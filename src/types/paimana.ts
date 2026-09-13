@@ -25,6 +25,8 @@ export interface PaimanaProject {
   schedule_extension_months: number;
   is_cost_escalated: boolean;
   is_schedule_extended: boolean;
+  status?: string;
+  current_risk_state?: string;
   provenance: {
     source_document: string;
     report_period: string;
