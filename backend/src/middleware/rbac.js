@@ -6,6 +6,10 @@ import { ROLE_ALIASES } from '../models/userModel.js';
  */
 export const normalizeRole = (role) => {
   if (!role) return '';
+  if (typeof role !== 'string') {
+    if (Array.isArray(role)) return role.map(normalizeRole).join(',');
+    return String(role);
+  }
   return ROLE_ALIASES[role] || ROLE_ALIASES[role.toUpperCase()] || role.toLowerCase();
 };
 
@@ -51,7 +55,8 @@ export const requireAuth = (req, res, next) => {
  * Require specific user role(s) (403 Forbidden)
  */
 export const requireRole = (...allowedRoles) => {
-  const normalizedAllowed = allowedRoles.map(normalizeRole);
+  const flattened = allowedRoles.flat(Infinity);
+  const normalizedAllowed = flattened.map(normalizeRole);
   return (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({

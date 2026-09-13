@@ -3,7 +3,11 @@ import { auditService } from '../services/auditService.js';
 export const getAuditLogs = async (req, res, next) => {
   try {
     const logs = await auditService.getLogs(req.query);
-    res.status(200).json(logs);
+    res.status(200).json({
+      ...logs,
+      data: logs,
+      error: null,
+    });
   } catch (err) {
     next(err);
   }

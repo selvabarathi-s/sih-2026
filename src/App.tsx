@@ -15,6 +15,10 @@ import { DataHealthPage } from './pages/DataHealthPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { LoginPage } from './pages/LoginPage';
 import { UnauthorizedPage } from './pages/UnauthorizedPage';
+import { AsOfPredictionPage } from './pages/AsOfPredictionPage';
+import { InboxPage } from './pages/InboxPage';
+import { DataImportPage } from './pages/DataImportPage';
+import { QualityPage } from './pages/QualityPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 
 import { ThemeProvider } from './context/ThemeContext';
@@ -34,15 +38,19 @@ export function App() {
 
               {/* Main Application Layout with Strict RBAC Route Guards */}
               <Route path="/" element={<AppLayout />}>
-                {/* 1. Dashboard: Available to all authenticated users */}
+                {/* 1. Dashboard & Workload Inbox */}
                 <Route index element={<OverviewPage />} />
                 <Route path="overview" element={<Navigate to="/" replace />} />
+                <Route path="inbox" element={<InboxPage />} />
 
                 {/* 2. Projects Directory: Available to all authenticated users */}
                 <Route path="projects" element={<ProjectsPage />} />
                 <Route path="projects/:id" element={<ProjectDetailPage />} />
 
-                {/* 3. Monitoring Officer Workspace: Early Warnings & Risk Network */}
+                {/* 3. As-Of Historical Prediction Mode (Part 4) */}
+                <Route path="as-of-prediction" element={<AsOfPredictionPage />} />
+
+                {/* 4. Monitoring Officer Workspace: Early Warnings & Risk Network */}
                 <Route
                   path="early-warnings"
                   element={
@@ -66,7 +74,7 @@ export function App() {
                   }
                 />
 
-                {/* 4. Senior Decision Maker Workspace: Executive Risk Intelligence */}
+                {/* 5. Senior Decision Maker Workspace: Executive Risk Intelligence */}
                 <Route
                   path="risk-intelligence"
                   element={
@@ -79,26 +87,26 @@ export function App() {
                   }
                 />
 
-                {/* 5. Risk / Data Analyst Workspace: Predictions & ML Models */}
+                {/* 6. Risk / Data Analyst Workspace: Predictions & ML Models */}
                 <Route
                   path="predictions"
                   element={
                     <ProtectedRoute
-                      allowedRoles={['risk_analyst', 'DATA_ANALYST', 'senior_decision_maker', 'DECISION_MAKER', 'system_admin', 'SYSTEM_ADMIN']}
-                      requiredRoleLabel="Risk / Data Analyst (ML Models & Trends)"
+                      allowedRoles={['risk_analyst', 'DATA_ANALYST', 'ai_governance', 'AI_GOVERNANCE', 'senior_decision_maker', 'DECISION_MAKER', 'system_admin', 'SYSTEM_ADMIN']}
+                      requiredRoleLabel="Risk / Data Analyst / AI Governance"
                     >
                       <PredictionsPage />
                     </ProtectedRoute>
                   }
                 />
 
-                {/* 6. Analytics & Sector Benchmarking */}
+                {/* 7. Analytics & Sector Benchmarking */}
                 <Route
                   path="benchmarking"
                   element={
                     <ProtectedRoute
-                      allowedRoles={['risk_analyst', 'DATA_ANALYST', 'senior_decision_maker', 'DECISION_MAKER', 'monitoring_officer', 'MONITORING_OFFICER', 'system_admin', 'SYSTEM_ADMIN']}
-                      requiredRoleLabel="Risk Analyst / Decision Maker"
+                      allowedRoles={['risk_analyst', 'DATA_ANALYST', 'ai_governance', 'AI_GOVERNANCE', 'senior_decision_maker', 'DECISION_MAKER', 'monitoring_officer', 'MONITORING_OFFICER', 'system_admin', 'SYSTEM_ADMIN']}
+                      requiredRoleLabel="Risk Analyst / AI Governance / Decision Maker"
                     >
                       <BenchmarkingPage />
                     </ProtectedRoute>
@@ -116,16 +124,16 @@ export function App() {
                   }
                 />
 
-                {/* 7. PAIMANA Assistant */}
+                {/* 8. PAIMANA Grounded Intelligence Copilot */}
                 <Route path="assistant" element={<AssistantPage />} />
 
-                {/* 8. System Administrator Workspace: Data Health & Settings / Audit */}
+                {/* 9. System Administrator Workspace: Data Health & Settings / Audit */}
                 <Route
                   path="data-health"
                   element={
                     <ProtectedRoute
-                      allowedRoles={['system_admin', 'SYSTEM_ADMIN', 'risk_analyst', 'DATA_ANALYST']}
-                      requiredRoleLabel="System Administrator (Admin & Audit Trail)"
+                      allowedRoles={['system_admin', 'SYSTEM_ADMIN', 'risk_analyst', 'DATA_ANALYST', 'data_officer', 'DATA_OFFICER', 'ai_governance', 'AI_GOVERNANCE', 'security_officer', 'SECURITY_OFFICER']}
+                      requiredRoleLabel="System Administrator / Data Health"
                     >
                       <DataHealthPage />
                     </ProtectedRoute>
@@ -135,13 +143,27 @@ export function App() {
                   path="settings"
                   element={
                     <ProtectedRoute
-                      allowedRoles={['system_admin', 'SYSTEM_ADMIN']}
-                      requiredRoleLabel="System Administrator (Admin & Audit Trail)"
+                      allowedRoles={['system_admin', 'SYSTEM_ADMIN', 'security_officer', 'SECURITY_OFFICER']}
+                      requiredRoleLabel="System Administrator / Security Officer"
                     >
                       <SettingsPage />
                     </ProtectedRoute>
                   }
                 />
+
+                {/* 10. Governed Ingestion & Quality Assurance */}
+                <Route
+                  path="imports"
+                  element={
+                    <ProtectedRoute
+                      allowedRoles={['system_admin', 'SYSTEM_ADMIN', 'data_officer', 'DATA_OFFICER', 'monitoring_officer', 'MONITORING_OFFICER', 'risk_analyst', 'DATA_ANALYST']}
+                      requiredRoleLabel="System Admin / Data Officer / Monitoring Officer"
+                    >
+                      <DataImportPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="quality" element={<QualityPage />} />
 
                 {/* Catch-all route redirects to overview */}
                 <Route path="*" element={<Navigate to="/" replace />} />

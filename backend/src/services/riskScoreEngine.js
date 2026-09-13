@@ -1,18 +1,18 @@
 /**
- * PAIMANA PREDICT — RISK SCORE AS PRIMARY PROJECT PRIORITIZATION ENGINE
+ * PAIMANA PREDICT — DYNAMIC RISK-INTELLIGENCE & PRIORITIZATION ENGINE (Parts 2, 3, 9)
  * 
- * Formal 0–100 Operational Risk Scoring Engine.
- * Combines 6 transparent dimensions with governed weights, risk bands, momentum, and tie-breaking.
+ * Formal 0–100 Operational Risk Scoring Engine combining:
+ * 1. Observable Project Signals (Schedule, Cost, Velocity, Decoupling, ML, Anomalies)
+ * 2. Multi-Period Risk Momentum (Stable, Improving, Deteriorating, Rapid Deterioration, Critical Acceleration, Recovering)
+ * 3. Forward Risk Transitions (30-day, 60-day, 90-day Horizon Forecasts)
+ * 4. Epistemic Prediction Confidence (Factoring Data Completeness, Snapshot Depth, Stability)
+ * 5. Project Criticality & Intervention Priority (Capital Scale, Strategic Sector, Urgency)
  * 
- * Dimensions:
- * A. Schedule Risk (25%)
- * B. Cost Risk (20%)
- * C. Progress / Deterioration Risk (20%)
- * D. Expenditure Trajectory Risk (15%)
- * E. Predictive Risk Signal (15%)
- * F. Anomaly / Weak Signal Risk (5%)
- * Total = 100%
+ * Engine Version: risk-v2.3-dynamic
  */
+
+import { calculatePredictionConfidence } from './confidenceEngine.js';
+import { calculateProjectPriority } from './priorityEngine.js';
 
 export const RISK_BANDS = {
   LOW: { label: 'LOW', min: 0, max: 24, color: 'emerald' },
@@ -39,12 +39,78 @@ export function classifyRiskBand(score) {
 }
 
 /**
- * Calculates normalized 0-100 dimension scores and composite Risk Score for a project.
- * Supports both REAL_PAIMANA mode and enriched AI_DEMONSTRATION mode.
+ * Computes forward risk transitions for 30d, 60d, and 90d horizons.
+ */
+export function projectRiskTransitions(currentScore, momentumCategory, acceleration = 0) {
+  let delta30 = 0;
+  let delta60 = 0;
+  let delta90 = 0;
+
+  switch (momentumCategory) {
+    case 'CRITICAL_ACCELERATION':
+      delta30 = +6;
+      delta60 = +13;
+      delta90 = +20;
+      break;
+    case 'RAPID_DETERIORATION':
+      delta30 = +4;
+      delta60 = +9;
+      delta90 = +14;
+      break;
+    case 'DETERIORATING':
+      delta30 = +2;
+      delta60 = +5;
+      delta90 = +8;
+      break;
+    case 'RECOVERING':
+      delta30 = -3;
+      delta60 = -7;
+      delta90 = -12;
+      break;
+    case 'IMPROVING':
+      delta30 = -2;
+      delta60 = -4;
+      delta90 = -7;
+      break;
+    case 'STABLE':
+    default:
+      delta30 = 0;
+      delta60 = +1;
+      delta90 = +2;
+      break;
+  }
+
+  const score30 = Math.max(0, Math.min(100, Math.round(currentScore + delta30)));
+  const score60 = Math.max(0, Math.min(100, Math.round(currentScore + delta60)));
+  const score90 = Math.max(0, Math.min(100, Math.round(currentScore + delta90)));
+
+  return {
+    current: classifyRiskBand(currentScore),
+    horizon30d: {
+      projectedScore: score30,
+      state: classifyRiskBand(score30),
+      delta: delta30,
+    },
+    horizon60d: {
+      projectedScore: score60,
+      state: classifyRiskBand(score60),
+      delta: delta60,
+    },
+    horizon90d: {
+      projectedScore: score90,
+      state: classifyRiskBand(score90),
+      delta: delta90,
+    },
+  };
+}
+
+/**
+ * Calculates normalized 0-100 dimension scores, composite Risk Score, Momentum, and Confidence.
  */
 export function calculateProjectRiskScore(project, options = {}) {
   const dataMode = options.dataMode || project.data_mode || 'REAL_PAIMANA';
-  const isSyntheticDemo = dataMode === 'AI_DEMONSTRATION';
+  const isSyntheticDemo = dataMode === 'AI_DEMO' || dataMode === 'AI_DEMONSTRATION';
+  const snapshots = options.snapshots || [];
 
   // -------------------------------------------------------------
   // 1. Dimension A: Schedule Risk (0-100) — Weight: 25%
@@ -52,7 +118,6 @@ export function calculateProjectRiskScore(project, options = {}) {
   const extensionMonths = Number(project.schedule_extension_months || 0);
   let scheduleScore = 0;
   if (extensionMonths > 0) {
-    // 60+ months delay reaches 100/100
     scheduleScore = Math.min(100, Math.round((extensionMonths / 60) * 100));
   } else if (project.is_schedule_extended) {
     scheduleScore = 30;
@@ -67,10 +132,8 @@ export function calculateProjectRiskScore(project, options = {}) {
   const costGrowthPct = Number(project.cost_growth_pct || 0);
   let costScore = 0;
   if (costGrowthPct > 0) {
-    // 150%+ cost growth reaches 100/100
     costScore = Math.min(100, Math.round((costGrowthPct / 150) * 100));
   }
-  // If absolute cost overrun exceeds ₹10,000 Cr, minimum cost risk of 50
   const overrunCr = Number(project.cost_overrun_cr || 0);
   if (overrunCr > 10000) {
     costScore = Math.max(costScore, 65);
@@ -84,15 +147,13 @@ export function calculateProjectRiskScore(project, options = {}) {
   const physicalProgress = Number(project.physical_progress || 0);
   let progressScore = 0;
   
-  // Progress lag evaluation
   if (physicalProgress < 20 && extensionMonths > 12) {
-    progressScore = 90; // Stagnant early-stage mega-delay
+    progressScore = 90;
   } else if (physicalProgress < 50 && extensionMonths > 24) {
     progressScore = 80;
   } else if (physicalProgress < 75 && extensionMonths > 36) {
     progressScore = 70;
   } else {
-    // Inverse progress with extension ratio
     progressScore = Math.min(100, Math.round(Math.max(0, 100 - physicalProgress) * (extensionMonths > 0 ? 0.8 : 0.2)));
   }
 
@@ -106,13 +167,10 @@ export function calculateProjectRiskScore(project, options = {}) {
   const expRatio = Number(project.expenditure_ratio_pct || 0);
   let expenditureScore = 0;
 
-  // Capital disconnect: spending vs physical delivery
   const disconnect = Math.abs(expRatio - physicalProgress);
   if (expRatio > 80 && physicalProgress < 50) {
-    // High expenditure without matching physical delivery -> Severe capital burn risk
     expenditureScore = Math.min(100, 75 + Math.round(disconnect * 0.4));
   } else if (expRatio < 20 && extensionMonths > 24) {
-    // Stalled financial execution despite long elapsed schedule
     expenditureScore = 70;
   } else {
     expenditureScore = Math.min(100, Math.round(disconnect * 1.2));
@@ -125,7 +183,6 @@ export function calculateProjectRiskScore(project, options = {}) {
     ? Number(project.predictive_probability) 
     : (project.predicted_delay_months ? Math.min(1.0, project.predicted_delay_months / 12) : 0.5);
   
-  // Default calibrated baseline prediction if not present
   if (project.predictedProbability !== undefined) {
     predictiveProbability = Number(project.predictedProbability);
   }
@@ -175,7 +232,9 @@ export function calculateProjectRiskScore(project, options = {}) {
   const riskScore = Math.max(0, Math.min(100, Math.round(rawScore)));
   const riskBand = classifyRiskBand(riskScore);
 
-  // Identify Top Primary Risk Drivers
+  // -------------------------------------------------------------
+  // Risk Drivers
+  // -------------------------------------------------------------
   const drivers = [];
   if (costScore >= 50) {
     drivers.push({
@@ -200,14 +259,14 @@ export function calculateProjectRiskScore(project, options = {}) {
   }
   if (expenditureScore >= 50) {
     drivers.push({
-      dimension: 'Capital Burn Asymmetry',
+      dimension: 'Capital Burn Decoupling',
       severity: expenditureScore >= 75 ? 'CRITICAL' : 'HIGH',
       description: `Expenditure ratio (${expRatio}%) disconnected from physical delivery (${physicalProgress}%)`,
     });
   }
   if (predictiveScore >= 60) {
     drivers.push({
-      dimension: 'Predictive Horizon Risk',
+      dimension: 'Predictive Horizon Signal',
       severity: predictiveScore >= 80 ? 'CRITICAL' : 'HIGH',
       description: `${predictiveScore}% probability of 90-day adverse deterioration event`,
     });
@@ -216,32 +275,81 @@ export function calculateProjectRiskScore(project, options = {}) {
     drivers.push({
       dimension: 'Normal Operational Surveillance',
       severity: 'LOW',
-      description: 'Project metrics within acceptable tolerance bands',
+      description: 'Project telemetry within standard milestone tolerances',
     });
   }
 
-  // Momentum determination
+  // -------------------------------------------------------------
+  // Multi-Period Risk Momentum (Part 2B)
+  // 6 Standardized Categories:
+  // STABLE, IMPROVING, DETERIORATING, RAPID_DETERIORATION, CRITICAL_ACCELERATION, RECOVERING
+  // -------------------------------------------------------------
   let momentumCategory = 'STABLE';
-  let trajectory = 'Stable execution velocity.';
-  if (project.risk_momentum) {
-    momentumCategory = project.risk_momentum;
-  } else if (costGrowthPct > 50 || extensionMonths > 36 || progressScore > 70) {
-    momentumCategory = 'RAPIDLY_DETERIORATING';
-    trajectory = 'Rapid deterioration: Execution velocity decelerating sharply.';
+  let trajectory = 'Stable execution velocity across available reporting snapshots.';
+  let acceleration = 0;
+
+  if (snapshots.length >= 3) {
+    const sorted = [...snapshots].sort((a, b) => (a.report_date_key || '').localeCompare(b.report_date_key || ''));
+    const p0 = Number(sorted[sorted.length - 1].physical_progress || 0);
+    const p1 = Number(sorted[sorted.length - 2].physical_progress || p0);
+    const p2 = Number(sorted[sorted.length - 3].physical_progress || p1);
+    const v1 = p0 - p1;
+    const v2 = p1 - p2;
+    acceleration = Number((v1 - v2).toFixed(2));
+
+    if (acceleration < -2.0 || (v1 < 0.2 && costGrowthPct > 50)) {
+      momentumCategory = 'CRITICAL_ACCELERATION';
+      trajectory = 'Critical deceleration: Velocity stalled while overhead compounding.';
+    } else if (acceleration < -1.0) {
+      momentumCategory = 'RAPID_DETERIORATION';
+      trajectory = 'Rapid deterioration: Execution velocity decelerating sharply.';
+    } else if (acceleration < -0.2 || v1 < 0.5) {
+      momentumCategory = 'DETERIORATING';
+      trajectory = 'Moderate deterioration: Pacing slower than preceding cycles.';
+    } else if (acceleration > 2.0 && v1 > 3.0) {
+      momentumCategory = 'RECOVERING';
+      trajectory = 'Active recovery: Rapid pace acceleration across latest reporting periods.';
+    } else if (acceleration > 0.5) {
+      momentumCategory = 'IMPROVING';
+      trajectory = 'Improving: Positive delivery acceleration observed.';
+    }
+  } else if (costGrowthPct > 100 || extensionMonths > 48) {
+    momentumCategory = 'CRITICAL_ACCELERATION';
+    trajectory = 'Severe long-term divergence: Over 100% cost growth recorded.';
+  } else if (costGrowthPct > 40 || extensionMonths > 24) {
+    momentumCategory = 'RAPID_DETERIORATION';
+    trajectory = 'Rapid deterioration: Substantial revision over baseline schedule.';
   } else if (costGrowthPct > 15 || extensionMonths > 12) {
     momentumCategory = 'DETERIORATING';
-    trajectory = 'Moderate deterioration: Progress lagging baseline schedule.';
+    trajectory = 'Moderate lag against initial targets.';
   }
 
   const momentumObj = {
     momentumCategory,
     category: momentumCategory,
+    acceleration,
     trajectory,
     trend: momentumCategory,
   };
 
+  // -------------------------------------------------------------
+  // Forward Risk Transitions (Part 2C: 30d, 60d, 90d)
+  // -------------------------------------------------------------
+  const transitions = projectRiskTransitions(riskScore, momentumCategory, acceleration);
+
+  // -------------------------------------------------------------
+  // Epistemic Prediction Confidence (Part 3)
+  // -------------------------------------------------------------
+  const confidence = calculatePredictionConfidence(project, snapshots, options);
+
+  // -------------------------------------------------------------
+  // Project Criticality & Intervention Priority (Part 9)
+  // -------------------------------------------------------------
+  const priority = calculateProjectPriority(project, { riskScore, momentumCategory }, options);
+
   return {
-    projectId: project.project_id || project.project_code,
+    projectId: project.project_id || (project.project_code ? `PAI-${project.project_code}` : 'UNKNOWN'),
+    projectCode: project.project_code,
     projectName: project.project_name,
     sector: project.sector,
     ministry: project.ministry,
@@ -250,6 +358,20 @@ export function calculateProjectRiskScore(project, options = {}) {
     riskBand,
     riskMomentum: momentumCategory,
     momentum: momentumObj,
+    transitions,
+    confidence: {
+      score: confidence.confidenceScore,
+      reliabilityLevel: confidence.reliabilityLevel,
+      completenessScore: confidence.completenessScore,
+      snapshotDepth: confidence.snapshotDepth,
+      warnings: confidence.warnings,
+    },
+    priority: {
+      priorityScore: priority.priorityScore,
+      priorityBand: priority.priorityBand,
+      priorityLabel: priority.priorityLabel,
+      criticalityScore: priority.criticalityScore,
+    },
     dimensions: {
       schedule: weightedSchedule,
       cost: weightedCost,
@@ -257,7 +379,6 @@ export function calculateProjectRiskScore(project, options = {}) {
       expenditure: weightedExpenditure,
       predictive: weightedPredictive,
       weakSignal: weightedWeakSignal,
-      // Raw unweighted 0-100 scores
       raw: {
         schedule: scheduleScore,
         cost: costScore,
@@ -270,13 +391,14 @@ export function calculateProjectRiskScore(project, options = {}) {
     },
     drivers,
     predictiveProbability,
-    revisedCostCr: project.revised_cost,
+    revisedCostCr: Number(project.revised_cost || project.revisedCostCr || 0),
+    originalCostCr: Number(project.original_cost || project.originalCostCr || 0),
     costOverrunCr: overrunCr,
     scheduleExtensionMonths: extensionMonths,
     physicalProgress,
     expenditureRatioPct: expRatio,
     dataMode,
-    engineVersion: 'risk-v2.2-prioritization',
+    engineVersion: 'risk-v2.3-dynamic',
     calculatedAt: new Date().toISOString(),
     provenance: {
       source: 'PAIMANA Table 6 Grounded Ingestion Engine',
@@ -288,14 +410,16 @@ export function calculateProjectRiskScore(project, options = {}) {
 
 /**
  * Deterministic Comparator for Sorting & Tie-Breaking
- * Sorts primarily by Risk Score (DESC).
- * Tie-Breaks using:
- * 1. Predictive probability (DESC)
- * 2. Revised cost / financial exposure (DESC)
- * 3. Schedule extension months (DESC)
+ * Supports sorting by riskScore, priorityScore, criticalityScore, costExposure, or delayMonths.
  */
-export function compareProjectsByRisk(a, b, order = 'desc') {
+export function compareProjectsByRisk(a, b, order = 'desc', sortField = 'riskScore') {
   const mult = order === 'asc' ? 1 : -1;
+
+  if (sortField === 'priority' || sortField === 'priorityScore') {
+    const pA = a.priority?.priorityScore ?? (a.priorityScore || 0);
+    const pB = b.priority?.priorityScore ?? (b.priorityScore || 0);
+    if (pA !== pB) return mult * (pA - pB);
+  }
 
   const scoreA = a.riskScore !== undefined ? a.riskScore : (a.risk_score || 0);
   const scoreB = b.riskScore !== undefined ? b.riskScore : (b.risk_score || 0);
@@ -311,7 +435,7 @@ export function compareProjectsByRisk(a, b, order = 'desc') {
     return mult * (probA - probB);
   }
 
-  // Tie-break 2: Cost Exposure / Revised Cost
+  // Tie-break 2: Cost Exposure
   const costA = Number(a.revisedCostCr || a.revised_cost || 0);
   const costB = Number(b.revisedCostCr || b.revised_cost || 0);
   if (costA !== costB) {

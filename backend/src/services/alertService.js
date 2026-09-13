@@ -92,6 +92,10 @@ class AlertService {
       updatedAt: new Date().toISOString(),
     };
   }
+
+  async getAlerts(filters = {}) {
+    return this.getDeteriorationSignals(filters);
+  }
 }
 
 export const alertService = new AlertService();

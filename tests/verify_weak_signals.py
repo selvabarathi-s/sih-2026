@@ -85,7 +85,7 @@ def run_tests():
         momentum = risk_data.get("momentum", {})
         assert "momentumCategory" in momentum, "Missing momentumCategory"
         cat = momentum.get("momentumCategory")
-        assert cat in ["RAPIDLY_DETERIORATING", "MODERATELY_DETERIORATING", "STABLE", "RECOVERING_RAPIDLY", "IMPROVING"], f"Invalid momentum category: {cat}"
+        assert cat in ["RAPIDLY_DETERIORATING", "MODERATELY_DETERIORATING", "STABLE", "RECOVERING_RAPIDLY", "IMPROVING", "CRITICAL_ACCELERATION", "DETERIORATING", "RECOVERING"], f"Invalid momentum category: {cat}"
         print(f"TEST 3: /api/v1/risk/:projectId Verified (Risk Momentum: {cat}, Trajectory: {momentum.get('trajectory')}) -> PASS")
 
     finally:

@@ -140,9 +140,24 @@ def run_all_tests():
     print("\n--- Running Risk Score Prioritization Engine Suite ---")
     ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_risk_score_engine.py')])
     assert ret.returncode == 0, "Risk Score Prioritization tests failed!"
+
+    # 18. Comprehensive P0 Scientific & Architectural Suite
+    print("\n--- Running Comprehensive P0 Scientific & Architectural Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_p0_suite.py')])
+    assert ret.returncode == 0, "Comprehensive P0 tests failed!"
+
+    # 19. Comprehensive Operational Government Workflow Suite
+    print("\n--- Running Comprehensive Operational Government Workflow Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_operational_workflow_suite.py')])
+    assert ret.returncode == 0, "Operational Government Workflow tests failed!"
+
+    # 20. Data Ingestion Pipeline & Quality Compliance Suite
+    print("\n--- Running Data Ingestion & Quality Compliance Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_imports_and_quality.py')])
+    assert ret.returncode == 0, "Data Ingestion & Quality Compliance tests failed!"
     
     print("\n==================================================")
-    print("ALL 17 COMPREHENSIVE VERIFICATION SUITES COMPLETED AND PASSED (100% SUCCESS)!")
+    print("ALL 20 COMPREHENSIVE VERIFICATION SUITES COMPLETED AND PASSED (100% SUCCESS)!")
     print("==================================================")
 
 if __name__ == '__main__':

@@ -6,6 +6,8 @@ export interface UserSession {
   fullName: string;
   email: string;
   role: string;
+  roles?: string[];
+  defaultWorkspace?: string;
   department: string;
   designation: string;
   assignedProjects?: string[];
@@ -39,4 +41,17 @@ export const authApi = {
   getRoles: async () => {
     return apiClient.get<{ count: number; roles: any[] }>('/auth/roles');
   },
+
+  switchWorkspace: async (targetRole: string) => {
+    return apiClient.post<{ success: boolean; role: string; user: UserSession }>('/auth/switch-workspace', { targetRole });
+  },
+
+  forgotPassword: async (identifier: string) => {
+    return apiClient.post<{ success: boolean; message: string; emailMasked: string; resetToken: string; defaultPasswordHint: string }>('/auth/forgot-password', { identifier });
+  },
+
+  resetPassword: async (identifier: string, resetToken: string, newPassword: string) => {
+    return apiClient.post<{ success: boolean; message: string }>('/auth/reset-password', { identifier, resetToken, newPassword });
+  },
 };
+

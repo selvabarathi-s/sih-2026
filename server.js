@@ -5,6 +5,8 @@ import { createApp } from './backend/src/app.js';
 import { config } from './backend/src/config/index.js';
 import { errorHandler } from './backend/src/middleware/errorHandler.js';
 
+import { automationWorker } from './backend/src/services/automationWorker.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -35,11 +37,15 @@ const server = app.listen(config.port, config.host, () => {
   console.log(`• Data Health: http://${config.host}:${config.port}/health/data`);
   console.log(`• ML Health:   http://${config.host}:${config.port}/health/ml`);
   console.log(`================================================================================`);
+
+  // Start background automation daemon
+  automationWorker.start(60000);
 });
 
 // Graceful shutdown handling
 process.on('SIGTERM', () => {
   console.log('SIGTERM signal received: closing HTTP server');
+  automationWorker.stop();
   server.close(() => {
     console.log('HTTP server closed');
   });

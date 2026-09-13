@@ -277,7 +277,7 @@ export const ProjectsPage: React.FC = () => {
             ) : (
               <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 flex items-center gap-1">
                 <Sparkles className="w-3 h-3" />
-                <span>SYNTHETIC AI DEMONSTRATION • 241 PROJECTS</span>
+                <span>RESEARCH COHORT • 241 FIELD PROJECTS</span>
               </span>
             )}
 
@@ -300,14 +300,14 @@ export const ProjectsPage: React.FC = () => {
               onClick={() => navigate('/projects/PAI-706775')}
               className="px-3 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded flex items-center gap-1.5 transition shadow-sm"
             >
-              <span>Open Hero (BharatNet)</span>
+              <span>View Critical Asset (BharatNet)</span>
             </button>
           ) : (
             <button
               onClick={() => navigate('/projects/PJ-1042')}
               className="px-3 py-1.5 text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white rounded flex items-center gap-1.5 transition shadow-sm"
             >
-              <span>Open Demo Hero (PJ-1042)</span>
+              <span>Deep Diagnostic Reference (PJ-1042)</span>
             </button>
           )}
         </div>

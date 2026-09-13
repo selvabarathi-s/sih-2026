@@ -22,7 +22,12 @@ export const login = async (req, res, next) => {
       ipAddress: req.ip || req.connection?.remoteAddress || '127.0.0.1',
     });
 
-    res.status(200).json(result);
+    res.status(200).json({
+      token: result.token,
+      user: result.user,
+      data: result,
+      error: null,
+    });
   } catch (err) {
     res.status(401).json({ error: err.message || 'Authentication failed' });
   }
@@ -151,3 +156,78 @@ export const updateUserRole = async (req, res, next) => {
     next(err);
   }
 };
+
+export const forgotPassword = async (req, res, next) => {
+  try {
+    const { identifier } = req.body || {};
+    if (!identifier) {
+      return res.status(400).json({ error: 'Username or official government email is required' });
+    }
+
+    const result = await authService.forgotPassword(identifier);
+    await auditService.logEvent({
+      action: 'PASSWORD_RESET_REQUESTED',
+      userId: identifier,
+      userRole: 'AUTH',
+      resourceType: 'AUTH',
+      resourceId: identifier,
+      details: { identifier },
+      ipAddress: req.ip || '127.0.0.1',
+    });
+
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(404).json({ error: err.message || 'Credential recovery failed' });
+  }
+};
+
+export const resetPassword = async (req, res, next) => {
+  try {
+    const { identifier, resetToken, newPassword } = req.body || {};
+    if (!resetToken || !newPassword) {
+      return res.status(400).json({ error: 'Reset token and new password are required' });
+    }
+
+    const result = await authService.resetPassword(identifier, resetToken, newPassword);
+    await auditService.logEvent({
+      action: 'PASSWORD_RESET_COMPLETED',
+      userId: identifier || 'RECOVERED_USER',
+      userRole: 'AUTH',
+      resourceType: 'AUTH',
+      resourceId: resetToken,
+      details: { identifier },
+      ipAddress: req.ip || '127.0.0.1',
+    });
+
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(400).json({ error: err.message || 'Failed to update password' });
+  }
+};
+
+export const switchWorkspace = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization || req.headers['x-auth-token'];
+    const { targetRole } = req.body || {};
+    if (!targetRole) {
+      return res.status(400).json({ error: 'targetRole is required' });
+    }
+
+    const result = await authService.switchWorkspace(authHeader, targetRole);
+    await auditService.logEvent({
+      action: 'WORKSPACE_SWITCHED',
+      userId: req.user?.userId || req.user?.id,
+      userRole: targetRole,
+      resourceType: 'WORKSPACE',
+      resourceId: targetRole,
+      details: { previousRole: req.user?.role, targetRole },
+      ipAddress: req.ip || '127.0.0.1',
+    });
+
+    res.status(200).json(result);
+  } catch (err) {
+    const status = err.statusCode || 400;
+    res.status(status).json({ error: err.message || 'Failed to switch workspace' });
+  }
+};
+

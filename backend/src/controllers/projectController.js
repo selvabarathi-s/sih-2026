@@ -1,4 +1,7 @@
 import { projectService } from '../services/projectService.js';
+import { projectSimilarityService } from '../services/projectSimilarityService.js';
+import { calculateResilienceAndFragility } from '../services/resilienceService.js';
+import { calculatePredictionConfidence } from '../services/confidenceEngine.js';
 
 export const listProjects = async (req, res, next) => {
   try {
@@ -57,6 +60,49 @@ export const getProjectHistory = async (req, res, next) => {
         count: snapshots.length,
         snapshot_depth: '10 monthly reporting periods (Oct 2025 - Jul 2026)',
       },
+      error: null,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getProjectSimilar = async (req, res, next) => {
+  try {
+    const result = await projectSimilarityService.findSimilarProjects(req.params.id);
+    res.status(200).json({
+      data: result,
+      meta: { methodology: 'nearest-neighbor-affinity' },
+      error: null,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getProjectResilience = async (req, res, next) => {
+  try {
+    const project = await projectService.getProjectDetails(req.params.id);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+    const snapshots = await projectService.getProjectSnapshots(req.params.id);
+    const result = calculateResilienceAndFragility(project, snapshots);
+    res.status(200).json({
+      data: result,
+      error: null,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getProjectConfidence = async (req, res, next) => {
+  try {
+    const project = await projectService.getProjectDetails(req.params.id);
+    if (!project) return res.status(404).json({ error: 'Project not found' });
+    const snapshots = await projectService.getProjectSnapshots(req.params.id);
+    const result = calculatePredictionConfidence(project, snapshots);
+    res.status(200).json({
+      data: result,
       error: null,
     });
   } catch (err) {

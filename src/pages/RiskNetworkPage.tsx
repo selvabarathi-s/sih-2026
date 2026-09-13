@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { projectService } from '../services/projectService';
 import { riskNetworkService } from '../services/riskNetworkService';
@@ -16,6 +16,9 @@ import {
   CheckCircle2,
   ExternalLink,
   ChevronRight,
+  Sliders,
+  AlertTriangle,
+  RefreshCw,
 } from 'lucide-react';
 
 export const RiskNetworkPage: React.FC = () => {
@@ -29,6 +32,35 @@ export const RiskNetworkPage: React.FC = () => {
   const [selectedNodeId, setSelectedNodeId] = useState<string>(
     chain.nodes[0]?.id || 'node-root-land'
   );
+
+  // Systemic Inter-Project Ripple Simulator State
+  const [upstreamDelayMonths, setUpstreamDelayMonths] = useState<number>(6);
+  const [upstreamProjectKey, setUpstreamProjectKey] = useState<string>('PAI-705728');
+  const [cascadeResult, setCascadeResult] = useState<any>(null);
+  const [isSimulating, setIsSimulating] = useState<boolean>(false);
+
+  useEffect(() => {
+    runCascadeSimulation(upstreamProjectKey, upstreamDelayMonths);
+  }, [upstreamProjectKey, upstreamDelayMonths]);
+
+  const runCascadeSimulation = async (projId: string, delayMonths: number) => {
+    setIsSimulating(true);
+    try {
+      const res = await fetch(`/api/v1/dependencies/projects/${projId}/cascade`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ additionalDelayMonths: delayMonths }),
+      });
+      const json = await res.json();
+      if (json.data) {
+        setCascadeResult(json.data);
+      }
+    } catch (err) {
+      console.error('Failed to run cascade simulation', err);
+    } finally {
+      setIsSimulating(false);
+    }
+  };
 
   const selectedNode = chain.nodes.find(n => n.id === selectedNodeId) || chain.nodes[0];
 
@@ -324,6 +356,143 @@ export const RiskNetworkPage: React.FC = () => {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Systemic Inter-Project Dependency & Delay Ripple Simulator */}
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-6 shadow-sm space-y-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800 font-mono">
+                Systemic Network Topology
+              </span>
+              <span className="text-xs text-slate-400">•</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">GatiShakti Multi-Project Interfaces</span>
+            </div>
+            <h2 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2">
+              <GitFork className="w-5 h-5 text-purple-600" />
+              <span>Inter-Project Dependency & Cascading Delay Simulator (Sections 58–60)</span>
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-3xl">
+              Model cross-project interface frictions. When an upstream corridor project slips, contractual and physical interfaces cascade downstream into dependent projects once buffer thresholds are breached.
+            </p>
+          </div>
+
+          {/* Trigger Controls */}
+          <div className="flex flex-wrap items-center gap-3 bg-slate-50 dark:bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-slate-800 font-mono text-xs">
+            <div>
+              <label className="block text-[10px] text-slate-400 uppercase font-bold mb-1">Upstream Bottleneck</label>
+              <select
+                value={upstreamProjectKey}
+                onChange={e => setUpstreamProjectKey(e.target.value)}
+                aria-label="Select Upstream Bottleneck Project"
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded px-2.5 py-1 text-xs text-slate-900 dark:text-white font-mono"
+              >
+                <option value="PAI-705728">PAI-705728: Mumbai-Ahmedabad High Speed Rail</option>
+                <option value="PAI-704992">PAI-704992: Western Dedicated Freight Corridor</option>
+              </select>
+            </div>
+
+            <div className="w-48">
+              <div className="flex justify-between text-[10px] text-slate-400 uppercase font-bold mb-1">
+                <span>Simulated Delay</span>
+                <span className="text-purple-600 font-extrabold">+{upstreamDelayMonths} Mos</span>
+              </div>
+              <input
+                type="range"
+                min="1"
+                max="18"
+                step="1"
+                value={upstreamDelayMonths}
+                onChange={e => setUpstreamDelayMonths(parseInt(e.target.value))}
+                aria-label="Upstream Delay Extension in Months"
+                className="w-full accent-purple-600 cursor-pointer h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg"
+              />
+            </div>
+
+            {isSimulating && <RefreshCw className="w-4 h-4 text-purple-600 animate-spin" />}
+          </div>
+        </div>
+
+        {/* Cascade Simulation Results */}
+        {cascadeResult && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono">
+              <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Cascading Impact Count</span>
+                <div className="flex items-baseline gap-2 mt-1">
+                  <span className="text-2xl font-extrabold text-purple-600 dark:text-purple-400">
+                    {cascadeResult.cascadingImpactCount}
+                  </span>
+                  <span className="text-xs text-slate-400">Dependent Project(s) Breached</span>
+                </div>
+              </div>
+
+              <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Max Buffer Exceeded</span>
+                <div className="flex items-baseline gap-2 mt-1">
+                  <span className="text-2xl font-extrabold text-orange-600 dark:text-orange-400">
+                    +{Math.max(...(cascadeResult.impactedProjects || []).map((p: any) => p.bufferExceededMonths), 0)} Mos
+                  </span>
+                  <span className="text-xs text-slate-400">Net schedule slippage</span>
+                </div>
+              </div>
+
+              <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Portfolio Financial Exposure</span>
+                <div className="flex items-baseline gap-2 mt-1">
+                  <span className="text-2xl font-extrabold text-red-600 dark:text-red-400">
+                    ₹{(cascadeResult.impactedProjects || []).reduce((acc: number, p: any) => acc + (p.estimatedFinancialImpactCr || 0), 0).toFixed(1)} Cr
+                  </span>
+                  <span className="text-xs text-slate-400">Secondary cost drag</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Impacted Downstream Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {(cascadeResult.impactedProjects || []).map((proj: any) => (
+                <div
+                  key={proj.downstreamProjectId}
+                  className="p-5 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800 space-y-3 font-mono"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-blue-600 dark:text-blue-400">
+                        {proj.downstreamProjectId}
+                      </span>
+                      <span className="px-2 py-0.5 rounded text-[10px] bg-red-50 dark:bg-red-950 text-red-600 border border-red-200 dark:border-red-800 font-bold">
+                        {proj.criticality}
+                      </span>
+                    </div>
+                    <span className="text-xs text-purple-600 font-bold">
+                      {proj.dependencyType.replace(/_/g, ' ')}
+                    </span>
+                  </div>
+
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white font-sans">
+                    {proj.downstreamProjectName}
+                  </h4>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs pt-1">
+                    <div className="p-2 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] text-slate-400 block">Cascaded Slippage</span>
+                      <span className="text-orange-600 font-bold">+{proj.bufferExceededMonths} Months</span>
+                    </div>
+                    <div className="p-2 bg-white dark:bg-slate-900 rounded border border-slate-200 dark:border-slate-800">
+                      <span className="text-[10px] text-slate-400 block">Est. Financial Drag</span>
+                      <span className="text-red-600 font-bold">₹{proj.estimatedFinancialImpactCr} Cr</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded border border-purple-100 dark:border-purple-900/40 text-[11px] text-slate-700 dark:text-slate-300 font-sans">
+                    <strong>Cabinet Secretary Mitigation Directive:</strong> {proj.recommendedMitigation}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

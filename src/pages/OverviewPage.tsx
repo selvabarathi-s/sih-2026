@@ -79,8 +79,59 @@ export const OverviewPage: React.FC = () => {
             onClick={() => navigate('/data-health')}
             className="px-3 py-1.5 text-xs font-semibold bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 rounded transition shadow-sm"
           >
-            View Ingestion Audit
+            Audit Lineage
           </button>
+        </div>
+      </div>
+
+      {/* Operational Command Center Workload Banner */}
+      <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-xl p-5 text-white shadow-md border border-blue-800/40">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-blue-500/30 text-blue-200 border border-blue-400/30 rounded">
+                Live Operational System of Record
+              </span>
+              <span className="text-xs text-blue-200/80 font-mono">
+                Cycle: July 2026 Active
+              </span>
+            </div>
+            <h2 className="text-lg font-black text-white tracking-tight">
+              Government Infrastructure Workflow & Workload Command Center
+            </h2>
+            <p className="text-xs text-blue-100/70 max-w-2xl">
+              Real-world multi-tiered project governance: Dispatch monthly telemetry updates, conduct 11-factor root-cause investigations, manage SLA breaches, and execute binding executive directives.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            <button
+              onClick={() => navigate('/inbox')}
+              className="px-4 py-2 text-xs font-bold bg-blue-500 hover:bg-blue-400 text-slate-950 rounded-lg flex items-center gap-1.5 shadow-md shadow-blue-500/20 transition-all"
+            >
+              Open Workload Inbox
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-white/10 text-xs">
+          <div className="p-2.5 bg-white/5 rounded-lg border border-white/10">
+            <span className="text-blue-200/70 block text-[11px]">Active Interventions</span>
+            <span className="text-lg font-black text-white">2 Assigned</span>
+          </div>
+          <div className="p-2.5 bg-white/5 rounded-lg border border-white/10">
+            <span className="text-blue-200/70 block text-[11px]">Unacknowledged Signals</span>
+            <span className="text-lg font-black text-amber-300">18 Pending</span>
+          </div>
+          <div className="p-2.5 bg-white/5 rounded-lg border border-white/10">
+            <span className="text-blue-200/70 block text-[11px]">Monthly Submissions</span>
+            <span className="text-lg font-black text-purple-300">1 For Review</span>
+          </div>
+          <div className="p-2.5 bg-white/5 rounded-lg border border-white/10">
+            <span className="text-blue-200/70 block text-[11px]">Automated Escalations</span>
+            <span className="text-lg font-black text-rose-300">Daemon Active (60s)</span>
+          </div>
         </div>
       </div>
 

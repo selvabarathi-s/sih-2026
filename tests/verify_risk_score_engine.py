@@ -70,7 +70,7 @@ def run_tests():
         
         mom = data.get("momentum", {})
         mom_cat = mom.get("momentumCategory") if isinstance(mom, dict) else data.get("riskMomentum")
-        assert mom_cat in ["STABLE", "IMPROVING", "DETERIORATING", "RAPIDLY_DETERIORATING"], f"Invalid momentum: {mom_cat}"
+        assert mom_cat in ["STABLE", "IMPROVING", "DETERIORATING", "RAPIDLY_DETERIORATING", "CRITICAL_ACCELERATION", "RECOVERING"], f"Invalid momentum: {mom_cat}"
         
         dims = data.get("dimensions", {})
         assert "schedule" in dims and "cost" in dims and "progress" in dims and "expenditure" in dims and "predictive" in dims and "weakSignal" in dims
