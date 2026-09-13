@@ -1,5 +1,6 @@
 import { authService } from '../services/authService.js';
 import { ROLE_ALIASES } from '../models/userModel.js';
+import { auditService, AUDIT_EVENT_TYPES } from '../services/auditService.js';
 
 /**
  * Normalizes role string to canonical key (e.g. 'MONITORING_OFFICER' -> 'monitoring_officer')
@@ -70,6 +71,17 @@ export const requireRole = (...allowedRoles) => {
 
     const userRole = normalizeRole(req.user.role);
     if (!normalizedAllowed.includes(userRole)) {
+      auditService.logEvent({
+        action: AUDIT_EVENT_TYPES.PERMISSION_DENIED,
+        actor: req.user.username,
+        userId: req.user.userId || req.user.id,
+        role: req.user.role,
+        organization: req.user.organization,
+        resource: req.originalUrl,
+        actionResult: 'FAILURE',
+        reason: `Role '${req.user.role}' not in permitted roles [${allowedRoles.join(', ')}]`,
+      }).catch(() => {});
+
       return res.status(403).json({
         error: {
           code: 'FORBIDDEN',
@@ -106,6 +118,17 @@ export const requirePermission = (...requiredPermissions) => {
     const hasAll = requiredPermissions.every(p => userPermissions.includes(p));
 
     if (!hasAll) {
+      auditService.logEvent({
+        action: AUDIT_EVENT_TYPES.PERMISSION_DENIED,
+        actor: req.user.username,
+        userId: req.user.userId || req.user.id,
+        role: req.user.role,
+        organization: req.user.organization,
+        resource: req.originalUrl,
+        actionResult: 'FAILURE',
+        reason: `Missing required permissions: [${requiredPermissions.join(', ')}]`,
+      }).catch(() => {});
+
       return res.status(403).json({
         error: {
           code: 'FORBIDDEN',
@@ -140,6 +163,17 @@ export const requireAnyPermission = (...permissions) => {
     const hasAny = permissions.some(p => userPermissions.includes(p));
 
     if (!hasAny) {
+      auditService.logEvent({
+        action: AUDIT_EVENT_TYPES.PERMISSION_DENIED,
+        actor: req.user.username,
+        userId: req.user.userId || req.user.id,
+        role: req.user.role,
+        organization: req.user.organization,
+        resource: req.originalUrl,
+        actionResult: 'FAILURE',
+        reason: `Requires at least one permission from [${permissions.join(', ')}]`,
+      }).catch(() => {});
+
       return res.status(403).json({
         error: {
           code: 'FORBIDDEN',
@@ -155,10 +189,45 @@ export const requireAnyPermission = (...permissions) => {
 };
 
 /**
- * Resource-Level Authorization:
- * If user is a Project Administrator, verifies the project is assigned to them.
+ * Require Specific Organization Category
  */
-export const requireProjectAssignment = (req, res, next) => {
+export const requireOrganizationAccess = (...allowedCategories) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: { code: 'UNAUTHORIZED', statusCode: 401 } });
+    }
+
+    const orgCategory = req.user.organization?.category;
+    if (!orgCategory || !allowedCategories.includes(orgCategory)) {
+      auditService.logEvent({
+        action: AUDIT_EVENT_TYPES.PERMISSION_DENIED,
+        actor: req.user.username,
+        userId: req.user.userId || req.user.id,
+        role: req.user.role,
+        organization: req.user.organization,
+        resource: req.originalUrl,
+        actionResult: 'FAILURE',
+        reason: `Organization category '${orgCategory}' not in [${allowedCategories.join(', ')}]`,
+      }).catch(() => {});
+
+      return res.status(403).json({
+        error: {
+          code: 'ORGANIZATION_FORBIDDEN',
+          message: `Access denied: Organization '${req.user.organization?.name || 'Unknown'}' is not authorized for this scope.`,
+          statusCode: 403,
+          allowedCategories,
+        },
+      });
+    }
+
+    next();
+  };
+};
+
+/**
+ * Resource-Level Authorization for Assigned Projects
+ */
+export const requireProjectAccess = (req, res, next) => {
   if (!req.user) {
     return res.status(401).json({
       error: { code: 'UNAUTHORIZED', message: 'Authentication required', statusCode: 401 },
@@ -166,21 +235,35 @@ export const requireProjectAssignment = (req, res, next) => {
   }
 
   const userRole = normalizeRole(req.user.role);
-  if (userRole === 'project_admin') {
+  const projectScopedRoles = ['project_admin', 'contractor_rep', 'project_engineering', 'supervision_consultant'];
+
+  if (projectScopedRoles.includes(userRole)) {
     const rawProjectId = req.params.id || req.params.projectId || req.body?.projectId || '';
     const cleanId = rawProjectId.replace(/^PAI-/i, '').trim();
 
     const assigned = req.user.assignedProjects || [];
-    const isAssigned = assigned.some(p => {
+    const isGlobal = assigned.some(p => p.startsWith('ALL_'));
+    const isAssigned = isGlobal || assigned.some(p => {
       const cleanAssigned = p.replace(/^PAI-/i, '').trim();
       return cleanAssigned === cleanId || p === rawProjectId;
     });
 
-    if (!isAssigned) {
+    if (!isAssigned && rawProjectId) {
+      auditService.logEvent({
+        action: AUDIT_EVENT_TYPES.PERMISSION_DENIED,
+        actor: req.user.username,
+        userId: req.user.userId || req.user.id,
+        role: req.user.role,
+        organization: req.user.organization,
+        resource: rawProjectId,
+        actionResult: 'FAILURE',
+        reason: `Project '${rawProjectId}' is not assigned to '${req.user.username}'`,
+      }).catch(() => {});
+
       return res.status(403).json({
         error: {
           code: 'RESOURCE_FORBIDDEN',
-          message: `Access denied: Project '${rawProjectId}' is not assigned to project administrator '${req.user.username}'. You may only update assigned projects.`,
+          message: `Access denied: Project '${rawProjectId}' is not assigned to officer '${req.user.username}'. You may only update assigned projects.`,
           statusCode: 403,
           assignedProjects: assigned,
         },
@@ -189,4 +272,45 @@ export const requireProjectAssignment = (req, res, next) => {
   }
 
   next();
+};
+
+export const requireProjectAssignment = requireProjectAccess;
+
+/**
+ * Enforce Governed Workflow State Transitions
+ */
+export const requireWorkflowTransition = (entityType, fromState, toState) => {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: { code: 'UNAUTHORIZED', statusCode: 401 } });
+    }
+
+    const userRole = normalizeRole(req.user.role);
+
+    // E.g., Contractors cannot verify or close NCRs
+    if (entityType === 'NCR' && (toState === 'CLOSED' || toState === 'TPI_LAB_VERIFIED')) {
+      if (userRole === 'contractor_rep') {
+        auditService.logEvent({
+          action: AUDIT_EVENT_TYPES.PERMISSION_DENIED,
+          actor: req.user.username,
+          userId: req.user.userId || req.user.id,
+          role: req.user.role,
+          organization: req.user.organization,
+          resource: req.params.id || 'NCR',
+          actionResult: 'FAILURE',
+          reason: 'Contractors cannot approve or close their own non-conformance records',
+        }).catch(() => {});
+
+        return res.status(403).json({
+          error: {
+            code: 'WORKFLOW_TRANSITION_FORBIDDEN',
+            message: 'Contractor representatives cannot verify or close Non-Conformance Records. Independent TPI sign-off required.',
+            statusCode: 403,
+          },
+        });
+      }
+    }
+
+    next();
+  };
 };

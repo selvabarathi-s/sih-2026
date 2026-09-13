@@ -62,19 +62,19 @@ export const OPERATIONAL_STATE_TRANSITIONS = {
 
 // Roles allowed to authorize operational transitions
 export const OPERATIONAL_TRANSITION_PERMISSIONS = {
-  SUBMITTED: ['project_admin', 'system_admin'],
-  VALIDATION_PENDING: ['monitoring_officer', 'system_admin'],
-  ACTIVE: ['monitoring_officer', 'senior_decision_maker', 'system_admin'],
-  MONITORING: ['monitoring_officer', 'system_admin'],
-  AT_RISK: ['monitoring_officer', 'system_admin'],
-  INTERVENTION_REQUIRED: ['monitoring_officer', 'senior_decision_maker', 'system_admin'],
-  INTERVENTION_IN_PROGRESS: ['project_admin', 'monitoring_officer', 'system_admin'],
-  VERIFICATION_PENDING: ['project_admin', 'system_admin'],
-  RESOLVED: ['monitoring_officer', 'senior_decision_maker', 'system_admin'],
-  RECOVERING: ['monitoring_officer', 'system_admin'],
-  COMPLETED: ['senior_decision_maker', 'system_admin', 'monitoring_officer'],
-  CLOSED: ['senior_decision_maker', 'system_admin'],
-  ARCHIVED: ['system_admin'],
+  SUBMITTED: ['project_admin', 'system_admin', 'data_platform_security_admin'],
+  VALIDATION_PENDING: ['monitoring_officer', 'system_admin', 'data_platform_security_admin'],
+  ACTIVE: ['monitoring_officer', 'senior_decision_maker', 'system_admin', 'data_platform_security_admin'],
+  MONITORING: ['monitoring_officer', 'system_admin', 'data_platform_security_admin'],
+  AT_RISK: ['monitoring_officer', 'system_admin', 'data_platform_security_admin'],
+  INTERVENTION_REQUIRED: ['monitoring_officer', 'senior_decision_maker', 'system_admin', 'data_platform_security_admin'],
+  INTERVENTION_IN_PROGRESS: ['project_admin', 'monitoring_officer', 'system_admin', 'data_platform_security_admin'],
+  VERIFICATION_PENDING: ['project_admin', 'system_admin', 'data_platform_security_admin'],
+  RESOLVED: ['monitoring_officer', 'senior_decision_maker', 'system_admin', 'data_platform_security_admin'],
+  RECOVERING: ['monitoring_officer', 'system_admin', 'data_platform_security_admin'],
+  COMPLETED: ['senior_decision_maker', 'system_admin', 'monitoring_officer', 'data_platform_security_admin'],
+  CLOSED: ['senior_decision_maker', 'system_admin', 'data_platform_security_admin'],
+  ARCHIVED: ['system_admin', 'data_platform_security_admin'],
 };
 
 // ==============================================================================

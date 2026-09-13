@@ -22,6 +22,7 @@ class AuthService {
 
     const token = `paimana_token_${user.id}_${Date.now()}`;
     const userRoles = user.roles && user.roles.length > 0 ? user.roles : [user.role];
+    const assignedRoles = user.assigned_roles || userRoles;
     const permissions = ROLE_PERMISSIONS[user.role] || [];
     const defaultWorkspace = user.defaultWorkspace || '/';
 
@@ -33,6 +34,8 @@ class AuthService {
       email: user.email,
       role: user.role,
       roles: userRoles,
+      assigned_roles: assignedRoles,
+      organization: user.organization || null,
       defaultWorkspace,
       department: user.department,
       designation: user.designation,
@@ -52,6 +55,8 @@ class AuthService {
         email: user.email,
         role: user.role,
         roles: userRoles,
+        assigned_roles: assignedRoles,
+        organization: user.organization || null,
         defaultWorkspace,
         department: user.department,
         designation: user.designation,
@@ -79,6 +84,7 @@ class AuthService {
 
       if (matchUname || matchId || matchRole || matchAlias) {
         const userRoles = user.roles && user.roles.length > 0 ? user.roles : [user.role];
+        const assignedRoles = user.assigned_roles || userRoles;
         const session = {
           token: cleanToken,
           userId: user.id,
@@ -87,6 +93,8 @@ class AuthService {
           email: user.email,
           role: user.role,
           roles: userRoles,
+          assigned_roles: assignedRoles,
+          organization: user.organization || null,
           defaultWorkspace: user.defaultWorkspace || '/',
           department: user.department,
           designation: user.designation,
@@ -108,10 +116,12 @@ class AuthService {
       throw new Error('Invalid or expired session');
     }
 
-    const authorizedRoles = session.roles || [session.role];
+    const authorizedRoles = session.assigned_roles || session.roles || [session.role];
     if (!authorizedRoles.includes(targetRole)) {
       const err = new Error(`Access forbidden: User '${session.username}' is not authorized for workspace role '${targetRole}'. Authorized roles: [${authorizedRoles.join(', ')}]`);
       err.statusCode = 403;
+      err.code = 'FORBIDDEN_ROLE_SWITCH';
+      err.authorizedRoles = authorizedRoles;
       throw err;
     }
 
@@ -122,6 +132,7 @@ class AuthService {
     return {
       success: true,
       role: targetRole,
+      token: session.token,
       user: {
         id: session.userId,
         username: session.username,
@@ -129,12 +140,18 @@ class AuthService {
         email: session.email,
         role: targetRole,
         roles: session.roles,
+        assigned_roles: session.assigned_roles,
+        organization: session.organization,
         department: session.department,
         designation: session.designation,
         assignedProjects: session.assignedProjects,
         permissions: session.permissions,
       },
     };
+  }
+
+  async switchRole(token, targetRole) {
+    return this.switchWorkspace(token, targetRole);
   }
 
   async forgotPassword(identifier) {

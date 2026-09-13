@@ -1,6 +1,6 @@
 import { authService } from '../services/authService.js';
-import { auditService } from '../services/auditService.js';
-import { SEED_USERS } from '../models/userModel.js';
+import { auditService, AUDIT_EVENT_TYPES } from '../services/auditService.js';
+import { SEED_USERS, ORGANIZATIONS } from '../models/userModel.js';
 
 export const login = async (req, res, next) => {
   try {
@@ -13,11 +13,15 @@ export const login = async (req, res, next) => {
 
     // Record audit event
     await auditService.logEvent({
-      action: 'USER_LOGIN',
+      action: AUDIT_EVENT_TYPES.USER_LOGIN || 'USER_LOGIN',
+      actor: result.user.username,
       userId: result.user.id,
+      role: result.user.role,
       userRole: result.user.role,
+      organization: result.user.organization,
       resourceType: 'AUTH',
       resourceId: result.user.id,
+      actionResult: 'SUCCESS',
       details: { username: result.user.username, department: result.user.department },
       ipAddress: req.ip || req.connection?.remoteAddress || '127.0.0.1',
     });
@@ -206,20 +210,24 @@ export const resetPassword = async (req, res, next) => {
 };
 
 export const switchWorkspace = async (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization || req.headers['x-auth-token'];
-    const { targetRole } = req.body || {};
-    if (!targetRole) {
-      return res.status(400).json({ error: 'targetRole is required' });
-    }
+  const authHeader = req.headers.authorization || req.headers['x-auth-token'];
+  const targetRole = req.body?.targetRole || req.body?.role;
+  if (!targetRole) {
+    return res.status(400).json({ error: 'targetRole or role is required' });
+  }
 
+  try {
     const result = await authService.switchWorkspace(authHeader, targetRole);
     await auditService.logEvent({
-      action: 'WORKSPACE_SWITCHED',
-      userId: req.user?.userId || req.user?.id,
+      action: AUDIT_EVENT_TYPES.ROLE_SWITCH,
+      actor: result.user.username,
+      userId: result.user.id,
+      role: targetRole,
       userRole: targetRole,
+      organization: result.user.organization,
       resourceType: 'WORKSPACE',
       resourceId: targetRole,
+      actionResult: 'SUCCESS',
       details: { previousRole: req.user?.role, targetRole },
       ipAddress: req.ip || '127.0.0.1',
     });
@@ -227,7 +235,39 @@ export const switchWorkspace = async (req, res, next) => {
     res.status(200).json(result);
   } catch (err) {
     const status = err.statusCode || 400;
-    res.status(status).json({ error: err.message || 'Failed to switch workspace' });
+
+    await auditService.logEvent({
+      action: AUDIT_EVENT_TYPES.ROLE_SWITCH_DENIED,
+      actor: req.user?.username || 'anonymous',
+      userId: req.user?.userId || req.user?.id || 'anonymous',
+      role: req.user?.role || 'UNKNOWN',
+      organization: req.user?.organization,
+      resourceType: 'WORKSPACE',
+      resourceId: targetRole,
+      actionResult: 'FAILURE',
+      reason: err.message,
+      details: { attemptedRole: targetRole, error: err.message },
+      ipAddress: req.ip || '127.0.0.1',
+    });
+
+    res.status(status).json({
+      error: err.message || 'Failed to switch workspace',
+      code: err.code || 'ROLE_SWITCH_FAILED',
+      authorizedRoles: err.authorizedRoles || [],
+    });
+  }
+};
+
+export const switchRole = switchWorkspace;
+
+export const getOrganizations = async (req, res, next) => {
+  try {
+    res.status(200).json({
+      count: Object.keys(ORGANIZATIONS).length,
+      organizations: Object.values(ORGANIZATIONS),
+    });
+  } catch (err) {
+    next(err);
   }
 };
 

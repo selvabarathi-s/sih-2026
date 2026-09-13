@@ -57,6 +57,19 @@ export const createNcr = async (req, res, next) => {
 export const updateNcrStatus = async (req, res, next) => {
   try {
     const { ncrId } = req.params;
+    const { status } = req.body;
+    const userRole = (req.user?.role || '').toLowerCase();
+
+    if (userRole === 'contractor_rep' && (status === 'CLOSED' || status === 'TPI_LAB_VERIFIED')) {
+      return res.status(403).json({
+        error: {
+          code: 'FORBIDDEN',
+          message: 'Access forbidden: Contractor representatives cannot verify or close Non-Conformance Records. Independent TPI sign-off required.',
+          statusCode: 403,
+        }
+      });
+    }
+
     const ncr = qualityService.updateNcrStatus(ncrId, {
       ...req.body,
       user: req.user,
@@ -67,7 +80,8 @@ export const updateNcrStatus = async (req, res, next) => {
       error: null,
     });
   } catch (err) {
-    next(err);
+    const code = err.statusCode || 400;
+    res.status(code).json({ error: err.message });
   }
 };
 

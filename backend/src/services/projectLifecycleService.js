@@ -91,7 +91,7 @@ class ProjectLifecycleService {
 
     const permitted = candidateStates.map(nextState => {
       const allowedRoles = OPERATIONAL_TRANSITION_PERMISSIONS[nextState] || [];
-      const isRoleAllowed = allowedRoles.includes(actorRole) || actorRole === 'system_admin';
+      const isRoleAllowed = allowedRoles.includes(actorRole) || actorRole === 'system_admin' || actorRole === 'data_platform_security_admin';
 
       return {
         toState: nextState,
@@ -121,7 +121,7 @@ class ProjectLifecycleService {
     // 2. Verify actor authorization
     const allowedRoles = OPERATIONAL_TRANSITION_PERMISSIONS[toState] || [];
     const actorRole = actor?.role || 'public';
-    if (!allowedRoles.includes(actorRole) && actorRole !== 'system_admin') {
+    if (!allowedRoles.includes(actorRole) && actorRole !== 'system_admin' && actorRole !== 'data_platform_security_admin') {
       const err = new Error(`Unauthorized: Role '${actorRole}' is not permitted to transition project to ${toState}. Required: ${allowedRoles.join(' or ')}`);
       err.statusCode = 403;
       throw err;

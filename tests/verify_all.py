@@ -15,7 +15,7 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 def run_all_tests():
     print("==================================================")
-    print("PAIMANA PREDICT: UNIFIED COMPREHENSIVE PRODUCTION VERIFICATION SUITE (17 SUITES)")
+    print("PAIMANA PREDICT: UNIFIED COMPREHENSIVE PRODUCTION VERIFICATION SUITE (21 SUITES)")
     print("==================================================")
     
     # 1. Core ML Model Metrics & Lineage Audit
@@ -155,9 +155,14 @@ def run_all_tests():
     print("\n--- Running Data Ingestion & Quality Compliance Suite ---")
     ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_imports_and_quality.py')])
     assert ret.returncode == 0, "Data Ingestion & Quality Compliance tests failed!"
+
+    # 21. 18-Role Real-World Architecture & RBAC Suite
+    print("\n--- Running 18-Role Real-World Architecture & RBAC Suite ---")
+    ret = subprocess.run([sys.executable, os.path.join(os.path.dirname(__file__), 'verify_18_roles_system.py')])
+    assert ret.returncode == 0, "18-Role Real-World Architecture & RBAC tests failed!"
     
     print("\n==================================================")
-    print("ALL 20 COMPREHENSIVE VERIFICATION SUITES COMPLETED AND PASSED (100% SUCCESS)!")
+    print("ALL 21 COMPREHENSIVE VERIFICATION SUITES COMPLETED AND PASSED (100% SUCCESS)!")
     print("==================================================")
 
 if __name__ == '__main__':
