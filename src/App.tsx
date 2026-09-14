@@ -20,6 +20,7 @@ import { InboxPage } from './pages/InboxPage';
 import { DataImportPage } from './pages/DataImportPage';
 import { QualityPage } from './pages/QualityPage';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
+import { RoleHomeDispatcher } from './components/auth/RoleHomeDispatcher';
 
 // Specialized Personas & Domain Workspaces
 import { MinistryOverviewPage } from './pages/MinistryOverviewPage';
@@ -55,7 +56,7 @@ export function App() {
               {/* Main Application Layout with Strict 18-Role RBAC Route Guards */}
               <Route path="/" element={<AppLayout />}>
                 {/* 1. Dashboard & Workload Inbox */}
-                <Route index element={<OverviewPage />} />
+                <Route index element={<RoleHomeDispatcher />} />
                 <Route path="overview" element={<Navigate to="/" replace />} />
                 <Route path="inbox" element={<InboxPage />} />
 

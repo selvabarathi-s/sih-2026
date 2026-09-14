@@ -55,15 +55,29 @@ export const TopNav: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const isSurveillanceRole = ['monitoring_officer', 'MONITORING_OFFICER', 'system_admin', 'SYSTEM_ADMIN', 'data_platform_security_admin'].includes(currentRole);
+  const isProjectScoped = Boolean(user?.assignedProjects && user.assignedProjects.length > 0);
+  const isMinistryScoped = currentRole === 'admin_ministry_review';
+
+  const searchPlaceholder = isProjectScoped
+    ? t('nav.search_assigned', `Search assigned ${user?.assignedProjects?.[0]}...`)
+    : isMinistryScoped
+    ? t('nav.search_ministry', `Search ${user?.department || 'MoRTH'} Projects...`)
+    : t('nav.search_placeholder', 'Search 1,981 Projects...');
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       const q = searchQuery.trim();
-      const realP = paimanaDataService.getProjectById(q);
-      if (realP) {
-        navigate(`/projects/${realP.project_id}`);
+      if (isProjectScoped && user?.assignedProjects?.[0]) {
+        navigate(`/projects/${user.assignedProjects[0]}`);
       } else {
-        navigate(`/projects?search=${encodeURIComponent(q)}`);
+        const realP = paimanaDataService.getProjectById(q);
+        if (realP) {
+          navigate(`/projects/${realP.project_id}`);
+        } else {
+          navigate(`/projects?search=${encodeURIComponent(q)}`);
+        }
       }
     }
   };
@@ -83,27 +97,47 @@ export const TopNav: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder={t('nav.search_placeholder', 'Search 1,981 Projects...')}
+            placeholder={searchPlaceholder}
             className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition shadow-2xs"
           />
         </form>
 
-        {/* Real PAIMANA Live Data Status Pill */}
-        <div className="hidden xl:flex items-center gap-2 px-2.5 py-1.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 rounded-lg text-xs font-mono text-emerald-800 dark:text-emerald-300 font-bold shadow-2xs shrink-0">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
-          <span className="font-extrabold tracking-wide">PAIMANA Live</span>
-          <span className="text-slate-300 dark:text-slate-600 font-normal">•</span>
-          <span className="font-semibold text-emerald-700 dark:text-emerald-300">{formatNumber(1981)} {t('metric.projects', 'Projects')}</span>
-          <span className="text-slate-300 dark:text-slate-600 font-normal">•</span>
-          <button
-            onClick={handleRefresh}
-            className="inline-flex items-center gap-1 hover:text-emerald-950 dark:hover:text-emerald-100 transition"
-            title="Refresh snapshot telemetry"
-          >
-            <RefreshCw className={`w-3 h-3 ${isRefreshing ? 'animate-spin text-emerald-600' : ''}`} />
+        {/* Real PAIMANA Live Data Status Pill / Role-Scoped Indicator */}
+        {isProjectScoped ? (
+          <div className="hidden xl:flex items-center gap-2 px-2.5 py-1.5 bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 rounded-lg text-xs font-mono text-blue-800 dark:text-blue-300 font-bold shadow-2xs shrink-0">
+            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse shrink-0" />
+            <span className="font-extrabold tracking-wide">Assigned Scope</span>
+            <span className="text-slate-300 dark:text-slate-600 font-normal">•</span>
+            <span className="font-semibold text-blue-700 dark:text-blue-300">{user?.assignedProjects?.[0]}</span>
+            <span className="text-slate-300 dark:text-slate-600 font-normal">•</span>
+            <span className="text-slate-600 dark:text-slate-400 font-medium">{user?.organization || 'BharatNet EPC'}</span>
+          </div>
+        ) : isMinistryScoped ? (
+          <div className="hidden xl:flex items-center gap-2 px-2.5 py-1.5 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/80 rounded-lg text-xs font-mono text-amber-800 dark:text-amber-300 font-bold shadow-2xs shrink-0">
+            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
+            <span className="font-extrabold tracking-wide">Ministry Scope</span>
+            <span className="text-slate-300 dark:text-slate-600 font-normal">•</span>
+            <span className="font-semibold text-amber-700 dark:text-amber-300">MoRTH Portfolio (74 Projects)</span>
+            <span className="text-slate-300 dark:text-slate-600 font-normal">•</span>
             <span>{t('nav.report_snapshot', 'Apr-2026')}</span>
-          </button>
-        </div>
+          </div>
+        ) : (
+          <div className="hidden xl:flex items-center gap-2 px-2.5 py-1.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 rounded-lg text-xs font-mono text-emerald-800 dark:text-emerald-300 font-bold shadow-2xs shrink-0">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+            <span className="font-extrabold tracking-wide">PAIMANA Live</span>
+            <span className="text-slate-300 dark:text-slate-600 font-normal">•</span>
+            <span className="font-semibold text-emerald-700 dark:text-emerald-300">{formatNumber(1981)} {t('metric.projects', 'Projects')}</span>
+            <span className="text-slate-300 dark:text-slate-600 font-normal">•</span>
+            <button
+              onClick={handleRefresh}
+              className="inline-flex items-center gap-1 hover:text-emerald-950 dark:hover:text-emerald-100 transition"
+              title="Refresh snapshot telemetry"
+            >
+              <RefreshCw className={`w-3 h-3 ${isRefreshing ? 'animate-spin text-emerald-600' : ''}`} />
+              <span>{t('nav.report_snapshot', 'Apr-2026')}</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Right: Controls & Unified Officer Dossier */}
@@ -125,15 +159,15 @@ export const TopNav: React.FC = () => {
           )}
         </button>
 
-        {/* Early Warning Bell */}
+        {/* Workload / Early Warning Bell */}
         <button
-          onClick={() => navigate('/early-warnings')}
+          onClick={() => navigate(isSurveillanceRole ? '/early-warnings' : '/inbox')}
           className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg transition shadow-2xs"
-          title={t('nav.early_warnings', 'View Historical Deterioration Signals')}
+          title={isSurveillanceRole ? t('nav.early_warnings', 'View Historical Deterioration Signals') : t('nav.workload_alerts', 'View Assigned Workload & Tasks')}
         >
           <Bell className="w-4 h-4" />
-          <span className="absolute -top-1 -right-1 px-1 min-w-[18px] h-[18px] bg-rose-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900 font-mono">
-            20+
+          <span className={`absolute -top-1 -right-1 px-1 min-w-[18px] h-[18px] ${isSurveillanceRole ? 'bg-rose-600' : 'bg-blue-600'} text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white dark:border-slate-900 font-mono`}>
+            {isSurveillanceRole ? '20+' : '3'}
           </span>
         </button>
 

@@ -98,6 +98,8 @@ const NAV_KEY_MAP: Record<string, string> = {
   'Platform Settings': 'nav.data_platform_settings',
   'Role Directory': 'nav.role_directory',
   'Assigned (BharatNet)': 'nav.assigned_bharatnet',
+  'Assigned Package Specs': 'nav.assigned_bharatnet',
+  'Assigned Project Cost': 'nav.assigned_bharatnet',
   'Engineering Hub': 'nav.engineering_hub',
   'Technical Progress': 'nav.technical_progress',
   'Hindrance Review': 'nav.hindrance_review',
@@ -233,7 +235,6 @@ export const Sidebar: React.FC = () => {
           { name: 'Monthly Updates', path: '/monthly-updates', icon: FileCheck },
           { name: 'Operational Tasks', path: '/inbox', icon: Inbox, badge: 'Workload' },
           { name: 'Quality NCRs & Tests', path: '/quality', icon: ShieldCheck },
-          { name: 'All Projects Directory', path: '/projects', icon: FolderKanban },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
         secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
@@ -245,9 +246,9 @@ export const Sidebar: React.FC = () => {
       return {
         primary: [
           { name: 'Engineering Hub', path: '/engineering', icon: Wrench, badge: 'Specs' },
+          { name: 'Assigned Package Specs', path: '/projects/PAI-706775', icon: Activity, badge: 'PAI-706775' },
           { name: 'Technical Progress', path: '/monthly-updates', icon: FileCheck },
           { name: 'Hindrance Review', path: '/engineering', icon: ActivitySquare },
-          { name: 'Milestone Review', path: '/projects', icon: FolderKanban },
           { name: 'Operational Tasks', path: '/inbox', icon: Inbox },
           { name: 'Quality Tests', path: '/quality', icon: ShieldCheck },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
@@ -261,11 +262,10 @@ export const Sidebar: React.FC = () => {
       return {
         primary: [
           { name: 'Quality & Compliance', path: '/quality', icon: ShieldCheck, badge: 'IS Audit' },
+          { name: 'Assigned Inspection', path: '/projects/PAI-706775', icon: Activity },
           { name: 'NCR 6-Stage Lifecycle', path: '/quality', icon: ShieldAlert },
           { name: 'Certified Lab Tests', path: '/quality', icon: Award },
           { name: 'Inspection Tasks', path: '/inbox', icon: Inbox, badge: 'NCRs' },
-          { name: 'Assigned Inspection', path: '/projects/PAI-706775', icon: Activity },
-          { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
         secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
@@ -277,11 +277,10 @@ export const Sidebar: React.FC = () => {
       return {
         primary: [
           { name: 'Project Accounts', path: '/finance', icon: TrendingUp, badge: 'Vouchers' },
+          { name: 'Assigned Project Cost', path: '/projects/PAI-706775', icon: Activity, badge: 'PAI-706775' },
           { name: 'Physical-Financial Gap', path: '/analytics', icon: BarChart3 },
           { name: 'RCE Preparation', path: '/predictions', icon: ActivitySquare },
           { name: 'Payment Tasks', path: '/inbox', icon: Inbox },
-          { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
-          { name: 'National Overview', path: '/', icon: LayoutDashboard },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
         secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],

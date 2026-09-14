@@ -7,6 +7,7 @@ import { SectorType, RiskLevel, ProjectStatus } from '../types/project';
 import { RiskBadge } from '../components/common/RiskBadge';
 import { StatusBadge } from '../components/common/StatusBadge';
 import { useDatasetMode } from '../context/DatasetModeContext';
+import { useAuth } from '../context/AuthContext';
 import {
   computeProjectRiskScore,
   sortProjectsByRiskPriority,
@@ -39,6 +40,12 @@ export const ProjectsPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { isRealMode, isDemoMode } = useDatasetMode();
+  const { user, currentRole } = useAuth();
+
+  const assignedProjects = useMemo(() => user?.assignedProjects || [], [user]);
+  const hasAssignedProjects = assignedProjects.length > 0;
+  const isMinistryReviewer = currentRole === 'admin_ministry_review';
+  const ministryScope = isMinistryReviewer ? (user?.department || 'Ministry of Road Transport and Highways') : null;
 
   // Search and Filter State
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
@@ -79,6 +86,17 @@ export const ProjectsPage: React.FC = () => {
         riskDrivers: riskMeta.drivers,
       };
     });
+
+    // 0. Strict Institutional Role Scoping (Zero Data Leaks)
+    if (hasAssignedProjects) {
+      list = list.filter(p => assignedProjects.includes(p.project_id) || assignedProjects.includes(p.project_code));
+    } else if (ministryScope) {
+      list = list.filter(p =>
+        p.ministry.toLowerCase().includes('road transport') ||
+        p.ministry.toLowerCase().includes('highways') ||
+        p.ministry.toLowerCase() === ministryScope.toLowerCase()
+      );
+    }
 
     // 1. Text Search
     if (searchQuery.trim()) {
@@ -155,6 +173,9 @@ export const ProjectsPage: React.FC = () => {
     maxRiskScore,
     sortField,
     sortDir,
+    hasAssignedProjects,
+    assignedProjects,
+    ministryScope,
   ]);
 
   // Filtered Demo Projects
@@ -269,7 +290,17 @@ export const ProjectsPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-5 shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            {isRealMode ? (
+            {hasAssignedProjects ? (
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 flex items-center gap-1">
+                <Database className="w-3 h-3" />
+                <span>ASSIGNED INSTITUTIONAL SCOPE • {activeProjectCount} PROJECT</span>
+              </span>
+            ) : isMinistryReviewer ? (
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 flex items-center gap-1">
+                <Database className="w-3 h-3" />
+                <span>MINISTRY SCOPE • {activeProjectCount} MORTH PROJECTS</span>
+              </span>
+            ) : isRealMode ? (
               <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
                 <Database className="w-3 h-3" />
                 <span>REAL PAIMANA DATASET • 1,981 PROJECTS</span>
@@ -287,10 +318,20 @@ export const ProjectsPage: React.FC = () => {
             </span>
           </div>
           <h1 className="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight font-mono">
-            {isRealMode ? 'PROJECT SURVEILLANCE & RISK PRIORITY QUEUE' : 'PROJECT PRIORITY QUEUE'}
+            {hasAssignedProjects
+              ? 'ASSIGNED PROJECT WORKSPACE & EXECUTION'
+              : isMinistryReviewer
+              ? 'MINISTRY OF ROAD TRANSPORT & HIGHWAYS (MoRTH) PORTFOLIO'
+              : isRealMode
+              ? 'PROJECT SURVEILLANCE & RISK PRIORITY QUEUE'
+              : 'PROJECT PRIORITY QUEUE'}
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 max-w-3xl">
-            Projects ordered by composite <strong>Risk Score (0–100)</strong> combining Schedule Extension (25%), Cost Escalation (20%), Progress Velocity (20%), Capital Burn (15%), Governed Prediction (15%), and Weak Signals (5%).
+            {hasAssignedProjects
+              ? 'Institutional workspace restricted strictly to your assigned infrastructure package and operational milestones.'
+              : isMinistryReviewer
+              ? 'Governed project queue filtered strictly to projects under the administrative oversight of MoRTH.'
+              : 'Projects ordered by composite <strong>Risk Score (0–100)</strong> combining Schedule Extension (25%), Cost Escalation (20%), Progress Velocity (20%), Capital Burn (15%), Governed Prediction (15%), and Weak Signals (5%).'}
           </p>
         </div>
 
@@ -328,7 +369,11 @@ export const ProjectsPage: React.FC = () => {
                 setCurrentPage(1);
               }}
               placeholder={
-                isRealMode
+                hasAssignedProjects
+                  ? `Search assigned ${assignedProjects[0]} milestones, NCRs, specs...`
+                  : isMinistryReviewer
+                  ? `Search ${ministryScope} projects...`
+                  : isRealMode
                   ? "Search 1,981 projects by Code, Name, Agency, Ministry, State (e.g. 706775, NHAI, Rail)..."
                   : "Search projects..."
               }
@@ -337,24 +382,30 @@ export const ProjectsPage: React.FC = () => {
           </div>
 
           {/* Ministry Filter */}
-          {isRealMode && (
+          {isRealMode && !hasAssignedProjects && (
             <div className="w-full lg:w-52">
-              <select
-                value={selectedMinistry}
-                onChange={e => {
-                  setSelectedMinistry(e.target.value);
-                  setCurrentPage(1);
-                }}
-                aria-label="Filter by Ministry"
-                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-blue-500 truncate"
-              >
-                <option value="ALL">All Ministries ({realMinistries.length})</option>
-                {realMinistries.map(min => (
-                  <option key={min} value={min}>
-                    {min}
-                  </option>
-                ))}
-              </select>
+              {isMinistryReviewer ? (
+                <div className="w-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 rounded-md px-3 py-2 text-xs font-semibold text-amber-800 dark:text-amber-200 truncate">
+                  MoRTH Portfolio (Locked)
+                </div>
+              ) : (
+                <select
+                  value={selectedMinistry}
+                  onChange={e => {
+                    setSelectedMinistry(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  aria-label="Filter by Ministry"
+                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-md px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-blue-500 truncate"
+                >
+                  <option value="ALL">All Ministries ({realMinistries.length})</option>
+                  {realMinistries.map(min => (
+                    <option key={min} value={min}>
+                      {min}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
           )}
 

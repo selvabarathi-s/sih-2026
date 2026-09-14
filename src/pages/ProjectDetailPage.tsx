@@ -50,8 +50,13 @@ import {
   Legend,
 } from 'recharts';
 
-export const ProjectDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+interface ProjectDetailPageProps {
+  projectIdOverride?: string;
+}
+
+export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ projectIdOverride }) => {
+  const { id: routeId } = useParams<{ id: string }>();
+  const id = projectIdOverride || routeId;
   const navigate = useNavigate();
   const { isDark } = useTheme();
   const { user, currentRole } = useAuth();
