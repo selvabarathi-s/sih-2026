@@ -38,12 +38,14 @@ import { MonthlyUpdatesPage } from './pages/MonthlyUpdatesPage';
 import { ThemeProvider } from './context/ThemeContext';
 import { DatasetModeProvider } from './context/DatasetModeContext';
 import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
 
 export function App() {
   return (
     <ThemeProvider>
-      <DatasetModeProvider>
-        <AuthProvider>
+      <LanguageProvider>
+        <DatasetModeProvider>
+          <AuthProvider>
           <BrowserRouter>
             <Routes>
               {/* Standalone Login Route */}
@@ -444,6 +446,7 @@ export function App() {
           </BrowserRouter>
         </AuthProvider>
       </DatasetModeProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }

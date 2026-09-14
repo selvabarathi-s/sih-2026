@@ -29,6 +29,7 @@ import dependencyRoutes from './dependencyRoutes.js';
 import inboxRoutes from './inboxRoutes.js';
 import systemRoutes from './systemRoutes.js';
 import importRoutes from './importRoutes.js';
+import translationRoutes from './translationRoutes.js';
 
 const router = express.Router();
 
@@ -69,5 +70,6 @@ router.use('/dependencies', dependencyRoutes);
 router.use('/inbox', inboxRoutes);
 router.use('/system', systemRoutes);
 router.use('/imports', importRoutes);
+router.use('/translate', translationRoutes);
 
 export default router;

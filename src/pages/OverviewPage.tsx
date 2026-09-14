@@ -22,9 +22,11 @@ import {
   HelpCircle,
   Award,
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const OverviewPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t, formatCurrency, formatNumber } = useLanguage();
 
   // Authoritative Real PAIMANA data
   const realSummary = paimanaDataService.getPortfolioSummary();
@@ -47,162 +49,164 @@ export const OverviewPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       {/* Top Provenance Banner */}
-      <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 rounded-lg p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm">
+      <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 rounded-xl p-3.5 sm:p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-emerald-600 text-white rounded-md shadow-sm">
-            <Database className="w-5 h-5" />
+          <div className="p-2 bg-emerald-600 text-white rounded-lg shadow-sm shrink-0">
+            <Database className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider font-mono">
-                AUTHORITATIVE PAIMANA DATASET • FLASH REPORT APRIL 2026
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-extrabold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider font-mono">
+                {t('overview.authoritative_dataset', 'AUTHORITATIVE PAIMANA DATASET • FLASH REPORT APRIL 2026')}
               </span>
-              <span className="text-[10px] bg-emerald-100 dark:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 px-2 py-0.5 rounded font-mono font-semibold">
-                Table 6 Ongoing Projects
+              <span className="text-xs bg-emerald-100 dark:bg-emerald-900/70 text-emerald-800 dark:text-emerald-200 px-2 py-0.5 rounded font-mono font-bold">
+                {t('overview.table_6_ongoing', 'Table 6 Ongoing Projects')}
               </span>
             </div>
-            <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5">
-              Source: <strong>Ministry of Statistics & Programme Implementation (MoSPI)</strong> • Government of India.
+            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 mt-0.5">
+              {t('overview.source_label', 'Source:')} <strong className="text-slate-900 dark:text-white font-bold">{t('overview.source_mospi', 'Ministry of Statistics & Programme Implementation (MoSPI)')}</strong> • {t('overview.gov_of_india', 'Government of India')}.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="text-right font-mono text-[11px] text-slate-500 dark:text-slate-400 hidden lg:block">
-            <span>Portfolio: <strong className="text-slate-900 dark:text-white">1,981 Projects</strong></span>
-            <span className="mx-1.5">•</span>
-            <span>Reconciliation: <strong className="text-emerald-600 dark:text-emerald-400">100.0% PASS</strong></span>
+        <div className="flex items-center gap-3">
+          <div className="text-right font-mono text-xs text-slate-600 dark:text-slate-400 hidden lg:block">
+            <span>{t('overview.portfolio_label', 'Portfolio:')} <strong className="text-slate-900 dark:text-white font-bold">{formatNumber(1981)} {t('metric.projects', 'Projects')}</strong></span>
+            <span className="mx-2">•</span>
+            <span>{t('overview.reconciliation_label', 'Reconciliation:')} <strong className="text-emerald-600 dark:text-emerald-400 font-bold">{t('overview.reconciliation_val', '100.0% PASS')}</strong></span>
           </div>
           <button
             onClick={() => navigate('/data-health')}
-            className="px-3 py-1.5 text-xs font-semibold bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 rounded transition shadow-sm"
+            className="px-3 py-1.5 text-xs font-bold bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200 rounded-lg transition shadow-xs"
           >
-            Audit Lineage
+            {t('overview.audit_lineage', 'Audit Lineage')}
           </button>
         </div>
       </div>
 
       {/* Operational Command Center Workload Banner */}
-      <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-xl p-5 text-white shadow-md border border-blue-800/40">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-xl p-4 sm:p-5 text-white shadow-md border border-blue-800/40">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 text-[10px] font-black uppercase tracking-wider bg-blue-500/30 text-blue-200 border border-blue-400/30 rounded">
-                Live Operational System of Record
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-2 py-0.5 text-xs font-extrabold uppercase tracking-wider bg-blue-500/30 text-blue-200 border border-blue-400/30 rounded font-mono">
+                {t('overview.live_record_system', 'Live Operational System of Record')}
               </span>
-              <span className="text-xs text-blue-200/80 font-mono">
-                Cycle: July 2026 Active
+              <span className="text-xs text-blue-200/90 font-mono font-semibold">
+                {t('overview.cycle_active', 'Cycle: July 2026 Active')}
               </span>
             </div>
-            <h2 className="text-lg font-black text-white tracking-tight">
-              Government Infrastructure Workflow & Workload Command Center
+            <h2 className="text-lg sm:text-xl font-black text-white tracking-tight">
+              {t('overview.command_center_title', 'Government Infrastructure Workflow & Workload Command Center')}
             </h2>
-            <p className="text-xs text-blue-100/70 max-w-2xl">
-              Real-world multi-tiered project governance: Dispatch monthly telemetry updates, conduct 11-factor root-cause investigations, manage SLA breaches, and execute binding executive directives.
+            <p className="text-xs sm:text-sm text-blue-100/80 max-w-3xl leading-relaxed">
+              {t('overview.command_center_desc', 'Real-world multi-tiered project governance: Dispatch monthly telemetry updates, conduct 11-factor root-cause investigations, manage SLA breaches, and execute binding executive directives.')}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             <button
               onClick={() => navigate('/inbox')}
-              className="px-4 py-2 text-xs font-bold bg-blue-500 hover:bg-blue-400 text-slate-950 rounded-lg flex items-center gap-1.5 shadow-md shadow-blue-500/20 transition-all"
+              className="px-3.5 py-2 text-xs sm:text-sm font-bold bg-blue-500 hover:bg-blue-400 text-slate-950 rounded-lg flex items-center gap-1.5 shadow-md shadow-blue-500/20 transition-all"
             >
-              Open Workload Inbox
+              {t('overview.open_inbox', 'Open Workload Inbox')}
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 pt-4 border-t border-white/10 text-xs">
-          <div className="p-2.5 bg-white/5 rounded-lg border border-white/10">
-            <span className="text-blue-200/70 block text-[11px]">Active Interventions</span>
-            <span className="text-lg font-black text-white">2 Assigned</span>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4 pt-4 border-t border-white/10 text-xs">
+          <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
+            <span className="text-blue-200/80 block text-xs font-medium">{t('overview.active_interventions', 'Active Interventions')}</span>
+            <span className="text-xl sm:text-2xl font-black text-white mt-0.5 block">{t('overview.assigned_count', '2 Assigned')}</span>
           </div>
-          <div className="p-2.5 bg-white/5 rounded-lg border border-white/10">
-            <span className="text-blue-200/70 block text-[11px]">Unacknowledged Signals</span>
-            <span className="text-lg font-black text-amber-300">18 Pending</span>
+          <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
+            <span className="text-blue-200/80 block text-xs font-medium">{t('overview.unack_signals', 'Unacknowledged Signals')}</span>
+            <span className="text-xl sm:text-2xl font-black text-amber-300 mt-0.5 block">{t('overview.pending_count', '18 Pending')}</span>
           </div>
-          <div className="p-2.5 bg-white/5 rounded-lg border border-white/10">
-            <span className="text-blue-200/70 block text-[11px]">Monthly Submissions</span>
-            <span className="text-lg font-black text-purple-300">1 For Review</span>
+          <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
+            <span className="text-blue-200/80 block text-xs font-medium">{t('overview.monthly_submissions', 'Monthly Submissions')}</span>
+            <span className="text-xl sm:text-2xl font-black text-purple-300 mt-0.5 block">{t('overview.for_review_count', '1 For Review')}</span>
           </div>
-          <div className="p-2.5 bg-white/5 rounded-lg border border-white/10">
-            <span className="text-blue-200/70 block text-[11px]">Automated Escalations</span>
-            <span className="text-lg font-black text-rose-300">Daemon Active (60s)</span>
+          <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
+            <span className="text-blue-200/80 block text-xs font-medium">{t('overview.auto_escalations', 'Automated Escalations')}</span>
+            <span className="text-xl sm:text-2xl font-black text-rose-300 mt-0.5 block">{t('overview.daemon_active', 'Daemon Active (60s)')}</span>
           </div>
         </div>
       </div>
 
       {/* Page Title & Executive Banner */}
-      <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-lg p-6 space-y-4 shadow-sm">
+      <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl p-4 sm:p-5 space-y-3.5 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800/80 pb-3">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-mono">
-              SIH 2026 • Problem Statement 26103
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-mono">
+              {t('overview.problem_statement', 'SIH 2026 • Problem Statement 26103')}
             </span>
             <span className="text-xs text-slate-400">•</span>
-            <span className="text-xs text-slate-600 dark:text-slate-300 font-medium italic">
-              "Transforming infrastructure monitoring from descriptive reporting into predictive decision support."
+            <span className="text-sm text-slate-600 dark:text-slate-300 font-medium italic">
+              {t('overview.transform_quote', '"Transforming infrastructure monitoring from descriptive reporting into predictive decision support."')}
             </span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 text-[10px] font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 px-2.5 py-1 rounded border border-slate-200 dark:border-slate-800">
-            <span className="text-emerald-600 dark:text-emerald-400 font-bold">1,981 PROJECTS</span>
+          <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800">
+            <span className="text-emerald-600 dark:text-emerald-400 font-bold">{formatNumber(1981)} {t('metric.projects', 'PROJECTS')}</span>
             <span>➔</span>
-            <span className="text-blue-600 dark:text-blue-400 font-bold">16 MINISTRIES</span>
+            <span className="text-blue-600 dark:text-blue-400 font-bold">16 {t('nav.ministry_overview', 'MINISTRIES')}</span>
             <span>➔</span>
-            <span className="text-purple-600 dark:text-purple-400 font-bold">22 SECTORS</span>
+            <span className="text-purple-600 dark:text-purple-400 font-bold">22 {t('nav.sector_benchmarking', 'SECTORS')}</span>
             <span>➔</span>
-            <span className="text-amber-600 dark:text-amber-400 font-bold">10 SNAPSHOTS</span>
+            <span className="text-amber-600 dark:text-amber-400 font-bold">{t('overview.snapshots_count', '10 SNAPSHOTS')}</span>
           </div>
         </div>
 
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
-                National Infrastructure Surveillance
+              <span className="text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+                {t('overview.national_surveillance', 'National Infrastructure Surveillance')}
               </span>
               <span className="text-xs text-slate-400">•</span>
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-                PAIMANA Table 6 Telemetry
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-mono font-semibold">
+                {t('overview.table_6_telemetry', 'PAIMANA Table 6 Telemetry')}
               </span>
             </div>
-            <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Central Sector Infrastructure Portfolio (April 2026 Snapshot)
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              {t('overview.portfolio_title', 'Central Sector Infrastructure Portfolio (April 2026 Snapshot)')}
             </h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-3xl">
-              Authoritative surveillance across {realSummary.headline.total_projects.toLocaleString()} ongoing major and mega infrastructure projects costing ₹150 Cr and above.
+            <p className="text-sm text-slate-600 dark:text-slate-300 mt-1.5 max-w-3xl leading-relaxed">
+              {t('overview.portfolio_desc_prefix', 'Authoritative surveillance across')}{' '}
+              <strong className="text-slate-900 dark:text-white font-bold">{formatNumber(realSummary.headline.total_projects)}</strong>{' '}
+              {t('overview.portfolio_desc_suffix', 'ongoing major and mega infrastructure projects costing ₹150 Cr and above.')}
             </p>
           </div>
 
           {/* Observed Cost Revision Highlight Box */}
-          <div className="bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-lg p-4 flex items-center gap-5 shrink-0">
+          <div className="bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 rounded-xl p-4 sm:p-5 flex items-center gap-5 shrink-0 shadow-2xs">
             <div>
-              <span className="text-[11px] font-semibold uppercase text-slate-500 dark:text-slate-400 tracking-wider font-mono">
-                Observed Cost Growth
+              <span className="text-xs font-bold uppercase text-slate-500 dark:text-slate-400 tracking-wider font-mono">
+                {t('overview.observed_cost_growth', 'Observed Cost Growth')}
               </span>
               <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-3xl font-extrabold font-mono text-amber-600 dark:text-amber-400">
+                <span className="text-4xl font-black font-mono text-amber-600 dark:text-amber-400">
                   +{realSummary.headline.cost_growth_total_pct}%
                 </span>
               </div>
-              <span className="text-[10px] text-amber-700 dark:text-amber-400 font-medium">
-                +₹{(realSummary.headline.cost_growth_total_cr / 100000).toFixed(2)} Lakh Cr Total Revision
+              <span className="text-xs text-amber-700 dark:text-amber-400 font-bold block mt-0.5">
+                +₹{(realSummary.headline.cost_growth_total_cr / 100000).toFixed(2)} {t('metric.lakh_cr', 'Lakh Cr')} {t('overview.total_revision', 'Total Revision')}
               </span>
             </div>
-            <div className="h-10 w-px bg-slate-200 dark:border-slate-800" />
-            <div className="text-xs space-y-1 font-mono">
+            <div className="h-12 w-px bg-slate-200 dark:border-slate-800" />
+            <div className="text-xs sm:text-sm space-y-1.5 font-mono">
               <p className="text-slate-700 dark:text-slate-300">
-                <strong className="text-red-600 dark:text-red-400 font-bold">{realSummary.headline.projects_with_cost_growth}</strong> Cost-Revised
+                <strong className="text-red-600 dark:text-red-400 font-bold">{formatNumber(realSummary.headline.projects_with_cost_growth)}</strong> {t('overview.cost_revised', 'Cost-Revised')}
               </p>
               <p className="text-slate-700 dark:text-slate-300">
-                <strong className="text-orange-600 dark:text-orange-400 font-bold">{realSummary.headline.projects_with_schedule_extension}</strong> Schedule-Extended
+                <strong className="text-orange-600 dark:text-orange-400 font-bold">{formatNumber(realSummary.headline.projects_with_schedule_extension)}</strong> {t('overview.schedule_extended', 'Schedule-Extended')}
               </p>
-              <p className="text-slate-500 dark:text-slate-400 text-[11px]">
-                Avg Progress: <strong className="text-slate-900 dark:text-white font-bold">{realSummary.headline.average_physical_progress_pct}%</strong>
+              <p className="text-slate-500 dark:text-slate-400 text-xs">
+                {t('overview.avg_progress', 'Avg Progress:')} <strong className="text-slate-900 dark:text-white font-bold">{realSummary.headline.average_physical_progress_pct}%</strong>
               </p>
             </div>
           </div>
@@ -212,30 +216,30 @@ export const OverviewPage: React.FC = () => {
       {/* KPI Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
-          title="Total Monitored Projects"
-          value={realSummary.headline.total_projects.toLocaleString()}
-          subtitle="All projects ₹150 Cr and above"
+          title={t('overview.total_monitored_projects', 'Total Monitored Projects')}
+          value={formatNumber(realSummary.headline.total_projects)}
+          subtitle={t('overview.all_projects_150cr', 'All projects ₹150 Cr and above')}
           icon={FolderKanban}
           variant="highlight"
         />
         <StatCard
-          title="Total Sanctioned Cost"
-          value={`₹${(realSummary.headline.original_cost_cr / 100000).toFixed(2)} L Cr`}
-          subtitle="Original Approved Envelope"
+          title={t('overview.total_sanctioned_cost', 'Total Sanctioned Cost')}
+          value={formatCurrency(realSummary.headline.original_cost_cr)}
+          subtitle={t('overview.orig_approved_envelope', 'Original Approved Envelope')}
           icon={IndianRupee}
           variant="default"
         />
         <StatCard
-          title="Anticipated Revised Cost"
-          value={`₹${(realSummary.headline.revised_cost_cr / 100000).toFixed(2)} L Cr`}
-          subtitle={`+₹${(realSummary.headline.cost_growth_total_cr / 100000).toFixed(2)} L Cr (+${realSummary.headline.cost_growth_total_pct}%)`}
+          title={t('overview.anticipated_revised_cost', 'Anticipated Revised Cost')}
+          value={formatCurrency(realSummary.headline.revised_cost_cr)}
+          subtitle={`+₹${(realSummary.headline.cost_growth_total_cr / 100000).toFixed(2)} ${t('metric.lakh_cr', 'Lakh Cr')} (+${realSummary.headline.cost_growth_total_pct}%)`}
           icon={TrendingUp}
           variant="warning"
         />
         <StatCard
-          title="Cumulative Expenditure"
-          value={`₹${(realSummary.headline.cumulative_expenditure_cr / 100000).toFixed(2)} L Cr`}
-          subtitle={`${realSummary.headline.expenditure_ratio_pct}% of Anticipated Outlay`}
+          title={t('overview.cumulative_expenditure', 'Cumulative Expenditure')}
+          value={formatCurrency(realSummary.headline.cumulative_expenditure_cr)}
+          subtitle={`${realSummary.headline.expenditure_ratio_pct}% ${t('overview.of_anticipated_outlay', 'of Anticipated Outlay')}`}
           icon={Activity}
           variant="success"
         />
@@ -248,11 +252,11 @@ export const OverviewPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <div className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse" />
               <h2 className="text-sm font-extrabold text-slate-900 dark:text-white uppercase tracking-wider font-mono">
-                TOP PRIORITY PROJECTS (PRIORITIZATION ENGINE QUEUE)
+                {t('overview.top_priority_title', 'TOP PRIORITY PROJECTS (PRIORITIZATION ENGINE QUEUE)')}
               </h2>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Ranked dynamically by composite <strong>Risk Score (0–100)</strong> combining Schedule Extension, Cost Escalation, Progress Lag, Capital Burn, and Predictive Signals.
+              {t('overview.top_priority_desc', 'Ranked dynamically by composite Risk Score (0–100) combining Schedule Extension, Cost Escalation, Progress Lag, Capital Burn, and Predictive Signals.')}
             </p>
           </div>
 
@@ -260,26 +264,26 @@ export const OverviewPage: React.FC = () => {
             onClick={() => navigate('/projects?sort=risk_score')}
             className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-semibold"
           >
-            <span>Open Full Priority Queue (1,981 Projects)</span>
+            <span>{t('overview.open_full_queue', 'Open Full Priority Queue (1,981 Projects)')}</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </button>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs font-sans">
-            <thead className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 select-none">
+          <table className="w-full text-left text-sm font-sans">
+            <thead className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 select-none">
               <tr>
-                <th className="py-2.5 px-3 w-12 text-center font-mono">Rank</th>
-                <th className="py-2.5 px-4 font-mono text-blue-600 dark:text-blue-400">Risk Score (0–100)</th>
-                <th className="py-2.5 px-4">Project Identity</th>
-                <th className="py-2.5 px-3">Sector & Ministry</th>
-                <th className="py-2.5 px-3 text-right font-mono">Cost Exposure</th>
-                <th className="py-2.5 px-3 text-right font-mono">Delay Exposure</th>
-                <th className="py-2.5 px-4">Primary Risk Driver</th>
-                <th className="py-2.5 px-3 text-center">Action</th>
+                <th className="py-3 px-3.5 w-14 text-center font-mono">{t('overview.th_rank', 'Rank')}</th>
+                <th className="py-3 px-4 font-mono text-blue-600 dark:text-blue-400">{t('overview.th_risk_score', 'Risk Score (0–100)')}</th>
+                <th className="py-3 px-4">{t('overview.th_project_identity', 'Project Identity')}</th>
+                <th className="py-3 px-3.5">{t('overview.th_sector_ministry', 'Sector & Ministry')}</th>
+                <th className="py-3 px-3.5 text-right font-mono">{t('overview.th_cost_exposure', 'Cost Exposure')}</th>
+                <th className="py-3 px-3.5 text-right font-mono">{t('overview.th_delay_exposure', 'Delay Exposure')}</th>
+                <th className="py-3 px-4">{t('overview.th_primary_driver', 'Primary Risk Driver')}</th>
+                <th className="py-3 px-3.5 text-center">{t('overview.th_action', 'Action')}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-sm">
               {topPriorityProjects.map((p, idx) => {
                 const bandMeta = RISK_BANDS[p.riskBand as keyof typeof RISK_BANDS] || RISK_BANDS.LOW;
                 const costOverrun = Number(p.cost_overrun_cr || 0);
@@ -292,63 +296,63 @@ export const OverviewPage: React.FC = () => {
                     onClick={() => navigate(`/projects/${p.project_id}`)}
                     className="hover:bg-blue-50/40 dark:hover:bg-slate-800/40 cursor-pointer transition"
                   >
-                    <td className="py-3 px-3 text-center font-mono font-bold text-slate-400 text-xs">
+                    <td className="py-3.5 px-3.5 text-center font-mono font-bold text-slate-500 text-sm">
                       #{idx + 1}
                     </td>
 
-                    <td className="py-3 px-4 font-mono">
+                    <td className="py-3.5 px-4 font-mono">
                       <div className="flex items-center gap-2">
                         <div className="w-10 text-center">
-                          <span className="text-base font-extrabold text-slate-900 dark:text-white">
+                          <span className="text-lg font-black text-slate-900 dark:text-white">
                             {p.riskScore}
                           </span>
                         </div>
-                        <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider border ${bandMeta.badgeClass}`}>
-                          {p.riskBand}
+                        <span className={`px-2 py-0.5 rounded text-xs font-bold uppercase tracking-wider border ${bandMeta.badgeClass}`}>
+                          {t(`metric.${p.riskBand.toLowerCase()}_risk`, p.riskBand)}
                         </span>
                       </div>
                     </td>
 
-                    <td className="py-3 px-4">
-                      <div className="font-semibold text-slate-900 dark:text-white truncate max-w-[220px]" title={p.project_name}>
+                    <td className="py-3.5 px-4">
+                      <div className="font-bold text-sm text-slate-900 dark:text-white truncate max-w-[240px]" title={p.project_name}>
                         {p.project_name}
                       </div>
-                      <div className="text-[11px] font-mono text-blue-600 dark:text-blue-400 font-bold">
+                      <div className="text-xs font-mono text-blue-600 dark:text-blue-400 font-bold mt-0.5">
                         {p.project_id}
                       </div>
                     </td>
 
-                    <td className="py-3 px-3 text-slate-600 dark:text-slate-300">
-                      <div className="truncate max-w-[140px] font-medium">{p.sector}</div>
-                      <div className="text-[10px] text-slate-400 truncate max-w-[140px]">{p.agency || p.ministry}</div>
+                    <td className="py-3.5 px-3.5 text-slate-700 dark:text-slate-300">
+                      <div className="truncate max-w-[150px] font-semibold text-sm">{t('sector.' + p.sector, p.sector)}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-[150px] mt-0.5">{t('agency.' + (p.agency || ''), t('ministry.' + (p.ministry || ''), p.agency || p.ministry))}</div>
                     </td>
 
-                    <td className="py-3 px-3 text-right font-mono">
-                      <span className="font-bold text-rose-600 dark:text-rose-400">
-                        +₹{costOverrun.toLocaleString('en-IN', { maximumFractionDigits: 0 })} Cr
+                    <td className="py-3.5 px-3.5 text-right font-mono">
+                      <span className="font-extrabold text-sm text-rose-600 dark:text-rose-400">
+                        +₹{formatNumber(Math.round(costOverrun))} {t('metric.cr', 'Cr')}
                       </span>
-                      <span className="text-[10px] text-slate-400 block">+{p.cost_growth_pct}%</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 block mt-0.5">+{p.cost_growth_pct}%</span>
                     </td>
 
-                    <td className="py-3 px-3 text-right font-mono">
+                    <td className="py-3.5 px-3.5 text-right font-mono">
                       {delayMonths > 0 ? (
-                        <span className="font-bold text-amber-600 dark:text-amber-400">
-                          +{delayMonths} Mo
+                        <span className="font-extrabold text-sm text-amber-600 dark:text-amber-400">
+                          +{delayMonths} {t('metric.months', 'Mo')}
                         </span>
                       ) : (
-                        <span className="text-emerald-600 text-[11px]">On Time</span>
+                        <span className="text-emerald-600 font-bold text-xs">{t('overview.on_time', 'On Time')}</span>
                       )}
                     </td>
 
-                    <td className="py-3 px-4 text-[11px] text-slate-600 dark:text-slate-300">
-                      <div className="truncate max-w-[220px]" title={primaryDriver}>
-                        {primaryDriver}
+                    <td className="py-3.5 px-4 text-xs text-slate-700 dark:text-slate-300">
+                      <div className="truncate max-w-[220px] font-medium" title={primaryDriver}>
+                        {t('driver.' + primaryDriver, primaryDriver)}
                       </div>
                     </td>
 
-                    <td className="py-3 px-3 text-center">
-                      <button className="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-[11px] font-semibold transition shadow-sm">
-                        Inspect
+                    <td className="py-3.5 px-3.5 text-center">
+                      <button className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition shadow-xs">
+                        {t('overview.btn_inspect', 'Inspect')}
                       </button>
                     </td>
                   </tr>
@@ -369,18 +373,18 @@ export const OverviewPage: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-                  REAL HERO PROJECT DOSSIER • {realHero.project_id}
+                  {t('overview.hero_dossier', 'REAL HERO PROJECT DOSSIER')} • {realHero.project_id}
                 </span>
                 <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 font-bold">
-                  CRITICAL RISK
+                  {t('overview.critical_risk', 'CRITICAL RISK')}
                 </span>
               </div>
               <h2 className="text-lg font-bold text-slate-900 dark:text-white mt-1">
                 {realHero.project_name}
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Agency: <strong>{realHero.agency}</strong> • Ministry: <strong>{realHero.ministry}</strong> •
-                State: <strong>{realHero.state}</strong> • Coverage: <strong>10 Consecutive Monthly Snapshots</strong>
+                {t('overview.lbl_agency', 'Agency:')} <strong>{t('agency.' + realHero.agency, realHero.agency)}</strong> • {t('overview.lbl_ministry', 'Ministry:')} <strong>{t('ministry.' + realHero.ministry, realHero.ministry)}</strong> •
+                {t('overview.lbl_state', 'State:')} <strong>{t('state.' + realHero.state, realHero.state)}</strong> • {t('overview.lbl_coverage', 'Coverage: 10 Consecutive Monthly Snapshots')}
               </p>
             </div>
           </div>
@@ -389,30 +393,30 @@ export const OverviewPage: React.FC = () => {
             onClick={() => navigate(`/projects/${realHero.project_id}`)}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded text-xs font-bold flex items-center gap-1.5 shrink-0 transition shadow-md"
           >
-            <span>Inspect BharatNet Trajectory</span>
+            <span>{t('overview.inspect_trajectory', 'Inspect BharatNet Trajectory')}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-mono">
           <div className="bg-white dark:bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
-            <span className="text-slate-400 text-[10px] block uppercase">Original Sanctioned</span>
-            <span className="text-base font-bold text-slate-900 dark:text-white">₹{realHero.original_cost.toLocaleString()} Cr</span>
+            <span className="text-slate-400 text-[10px] block uppercase">{t('overview.orig_sanctioned', 'Original Sanctioned')}</span>
+            <span className="text-base font-bold text-slate-900 dark:text-white">₹{formatNumber(realHero.original_cost)} {t('metric.cr', 'Cr')}</span>
           </div>
           <div className="bg-white dark:bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
-            <span className="text-slate-400 text-[10px] block uppercase">Revised Cost Baseline</span>
-            <span className="text-base font-bold text-amber-600 dark:text-amber-400">₹{realHero.revised_cost.toLocaleString()} Cr</span>
-            <span className="text-[10px] text-red-600 dark:text-red-400 block font-sans font-semibold">+{realHero.cost_growth_pct}% Observed Cost Revision</span>
+            <span className="text-slate-400 text-[10px] block uppercase">{t('overview.revised_cost_baseline', 'Revised Cost Baseline')}</span>
+            <span className="text-base font-bold text-amber-600 dark:text-amber-400">₹{formatNumber(realHero.revised_cost)} {t('metric.cr', 'Cr')}</span>
+            <span className="text-[10px] text-red-600 dark:text-red-400 block font-sans font-semibold">+{realHero.cost_growth_pct}% {t('overview.observed_cost_revision', 'Observed Cost Revision')}</span>
           </div>
           <div className="bg-white dark:bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
-            <span className="text-slate-400 text-[10px] block uppercase">Cumulative Expended</span>
-            <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">₹{realHero.cumulative_expenditure.toLocaleString()} Cr</span>
-            <span className="text-[10px] text-slate-500 block font-sans">({realHero.expenditure_ratio_pct}% of Revised)</span>
+            <span className="text-slate-400 text-[10px] block uppercase">{t('overview.cumulative_expended', 'Cumulative Expended')}</span>
+            <span className="text-base font-bold text-emerald-600 dark:text-emerald-400">₹{formatNumber(realHero.cumulative_expenditure)} {t('metric.cr', 'Cr')}</span>
+            <span className="text-[10px] text-slate-500 block font-sans">({realHero.expenditure_ratio_pct}% {t('overview.of_revised', 'of Revised')})</span>
           </div>
           <div className="bg-white dark:bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
-            <span className="text-slate-400 text-[10px] block uppercase">Reported Progress</span>
+            <span className="text-slate-400 text-[10px] block uppercase">{t('overview.reported_progress', 'Reported Progress')}</span>
             <span className="text-base font-bold text-blue-600 dark:text-blue-400">{realHero.physical_progress}%</span>
-            <span className="text-[10px] text-slate-500 block font-sans">DoC: {realHero.target_completion_date || 'N/A'}</span>
+            <span className="text-[10px] text-slate-500 block font-sans">{t('overview.doc_target', 'DoC:')} {realHero.target_completion_date || 'N/A'}</span>
           </div>
         </div>
       </div>

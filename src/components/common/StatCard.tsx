@@ -43,26 +43,26 @@ export const StatCard: React.FC<StatCardProps> = ({
   return (
     <div
       onClick={onClick}
-      className={`rounded-lg border p-4 transition-all duration-200 ${variantStyles} ${onClick ? 'cursor-pointer hover:shadow-md' : ''}`}
+      className={`rounded-xl border p-4 sm:p-5 transition-all duration-200 ${variantStyles} ${onClick ? 'cursor-pointer hover:shadow-md' : ''}`}
     >
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-mono">{title}</p>
-          <p className="mt-1.5 text-2xl font-bold tracking-tight text-slate-900 dark:text-white font-mono">{value}</p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-mono truncate">{title}</p>
+          <p className="mt-1.5 text-xl sm:text-2xl xl:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white font-mono whitespace-nowrap overflow-hidden text-ellipsis">{value}</p>
         </div>
         {Icon && (
-          <div className={`p-2 rounded-md ${iconColors}`}>
+          <div className={`p-2.5 rounded-lg shrink-0 ${iconColors}`}>
             <Icon className="w-5 h-5" />
           </div>
         )}
       </div>
 
       {(subtitle || trend) && (
-        <div className="mt-3 flex items-center justify-between text-xs pt-2 border-t border-slate-100 dark:border-slate-800/60">
-          {subtitle && <span className="text-slate-500 dark:text-slate-400 font-medium">{subtitle}</span>}
+        <div className="mt-3 flex items-center justify-between text-xs pt-2.5 border-t border-slate-100 dark:border-slate-800/60">
+          {subtitle && <span className="text-slate-600 dark:text-slate-400 font-medium text-xs truncate">{subtitle}</span>}
           {trend && (
             <span
-              className={`font-semibold font-mono ${
+              className={`font-bold font-mono text-xs shrink-0 ml-2 ${
                 trend.isPositive
                   ? 'text-emerald-600 dark:text-emerald-400'
                   : trend.isNeutral

@@ -4,7 +4,14 @@ import { App } from './App';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import './index.css';
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+let container = document.getElementById('root');
+if (!container) {
+  container = document.createElement('div');
+  container.id = 'root';
+  document.body.appendChild(container);
+}
+
+ReactDOM.createRoot(container).render(
   <React.StrictMode>
     <ErrorBoundary>
       <App />
