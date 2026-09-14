@@ -67,7 +67,7 @@ class DataCorrectionService {
       throw err;
     }
 
-    if (actor?.role !== 'system_admin' && actor?.role !== 'monitoring_officer') {
+    if (actor?.role !== 'system_admin' && actor?.role !== 'data_platform_security_admin' && actor?.role !== 'monitoring_officer') {
       const err = new Error('Unauthorized: Only System Admin or Monitoring Officer can review historical corrections.');
       err.statusCode = 403;
       throw err;

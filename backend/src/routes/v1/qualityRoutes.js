@@ -29,6 +29,7 @@ router.use(authenticate);
 router.post('/projects/:id/ncrs', requireAuth, createNcr);
 router.post('/:id/ncrs', requireAuth, createNcr);
 router.patch('/ncrs/:ncrId', requireAuth, updateNcrStatus);
+router.patch('/ncrs/:ncrId/status', requireAuth, updateNcrStatus);
 
 // Lab Tests
 router.post('/projects/:id/lab-tests', requireAuth, addLabTest);

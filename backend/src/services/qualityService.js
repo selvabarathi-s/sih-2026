@@ -328,18 +328,28 @@ class QualityService {
     return photo;
   }
 
-  verifySitePhoto(photoId, { isConfirmed, verificationNotes, user }) {
+  verifySitePhoto(photoId, payload, user) {
+    const isConfirmed = (payload && typeof payload === 'object' && 'isConfirmed' in payload)
+      ? payload.isConfirmed
+      : payload;
+    const verificationNotes = payload?.verificationNotes || '';
+    const actualUser = user || payload?.user;
+
     for (const record of this.projectQualityRecords.values()) {
-      const photo = record.sitePhotos.find(p => p.id === photoId);
+      const photo = (record.sitePhotos || []).find(p => p.id === photoId);
       if (photo) {
         photo.verificationStatus = isConfirmed ? 'CONFIRMED_DEFECT' : 'FALSE_POSITIVE_DISMISSED';
-        photo.verifiedBy = user?.name || 'Quality Engineer';
+        photo.verifiedBy = actualUser?.fullName || actualUser?.name || 'Quality Engineer';
         photo.verifiedAt = new Date().toISOString();
         photo.verificationNotes = verificationNotes || '';
         return photo;
       }
     }
     throw new Error(`Photo anomaly record '${photoId}' not found.`);
+  }
+
+  verifySitePhotoAnomaly(photoId, payload, user) {
+    return this.verifySitePhoto(photoId, payload, user);
   }
 
   recalculateQualityRisk(data) {

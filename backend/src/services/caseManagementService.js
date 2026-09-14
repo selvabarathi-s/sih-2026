@@ -242,7 +242,7 @@ class CaseManagementService {
       throw err;
     }
 
-    if (actor?.role !== 'monitoring_officer' && actor?.role !== 'system_admin') {
+    if (actor?.role !== 'monitoring_officer' && actor?.role !== 'system_admin' && actor?.role !== 'data_platform_security_admin') {
       const err = new Error('Unauthorized: Only Monitoring Officers or Admins can perform field verification.');
       err.statusCode = 403;
       throw err;

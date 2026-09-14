@@ -73,7 +73,7 @@ class MonthlyMonitoringService {
   }
 
   async openNewReportingCycle(cycleData, actor) {
-    if (actor?.role !== 'system_admin' && actor?.role !== 'monitoring_officer') {
+    if (actor?.role !== 'system_admin' && actor?.role !== 'data_platform_security_admin' && actor?.role !== 'monitoring_officer') {
       const err = new Error('Unauthorized: Only System Admin or Monitoring Officer can open new reporting cycles.');
       err.statusCode = 403;
       throw err;
@@ -208,7 +208,14 @@ class MonthlyMonitoringService {
       ? this.activeReportingCycles.find(c => c.cycleId === cycleId)
       : this.getCurrentCycle();
 
-    const submissionId = `SUB-${cycle.periodKey}-${project.project_code || project.project_id.replace('PAI-', '')}`;
+    if (!cycle) {
+      const err = new Error(`Reporting cycle '${cycleId}' not found.`);
+      err.statusCode = 404;
+      throw err;
+    }
+
+    const cleanCode = project.project_code || (project.project_id || '').replace('PAI-', '');
+    const submissionId = `SUB-${cycle.periodKey}-${cleanCode}`;
 
     // Optimistic concurrency check
     const expectedVersion = Number(data.record_version ?? data.recordVersion ?? project.record_version ?? 1);
@@ -297,7 +304,7 @@ class MonthlyMonitoringService {
       throw err;
     }
 
-    if (actor?.role !== 'monitoring_officer' && actor?.role !== 'system_admin' && actor?.role !== 'senior_decision_maker') {
+    if (actor?.role !== 'monitoring_officer' && actor?.role !== 'system_admin' && actor?.role !== 'data_platform_security_admin' && actor?.role !== 'senior_decision_maker') {
       const err = new Error('Unauthorized: Only Monitoring Officers or Admins can review monitoring submissions.');
       err.statusCode = 403;
       throw err;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Bell, ShieldCheck, UserCheck, RefreshCw, Sun, Moon, Database, LogIn, ChevronDown, KeyRound, Check } from 'lucide-react';
+import { Search, Bell, ShieldCheck, UserCheck, RefreshCw, Sun, Moon, Database, LogIn, ChevronDown, KeyRound, Check, Building2 } from 'lucide-react';
 import { paimanaDataService } from '../../services/paimanaDataService';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
@@ -54,6 +54,20 @@ export const TopNav: React.FC = () => {
           <Database className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
           <span>PAIMANA April 2026</span>
           <span className="text-[10px] px-1 py-0.2 bg-emerald-600 text-white rounded font-bold">1,981 Projects</span>
+        </div>
+
+        {/* Real-World Organizational Scope Badge */}
+        <div className="hidden xl:flex items-center gap-1.5 px-3 py-1 bg-blue-50/80 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800/80 rounded-md text-[11px] font-mono text-blue-900 dark:text-blue-200 font-semibold shadow-sm">
+          <Building2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+          <span className="truncate max-w-[160px]">{user?.organization || roleMeta.organization || 'MoSPI / IPMD'}</span>
+          <span className="text-slate-400">•</span>
+          <span className="text-blue-700 dark:text-blue-300 font-bold truncate max-w-[130px]">{roleMeta.title}</span>
+          <span className="text-slate-400">•</span>
+          <span className="text-[10px] px-1 py-0.2 bg-blue-600 text-white rounded font-bold">
+            {user?.assignedProjects && user.assignedProjects.length > 0 && !user.assignedProjects.includes('ALL_SURVEILLANCE') && !user.assignedProjects.includes('ALL_SYSTEM_ADMIN') && !user.assignedProjects.includes('ALL_PORTFOLIO_CRITICAL')
+              ? user.assignedProjects.join(', ')
+              : 'Portfolio Scope'}
+          </span>
         </div>
       </div>
 

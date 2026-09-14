@@ -16,11 +16,54 @@ const app = createApp();
 // Serve static frontend assets from dist folder
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// SPA client-side fallback for frontend React routes (excluding /api routes)
+const VALID_FRONTEND_ROUTES = [
+  '/',
+  '/login',
+  '/dashboard',
+  '/monitoring',
+  '/decisions',
+  '/quality',
+  '/cases',
+  '/monthly-updates',
+  '/ministry-overview',
+  '/engineering',
+  '/supervision',
+  '/coordination',
+  '/state-coordination',
+  '/investment-review',
+  '/financial-review',
+  '/governance',
+  '/audit',
+  '/security',
+  '/analytics',
+  '/finance',
+  '/dependencies',
+  '/data-governance',
+  '/settings',
+  '/projects',
+  '/models',
+  '/reports',
+];
+
+// SPA client-side fallback strictly for recognized frontend application routes
 app.use((req, res, next) => {
   if (req.path.startsWith('/api/') || req.path.startsWith('/health')) {
     return next();
   }
+
+  // Reject file extensions not in dist, traversal markers, or unrecognized URL paths
+  if (path.extname(req.path) || req.path.includes('..')) {
+    return res.status(404).send('Not Found');
+  }
+
+  const isKnownRoute = VALID_FRONTEND_ROUTES.some(
+    r => req.path === r || req.path.startsWith(`${r}/`)
+  );
+
+  if (!isKnownRoute) {
+    return res.status(404).send('Not Found');
+  }
+
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
@@ -42,13 +85,36 @@ const server = app.listen(config.port, config.host, () => {
   automationWorker.start(60000);
 });
 
+// Socket & Connection Timeouts (protects against slowloris and hung sockets under 300-1000 concurrent users)
+server.keepAliveTimeout = 65000;
+server.headersTimeout = 66000;
+server.requestTimeout = 30000;
+
+// Process-level uncaught exception & unhandled rejection shields
+process.on('uncaughtException', (err) => {
+  console.error('[CRITICAL SHIELD] Uncaught Exception trapped:', err?.stack || err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('[CRITICAL SHIELD] Unhandled Rejection at:', promise, 'reason:', reason?.stack || reason);
+});
+
 // Graceful shutdown handling
-process.on('SIGTERM', () => {
-  console.log('SIGTERM signal received: closing HTTP server');
+const gracefulShutdown = (signal) => {
+  console.log(`${signal} signal received: initiating graceful shutdown`);
   automationWorker.stop();
   server.close(() => {
-    console.log('HTTP server closed');
+    console.log('HTTP server closed gracefully');
+    process.exit(0);
   });
-});
+  // Force exit after 10s if hanging sockets remain
+  setTimeout(() => {
+    console.error('Forcefully terminating process after shutdown timeout');
+    process.exit(1);
+  }, 10000).unref();
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 export default app;

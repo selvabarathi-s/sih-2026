@@ -118,7 +118,7 @@ class DecisionWorkflowService {
     }
 
     // Role check: Senior Decision Maker or System Admin only
-    if (actor?.role !== 'senior_decision_maker' && actor?.role !== 'system_admin') {
+    if (actor?.role !== 'senior_decision_maker' && actor?.role !== 'system_admin' && actor?.role !== 'data_platform_security_admin') {
       const err = new Error('Unauthorized: Only Senior Decision Makers (Cabinet Sec / PMO) can issue executive directives.');
       err.statusCode = 403;
       throw err;

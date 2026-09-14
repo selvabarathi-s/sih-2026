@@ -83,7 +83,13 @@ export const getProjectSimilar = async (req, res, next) => {
 export const getProjectResilience = async (req, res, next) => {
   try {
     const project = await projectService.getProjectDetails(req.params.id);
-    if (!project) return res.status(404).json({ error: 'Project not found' });
+    if (!project) {
+      return res.status(404).json({
+        data: null,
+        meta: null,
+        error: { code: 'NOT_FOUND', message: `Project '${req.params.id}' not found`, statusCode: 404 },
+      });
+    }
     const snapshots = await projectService.getProjectSnapshots(req.params.id);
     const result = calculateResilienceAndFragility(project, snapshots);
     res.status(200).json({
@@ -98,7 +104,13 @@ export const getProjectResilience = async (req, res, next) => {
 export const getProjectConfidence = async (req, res, next) => {
   try {
     const project = await projectService.getProjectDetails(req.params.id);
-    if (!project) return res.status(404).json({ error: 'Project not found' });
+    if (!project) {
+      return res.status(404).json({
+        data: null,
+        meta: null,
+        error: { code: 'NOT_FOUND', message: `Project '${req.params.id}' not found`, statusCode: 404 },
+      });
+    }
     const snapshots = await projectService.getProjectSnapshots(req.params.id);
     const result = calculatePredictionConfidence(project, snapshots);
     res.status(200).json({

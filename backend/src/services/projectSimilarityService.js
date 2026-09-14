@@ -21,7 +21,9 @@ class ProjectSimilarityService {
     ]);
 
     if (!targetProject) {
-      throw new Error(`Project '${projectId}' not found`);
+      const err = new Error(`Project '${projectId}' not found`);
+      err.statusCode = 404;
+      throw err;
     }
 
     const tCost = Number(targetProject.revised_cost || targetProject.original_cost || 1000);

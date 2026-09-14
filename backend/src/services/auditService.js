@@ -3,11 +3,13 @@ class AuditService {
     this.logs = [
       {
         id: 'aud-001',
-        action: 'INGESTION_COMPLETED',
-        userId: 'system',
-        userRole: 'SYSTEM_ADMIN',
+        action: 'DATA_IMPORT',
+        userId: 'sysadmin',
+        userRole: 'data_platform_security_admin',
+        organization: 'MoSPI / National Platform Architecture Cell',
         resourceType: 'INGESTION',
         resourceId: 'FlashReport_April2026.pdf',
+        result: 'SUCCESS',
         details: {
           extractedCount: 1981,
           reconciliationStatus: 'PASS',
@@ -19,11 +21,13 @@ class AuditService {
       },
       {
         id: 'aud-002',
-        action: 'WARNING_GENERATED',
+        action: 'WARNING_CREATED',
         userId: 'system',
-        userRole: 'SYSTEM_ADMIN',
+        userRole: 'monitoring_officer',
+        organization: 'MoSPI / IPMD',
         resourceType: 'ALERT',
         resourceId: 'SIG-706775',
+        result: 'SUCCESS',
         details: {
           projectId: 'PAI-706775',
           projectName: 'BharatNet',
@@ -42,16 +46,19 @@ class AuditService {
       action: eventData.action,
       userId: eventData.userId || 'anonymous',
       userRole: eventData.userRole || 'PUBLIC',
+      organization: eventData.organization || 'Government Infrastructure Monitoring Body',
       resourceType: eventData.resourceType || 'GENERAL',
       resourceId: eventData.resourceId || 'N/A',
+      result: eventData.result || (eventData.action?.includes('DENIED') ? 'DENIED' : 'SUCCESS'),
+      reason: eventData.reason || eventData.details?.reason || null,
       details: eventData.details || {},
       ipAddress: eventData.ipAddress || '127.0.0.1',
       timestamp: new Date().toISOString(),
     };
 
     this.logs.unshift(logEntry);
-    if (this.logs.length > 500) {
-      this.logs = this.logs.slice(0, 500); // keep most recent 500 logs
+    if (this.logs.length > 1000) {
+      this.logs = this.logs.slice(0, 1000); // keep most recent 1000 logs
     }
 
     return logEntry;
@@ -67,7 +74,7 @@ class AuditService {
 
   async getLogs(filters = {}) {
     let result = [...this.logs];
-    const { action, userId, resourceType, limit = 50 } = filters;
+    const { action, userId, resourceType, organization, limit = 100 } = filters;
 
     if (action) {
       result = result.filter(l => l.action.toLowerCase() === action.toLowerCase());
@@ -77,6 +84,9 @@ class AuditService {
     }
     if (resourceType) {
       result = result.filter(l => l.resourceType.toLowerCase() === resourceType.toLowerCase());
+    }
+    if (organization) {
+      result = result.filter(l => (l.organization || '').toLowerCase().includes(organization.toLowerCase()));
     }
 
     return {

@@ -80,20 +80,27 @@ class ProjectRepository {
 
     const total = results.length;
 
-    // Calculate pagination parameters
-    const finalLimit = limit ? Number(limit) : Number(pageSize);
-    const finalOffset = offset !== undefined ? Number(offset) : (Number(page) - 1) * finalLimit;
-    const finalPage = offset !== undefined ? Math.floor(finalOffset / finalLimit) + 1 : Number(page);
-    const totalPages = Math.ceil(total / finalLimit) || 1;
+    // Calculate sanitized pagination parameters (clamp limits, prevent NaN and division by zero)
+    const rawLimit = limit !== undefined ? Number(limit) : Number(pageSize);
+    const finalLimit = Math.max(1, Math.min(5000, Number.isFinite(rawLimit) && rawLimit > 0 ? Math.floor(rawLimit) : 20));
+    const rawPage = Number(page);
+    const validPage = Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1;
+    const rawOffset = offset !== undefined ? Number(offset) : undefined;
+    const finalOffset = rawOffset !== undefined && Number.isFinite(rawOffset) && rawOffset >= 0
+      ? Math.floor(rawOffset)
+      : (validPage - 1) * finalLimit;
+    const finalPage = rawOffset !== undefined ? Math.floor(finalOffset / finalLimit) + 1 : validPage;
+    const totalPages = Math.max(1, Math.ceil(total / finalLimit));
 
-    // Sort
+    // Protected Sort
+    const safeSortBy = typeof sortBy === 'string' && sortBy.length > 0 && !sortBy.startsWith('__') ? sortBy : 'revised_cost';
     results.sort((a, b) => {
-      const aVal = a[sortBy] ?? 0;
-      const bVal = b[sortBy] ?? 0;
+      const aVal = a && safeSortBy in a ? a[safeSortBy] : 0;
+      const bVal = b && safeSortBy in b ? b[safeSortBy] : 0;
       if (typeof aVal === 'string' && typeof bVal === 'string') {
         return sortOrder === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
-      return sortOrder === 'asc' ? Number(aVal) - Number(bVal) : Number(bVal) - Number(aVal);
+      return sortOrder === 'asc' ? (Number(aVal) || 0) - (Number(bVal) || 0) : (Number(bVal) || 0) - (Number(aVal) || 0);
     });
 
     const paginated = results.slice(finalOffset, finalOffset + finalLimit);
@@ -113,12 +120,17 @@ class ProjectRepository {
 
   async findById(id) {
     if (!this.projectsCache) this.loadData();
-    const cleanId = (id || '').trim();
+    if (!id || typeof id !== 'string') return null;
+    const cleanId = String(id).trim();
+    if (!cleanId) return null;
+    const lowerId = cleanId.toLowerCase();
+    const prefixedId = lowerId.startsWith('pai-') ? lowerId : `pai-${lowerId}`;
+
     return (this.projectsCache || []).find(
       p =>
-        p.project_id.toLowerCase() === cleanId.toLowerCase() ||
-        p.project_code === cleanId ||
-        p.project_id.toLowerCase() === `pai-${cleanId.toLowerCase()}`
+        (p.project_id && p.project_id.toLowerCase() === lowerId) ||
+        (p.project_code && p.project_code.toLowerCase() === lowerId) ||
+        (p.project_id && p.project_id.toLowerCase() === prefixedId)
     );
   }
 

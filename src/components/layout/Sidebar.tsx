@@ -22,6 +22,9 @@ import {
   Inbox,
   ShieldCheck,
   Database,
+  Building2,
+  Wrench,
+  FileCheck,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { ROLE_METADATA } from '../../types/auth';
@@ -30,245 +33,300 @@ export const Sidebar: React.FC = () => {
   const { user, currentRole } = useAuth();
 
   const roleMeta = ROLE_METADATA[currentRole] || ROLE_METADATA.monitoring_officer;
-  const roleClean = (currentRole || '').toLowerCase().replace(/_/g, '');
+  const role = (currentRole || '').toLowerCase().trim();
 
-  // Dynamic Navigation Configuration tailored to each role
+  // Dynamic Navigation Configuration tailored to each of the 18 roles
   const getNavItems = () => {
-    // 1. Monitoring Officer: Portfolio Surveillance
-    if (roleClean.includes('monitoring') || roleClean.includes('officer')) {
+    // 1. Senior Review & Decision Authority
+    if (role === 'senior_decision_maker' || role === 'decision_maker' || role === 'secretary') {
+      return {
+        primary: [
+          { name: 'Executive Decisions', path: '/risk-intelligence', icon: Award, badge: 'Directives' },
+          { name: 'Operational Inbox', path: '/inbox', icon: Inbox },
+          { name: 'National Overview', path: '/', icon: LayoutDashboard },
+          { name: 'Critical Projects', path: '/projects', icon: FolderKanban },
+          { name: 'Sector Benchmarking', path: '/benchmarking', icon: BarChart3 },
+          { name: 'Macro Analytics', path: '/analytics', icon: TrendingUp },
+          { name: 'As-Of Simulation', path: '/as-of-prediction', icon: History },
+          { name: 'PAIMANA Copilot', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
+      };
+    }
+
+    // 2. IPMD Monitoring & Surveillance Officer
+    if (role === 'monitoring_officer' || role === 'monitoring' || role === 'officer') {
       return {
         primary: [
           { name: 'Portfolio Surveillance', path: '/', icon: LayoutDashboard },
-          { name: 'Operational Inbox', path: '/inbox', icon: Inbox, badge: 'Gov Workload' },
-          { name: 'Projects Directory (1,981)', path: '/projects', icon: FolderKanban },
-          { name: 'Deterioration Signals', path: '/early-warnings', icon: BellRing, badge: '20+' },
-          { name: 'Quality & Compliance', path: '/quality', icon: ShieldCheck, badge: 'IS Audit' },
-          { name: 'Data Ingestion', path: '/imports', icon: Database },
-          { name: 'As-Of Reconstruction', path: '/as-of-prediction', icon: History },
-          { name: 'Risk Network Topology', path: '/risk-network', icon: Network },
-          { name: 'Sector Benchmarks', path: '/benchmarking', icon: BarChart3 },
-          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
-        ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
-      };
-    }
-
-    // 2. Project Administrator: Project Execution
-    if (roleClean.includes('project') || roleClean.includes('nodal')) {
-      return {
-        primary: [
-          { name: 'Project Execution', path: '/', icon: LayoutDashboard },
-          { name: 'Operational Inbox', path: '/inbox', icon: Inbox, badge: 'Gov Workload' },
-          { name: 'Assigned (BharatNet)', path: '/projects/PAI-706775', icon: Activity },
-          { name: 'Quality & NCRs', path: '/quality', icon: ShieldCheck },
-          { name: 'All Projects (Read-Only)', path: '/projects', icon: FolderKanban },
-          { name: 'As-Of History', path: '/as-of-prediction', icon: History },
-          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
-        ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
-      };
-    }
-
-    // 3. Risk / Data Analyst: Predictive Intelligence
-    if (roleClean.includes('analyst') || roleClean.includes('data')) {
-      return {
-        primary: [
-          { name: 'Predictive Intelligence', path: '/predictions', icon: Cpu },
+          { name: 'Early Warning Signals', path: '/early-warnings', icon: BellRing, badge: '20+' },
+          { name: 'Monitoring Cases', path: '/cases', icon: ShieldAlert, badge: 'Active' },
           { name: 'Operational Inbox', path: '/inbox', icon: Inbox },
-          { name: 'Quality Telemetry', path: '/quality', icon: ShieldCheck },
-          { name: 'Data Import Center', path: '/imports', icon: Database },
-          { name: 'As-Of Reconstruction', path: '/as-of-prediction', icon: History },
-          { name: 'Sector Benchmarks', path: '/benchmarking', icon: BarChart3 },
-          { name: 'Macro Analytics', path: '/analytics', icon: TrendingUp },
-          { name: 'Risk Propagation', path: '/risk-network', icon: Network },
-          { name: 'Data Health Checks', path: '/data-health', icon: ActivitySquare },
-          { name: 'National Overview', path: '/', icon: LayoutDashboard },
-          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
-        ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
-      };
-    }
-
-    // 4. Senior Decision Maker: Executive Portfolio Brief
-    if (roleClean.includes('decision') || roleClean.includes('secretary') || roleClean.includes('senior')) {
-      return {
-        primary: [
-          { name: 'Executive Portfolio Brief', path: '/risk-intelligence', icon: Award },
-          { name: 'Operational Inbox', path: '/inbox', icon: Inbox, badge: 'Directives' },
-          { name: 'Quality & Standards', path: '/quality', icon: ShieldCheck },
-          { name: 'National Overview', path: '/', icon: LayoutDashboard },
-          { name: 'As-Of Audit & Backtest', path: '/as-of-prediction', icon: History },
           { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
-          { name: 'Sector Benchmarking', path: '/benchmarking', icon: BarChart3 },
-          { name: 'Portfolio Analytics', path: '/analytics', icon: TrendingUp },
-          { name: 'PAIMANA Grounded Copilot', path: '/assistant', icon: BotMessageSquare },
-        ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
-      };
-    }
-
-    // 5. System Administrator: System Governance
-    if (roleClean.includes('system') || roleClean.includes('sysadmin')) {
-      return {
-        primary: [
-          { name: 'System Governance', path: '/', icon: LayoutDashboard },
-          { name: 'Operational Inbox', path: '/inbox', icon: Inbox, badge: 'Admin' },
-          { name: 'Data Ingestion Center', path: '/imports', icon: Database, badge: 'Bulk' },
-          { name: 'Quality Assurance', path: '/quality', icon: ShieldCheck },
-          { name: 'As-Of Simulation Engine', path: '/as-of-prediction', icon: History },
-          { name: 'Data Health & Ingestion', path: '/data-health', icon: ActivitySquare },
-          { name: 'Admin & Audit Trail', path: '/settings', icon: Settings },
-          { name: 'ML Model Registry', path: '/predictions', icon: Cpu },
-          { name: 'Projects Directory (1,981)', path: '/projects', icon: FolderKanban },
+          { name: 'Risk Network Topology', path: '/risk-network', icon: Network },
+          { name: 'Quality Telemetry', path: '/quality', icon: ShieldCheck },
+          { name: 'Data Ingestion', path: '/imports', icon: Database },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
       };
     }
 
-    // 6. Quality Auditor / TPI Engineer: Quality Assurance & Lab Verification
-    if (roleClean.includes('quality') || roleClean.includes('auditor')) {
+    // 3. Administrative Ministry / Project Review Officer
+    if (role === 'admin_ministry_review' || role === 'ministry_reviewer' || role === 'ministry') {
+      return {
+        primary: [
+          { name: 'Ministry Overview', path: '/ministry-overview', icon: Building2, badge: 'MoRTH' },
+          { name: 'Ministry Projects', path: '/projects', icon: FolderKanban },
+          { name: 'Escalated Cases', path: '/cases', icon: ShieldAlert, badge: 'Escalated' },
+          { name: 'Agency Actions', path: '/inbox', icon: Inbox },
+          { name: 'Inter-Agency Sync', path: '/coordination', icon: Network },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
+      };
+    }
+
+    // 4. Project / Nodal Officer
+    if (role === 'project_admin' || role === 'nodal') {
+      return {
+        primary: [
+          { name: 'Assigned (BharatNet)', path: '/projects/PAI-706775', icon: Activity, badge: 'P706775' },
+          { name: 'Monthly Updates', path: '/monthly-updates', icon: FileCheck },
+          { name: 'Operational Tasks', path: '/inbox', icon: Inbox, badge: 'Workload' },
+          { name: 'Quality NCRs & Tests', path: '/quality', icon: ShieldCheck },
+          { name: 'All Projects Directory', path: '/projects', icon: FolderKanban },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
+      };
+    }
+
+    // 5. Project Engineering Officer
+    if (role === 'project_engineering' || role === 'engineer') {
+      return {
+        primary: [
+          { name: 'Engineering Hub', path: '/engineering', icon: Wrench, badge: 'Specs' },
+          { name: 'Technical Progress', path: '/monthly-updates', icon: FileCheck },
+          { name: 'Hindrance Review', path: '/engineering', icon: ActivitySquare },
+          { name: 'Milestone Review', path: '/projects', icon: FolderKanban },
+          { name: 'Operational Tasks', path: '/inbox', icon: Inbox },
+          { name: 'Quality Tests', path: '/quality', icon: ShieldCheck },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
+      };
+    }
+
+    // 6. Quality & Inspection Officer
+    if (role === 'quality_auditor' || role === 'quality' || role === 'auditor') {
       return {
         primary: [
           { name: 'Quality & Compliance', path: '/quality', icon: ShieldCheck, badge: 'IS Audit' },
-          { name: 'Operational Inbox', path: '/inbox', icon: Inbox, badge: 'NCRs' },
+          { name: 'NCR 6-Stage Lifecycle', path: '/quality', icon: ShieldAlert },
+          { name: 'Certified Lab Tests', path: '/quality', icon: Award },
+          { name: 'Inspection Tasks', path: '/inbox', icon: Inbox, badge: 'NCRs' },
           { name: 'Assigned Inspection', path: '/projects/PAI-706775', icon: Activity },
-          { name: 'All Projects Directory', path: '/projects', icon: FolderKanban },
-          { name: 'Sector Benchmarks', path: '/benchmarking', icon: BarChart3 },
+          { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
       };
     }
 
-    // 7. Financial Adviser: IFD / Ministry of Finance
-    if (roleClean.includes('finance') || roleClean.includes('financial')) {
+    // 7. Project Finance & Accounts Officer
+    if (role === 'project_finance' || role === 'finance' || role === 'financial_officer') {
       return {
         primary: [
-          { name: 'Capital Outlay & Burn', path: '/analytics', icon: TrendingUp, badge: 'IFD Sanctions' },
-          { name: 'Operational Inbox', path: '/inbox', icon: Inbox, badge: 'RCE Review' },
-          { name: 'Macro Cost Drivers', path: '/predictions', icon: BarChart3 },
+          { name: 'Project Accounts', path: '/finance', icon: TrendingUp, badge: 'Vouchers' },
+          { name: 'Physical-Financial Gap', path: '/analytics', icon: BarChart3 },
+          { name: 'RCE Preparation', path: '/predictions', icon: ActivitySquare },
+          { name: 'Payment Tasks', path: '/inbox', icon: Inbox },
+          { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
           { name: 'National Overview', path: '/', icon: LayoutDashboard },
-          { name: 'Projects Financials', path: '/projects', icon: FolderKanban },
-          { name: 'Sector Benchmarking', path: '/benchmarking', icon: BarChart3 },
-          { name: 'Executive Portfolio Brief', path: '/risk-intelligence', icon: Award },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
       };
     }
 
-    // 8. Contractor / EPC Project Director: Field Execution & Rework Hub
-    if (roleClean.includes('contractor') || roleClean.includes('epc')) {
+    // 8. Contractor / EPC Representative
+    if (role === 'contractor_rep' || role === 'contractor' || role === 'epc') {
       return {
         primary: [
           { name: 'Assigned EPC Package', path: '/projects/PAI-706775', icon: Activity, badge: 'BharatNet' },
-          { name: 'Operational Inbox', path: '/inbox', icon: Inbox, badge: 'Rework Tasks' },
-          { name: 'Quality NCRs & Tests', path: '/quality', icon: ShieldCheck, badge: 'Rework Hub' },
-          { name: 'All Projects (Read-Only)', path: '/projects', icon: FolderKanban },
+          { name: 'Milestone Claims', path: '/monthly-updates', icon: FileCheck },
+          { name: 'NCR Rework Responses', path: '/quality', icon: ShieldCheck, badge: 'Rework' },
+          { name: 'Ground Submissions', path: '/inbox', icon: Inbox },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
       };
     }
 
-    // 9. PM GatiShakti / Inter-Ministerial Coordinator: Network Sync & Clearances
-    if (roleClean.includes('gatishakti') || roleClean.includes('npg')) {
+    // 9. Supervision Consultant / PMC
+    if (role === 'supervision_consultant' || role === 'pmc_consultant' || role === 'pmc') {
+      return {
+        primary: [
+          { name: 'PMC Supervision Hub', path: '/supervision', icon: Eye, badge: 'PMC' },
+          { name: 'Site Inspections Log', path: '/supervision', icon: ActivitySquare },
+          { name: 'Milestone Measurement', path: '/projects/PAI-706775', icon: Activity },
+          { name: 'Quality Verification', path: '/quality', icon: ShieldCheck },
+          { name: 'Consultant Inbox', path: '/inbox', icon: Inbox },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
+      };
+    }
+
+    // 10. Inter-Ministerial Coordination Officer
+    if (role === 'inter_ministerial_coordination' || role === 'inter_coord') {
+      return {
+        primary: [
+          { name: 'Inter-Ministerial Hub', path: '/coordination', icon: Network, badge: 'Multi-Agency' },
+          { name: 'Cross-Ministry Cases', path: '/cases', icon: ShieldAlert },
+          { name: 'Action Matrix', path: '/coordination', icon: Sliders },
+          { name: 'Meeting Directives', path: '/inbox', icon: Inbox },
+          { name: 'National Surveillance', path: '/', icon: LayoutDashboard },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
+      };
+    }
+
+    // 11. State / Central Project Coordination Officer
+    if (role === 'state_coordination' || role === 'state_coord') {
+      return {
+        primary: [
+          { name: 'State Coordination Hub', path: '/state-coordination', icon: Building2, badge: 'State RoW' },
+          { name: 'Land & RoW Tracker', path: '/state-coordination', icon: Network },
+          { name: 'Utility Shifting', path: '/state-coordination', icon: ActivitySquare },
+          { name: 'Cross-Agency Cases', path: '/coordination', icon: Sliders },
+          { name: 'Coordination Tasks', path: '/inbox', icon: Inbox },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
+      };
+    }
+
+    // 12. GatiShakti / Infrastructure Network Coordinator
+    if (role === 'gatishakti_officer' || role === 'gatishakti') {
       return {
         primary: [
           { name: 'Network Topology', path: '/risk-network', icon: Network, badge: 'Multi-Modal' },
-          { name: 'Operational Inbox', path: '/inbox', icon: Inbox, badge: 'Clearances' },
           { name: 'Cascading Delay Ripple', path: '/risk-network', icon: ActivitySquare },
           { name: 'Inter-Agency Signals', path: '/early-warnings', icon: BellRing },
-          { name: 'National Surveillance', path: '/', icon: LayoutDashboard },
-          { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
-          { name: 'Sector Benchmarking', path: '/benchmarking', icon: BarChart3 },
+          { name: 'Multi-Modal Clearances', path: '/coordination', icon: Sliders },
+          { name: 'National Overview', path: '/', icon: LayoutDashboard },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
       };
     }
 
-    // 10. Data & Document Ingestion Officer: Data Pipeline & Evidence Ingestion
-    if (roleClean.includes('dataofficer') || roleClean.includes('document')) {
+    // 13. Investment Appraisal & Project Review Officer
+    if (role === 'investment_appraisal_reviewer' || role === 'appraisal_officer') {
       return {
         primary: [
-          { name: 'Data Ingestion Center', path: '/imports', icon: Database, badge: 'Pipeline' },
-          { name: 'Operational Inbox', path: '/inbox', icon: Inbox, badge: 'Staging' },
+          { name: 'Investment Appraisal', path: '/investment-review', icon: TrendingUp, badge: 'PIB / EFC' },
+          { name: 'Cost Overrun Benchmarks', path: '/benchmarking', icon: BarChart3 },
+          { name: 'Portfolio Exposure', path: '/risk-intelligence', icon: Award },
+          { name: 'Predictions & Curves', path: '/predictions', icon: Cpu },
+          { name: 'Historical Projects', path: '/projects', icon: FolderKanban },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
+      };
+    }
+
+    // 14. Financial Review Authority
+    if (role === 'financial_review_authority' || role === 'fin_authority') {
+      return {
+        primary: [
+          { name: 'Financial Review Hub', path: '/financial-review', icon: TrendingUp, badge: 'MoF / DEA' },
+          { name: 'Portfolio Fiscal Risk', path: '/risk-intelligence', icon: Award },
+          { name: 'Macro Cost Drivers', path: '/predictions', icon: BarChart3 },
+          { name: 'RCE Review Tasks', path: '/inbox', icon: Inbox },
+          { name: 'National Overview', path: '/', icon: LayoutDashboard },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
+      };
+    }
+
+    // 15. Independent Audit / Compliance Observer
+    if (role === 'audit_observer') {
+      return {
+        primary: [
+          { name: 'Statutory Audit Vault', path: '/audit', icon: ShieldCheck, badge: 'CAG Read-Only' },
+          { name: 'Append-Only Ledger', path: '/audit', icon: History },
+          { name: 'Data Lineage & Provenance', path: '/data-health', icon: ActivitySquare },
+          { name: 'Decision Forensics', path: '/risk-intelligence', icon: Award },
+          { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
+      };
+    }
+
+    // 16. Predictive Risk & Data Analyst
+    if (role === 'risk_analyst' || role === 'analyst' || role === 'data_analyst') {
+      return {
+        primary: [
+          { name: 'Predictive Intelligence', path: '/predictions', icon: Cpu, badge: 'ML v1.4' },
+          { name: 'Temporal Backtesting', path: '/predictions', icon: History },
+          { name: 'As-Of Reconstruction', path: '/as-of-prediction', icon: History },
+          { name: 'Sector Benchmarks', path: '/benchmarking', icon: BarChart3 },
+          { name: 'Risk Propagation', path: '/risk-network', icon: Network },
+          { name: 'Data Health & Drift', path: '/data-health', icon: ActivitySquare },
+          { name: 'Macro Analytics', path: '/analytics', icon: TrendingUp },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
+      };
+    }
+
+    // 17. AI Governance & Model Assurance Officer
+    if (role === 'ai_governance' || role === 'aigov') {
+      return {
+        primary: [
+          { name: 'Model Governance', path: '/model-governance', icon: Cpu, badge: 'Rule T Gate' },
+          { name: 'Model Cards & Lineage', path: '/model-governance', icon: ShieldCheck },
+          { name: 'Rule T Temporal Verifier', path: '/as-of-prediction', icon: History },
+          { name: 'Drift & Calibration', path: '/model-governance', icon: ActivitySquare },
+          { name: 'Signoff Inbox', path: '/inbox', icon: Inbox, badge: 'Promote' },
+          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
+      };
+    }
+
+    // 18. Data, Platform & Security Administrator
+    if (role === 'data_platform_security_admin' || role === 'system_admin' || role === 'sysadmin') {
+      return {
+        primary: [
+          { name: 'Platform Admin', path: '/settings', icon: Settings, badge: 'RBAC' },
+          { name: 'Security SOC Telemetry', path: '/security', icon: ShieldCheck, badge: 'SOC' },
+          { name: 'Data Ingestion Center', path: '/imports', icon: Database, badge: 'Table 6' },
           { name: 'Data Health & Integrity', path: '/data-health', icon: ActivitySquare },
-          { name: 'Projects Evidence Directory', path: '/projects', icon: FolderKanban },
-          { name: 'National Overview', path: '/', icon: LayoutDashboard },
+          { name: 'Cryptographic Audit', path: '/audit', icon: History },
+          { name: 'System Governance', path: '/', icon: LayoutDashboard },
+          { name: 'Admin Tasks', path: '/inbox', icon: Inbox },
           { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
         ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
+        secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
       };
     }
 
-    // 11. AI Governance Approver: Model Validation & Rule T Anti-Leakage Gatekeeper
-    if (roleClean.includes('aigov') || roleClean.includes('governance') || roleClean.includes('approver')) {
-      return {
-        primary: [
-          { name: 'Model Registry & Cards', path: '/predictions', icon: Cpu, badge: 'Gatekeeper' },
-          { name: 'Operational Inbox', path: '/inbox', icon: Inbox, badge: 'Drift Signoff' },
-          { name: 'As-Of Audit & Backtesting', path: '/as-of-prediction', icon: History },
-          { name: 'Sector Benchmarking', path: '/benchmarking', icon: BarChart3 },
-          { name: 'Data Health Checks', path: '/data-health', icon: ActivitySquare },
-          { name: 'National Overview', path: '/', icon: LayoutDashboard },
-          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
-        ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
-      };
-    }
-
-    // 12. Security & Platform Officer: Access Control & Cryptographic Audit Vault
-    if (roleClean.includes('security') || roleClean.includes('ciso')) {
-      return {
-        primary: [
-          { name: 'Security & Audit Vault', path: '/settings', icon: Settings, badge: 'Audit Trail' },
-          { name: 'Operational Inbox', path: '/inbox', icon: Inbox, badge: 'SOC Alerts' },
-          { name: 'Data Health & Provenance', path: '/data-health', icon: ActivitySquare },
-          { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
-          { name: 'National Overview', path: '/', icon: LayoutDashboard },
-          { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
-        ],
-        secondary: [
-          { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-        ],
-      };
-    }
-
-    // Default fallback
+    // Default Fallback
     return {
       primary: [
         { name: 'Portfolio Surveillance', path: '/', icon: LayoutDashboard },
         { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
+        { name: 'Operational Inbox', path: '/inbox', icon: Inbox },
         { name: 'PAIMANA Assistant', path: '/assistant', icon: BotMessageSquare },
       ],
-      secondary: [
-        { name: 'Role Workspaces', path: '/login', icon: KeyRound },
-      ],
+      secondary: [{ name: 'Role Directory', path: '/login', icon: KeyRound }],
     };
   };
 
@@ -287,7 +345,7 @@ export const Sidebar: React.FC = () => {
               <span className="font-extrabold tracking-tight text-slate-900 dark:text-white text-base font-mono">PAIMANA</span>
               <span className="text-xs px-1.5 py-0.5 rounded bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-semibold uppercase tracking-wider">Live</span>
             </div>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight truncate">National Infrastructure Surveillance</p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-tight truncate">Predictive Infrastructure Risk & Closed-Loop Intelligence</p>
           </div>
         </div>
       </div>
@@ -295,7 +353,7 @@ export const Sidebar: React.FC = () => {
       {/* Role Workspace Banner */}
       <div className="px-4 py-2.5 bg-blue-50/70 dark:bg-blue-950/40 border-b border-blue-100 dark:border-blue-900/50">
         <div className="flex items-center justify-between">
-          <span className="text-[10px] font-mono uppercase font-bold text-blue-800 dark:text-blue-300">
+          <span className="text-[10px] font-mono uppercase font-bold text-blue-800 dark:text-blue-300 truncate max-w-[140px]">
             {roleMeta.title}
           </span>
           <span className="px-1.5 py-0.2 rounded text-[9px] font-mono bg-blue-200/60 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-bold">
@@ -368,11 +426,15 @@ export const Sidebar: React.FC = () => {
       {/* Footer */}
       <div className="p-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400">
         <div className="flex items-center justify-between mb-1">
-          <span className="font-semibold text-slate-700 dark:text-slate-300 font-mono text-[10px]">{user?.fullName || 'User'}</span>
-          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">RBAC Active</span>
+          <span className="font-semibold text-slate-700 dark:text-slate-300 font-mono text-[10px] truncate max-w-[130px]">
+            {user?.fullName || roleMeta.persona}
+          </span>
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">
+            RBAC Active
+          </span>
         </div>
-        <p className="text-[10px] text-slate-400 dark:text-slate-500 truncate">
-          {user?.department || 'MoSPI National Surveillance Cell'}
+        <p className="text-[10px] text-slate-400 dark:text-slate-500 truncate font-sans">
+          {user?.organization || roleMeta.organization || 'MoSPI / IPMD'}
         </p>
       </div>
     </aside>

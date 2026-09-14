@@ -26,5 +26,20 @@ export const createApp = () => {
   // API v1 Versioned Router
   app.use(config.apiPrefix, v1Routes);
 
+  // Catch unmapped API endpoints with structured JSON 404
+  app.use(config.apiPrefix, (req, res) => {
+    res.status(404).json({
+      data: null,
+      meta: null,
+      error: {
+        code: 'NOT_FOUND',
+        message: `API resource '${req.method} ${req.originalUrl}' not found.`,
+        statusCode: 404,
+        timestamp: new Date().toISOString(),
+        path: req.originalUrl,
+      },
+    });
+  });
+
   return app;
 };

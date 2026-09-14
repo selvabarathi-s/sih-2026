@@ -7,10 +7,13 @@ export interface UserSession {
   email: string;
   role: string;
   roles?: string[];
+  assigned_roles?: string[];
   defaultWorkspace?: string;
+  organization?: string;
   department: string;
   designation: string;
   assignedProjects?: string[];
+  authorityType?: string | null;
   permissions: string[];
 }
 

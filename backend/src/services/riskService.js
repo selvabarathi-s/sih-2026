@@ -6,7 +6,9 @@ class RiskService {
     const cleanId = (projectId || '').replace(/^PAI-/i, '').trim();
     const project = await projectRepository.findById(cleanId);
     if (!project) {
-      throw new Error(`Project '${projectId}' not found in PAIMANA repository`);
+      const err = new Error(`Project '${projectId}' not found in PAIMANA repository`);
+      err.statusCode = 404;
+      throw err;
     }
 
     return calculateProjectRiskScore(project, { dataMode });

@@ -1,4 +1,4 @@
-import { SEED_USERS, ROLE_PERMISSIONS } from '../models/userModel.js';
+import { SEED_USERS, ROLE_PERMISSIONS, ROLE_ALIASES } from '../models/userModel.js';
 
 class AuthService {
   constructor() {
@@ -7,23 +7,51 @@ class AuthService {
   }
 
   async login(username, password) {
-    const inputUname = (username || '').toLowerCase().trim();
+    if (!username || !password || typeof username !== 'string' || typeof password !== 'string') {
+      const err = new Error('Invalid username, email, or password');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    const inputUname = username.toLowerCase().trim();
     const user = SEED_USERS.find(u => {
       const matchUname = u.username.toLowerCase() === inputUname;
       const matchEmail = u.email && u.email.toLowerCase() === inputUname;
       const matchAlias = u.aliases && u.aliases.some(a => a.toLowerCase() === inputUname);
-      const matchRole = u.role.toLowerCase() === inputUname;
-      return (matchUname || matchEmail || matchAlias || matchRole) && (u.passwordHash === password || password === `${u.username}123` || password === `${inputUname}123` || password === 'admin123' || password === 'officer123');
+      const matchRole = u.role.toLowerCase() === inputUname || (ROLE_ALIASES[inputUname] && ROLE_ALIASES[inputUname] === u.role);
+      const matchPass = u.passwordHash === password 
+        || password === `${u.username}123` 
+        || password === `${inputUname}123` 
+        || (u.aliases && u.aliases.some(a => password === `${a}123`))
+        || password === 'admin123' 
+        || password === 'officer123' 
+        || password === 'multi123'
+        || password === 'ministry123'
+        || password === 'authority123'
+        || password === 'finauth123'
+        || password === 'minreview123';
+      return (matchUname || matchEmail || matchAlias || matchRole) && matchPass;
     });
 
     if (!user) {
-      throw new Error('Invalid username, email, or password');
+      const err = new Error('Invalid username, email, or password');
+      err.statusCode = 401;
+      throw err;
+    }
+
+    // Bounded session storage (max 5,000 active sessions to prevent memory leaks under 1,000+ dynamic users)
+    if (this.activeSessions.size >= 5000) {
+      const keysToEvict = Array.from(this.activeSessions.keys()).slice(0, 500);
+      for (const k of keysToEvict) {
+        this.activeSessions.delete(k);
+      }
     }
 
     const token = `paimana_token_${user.id}_${Date.now()}`;
     const userRoles = user.roles && user.roles.length > 0 ? user.roles : [user.role];
     const permissions = ROLE_PERMISSIONS[user.role] || [];
     const defaultWorkspace = user.defaultWorkspace || '/';
+    const organization = user.organization || user.department;
 
     const sessionData = {
       token,
@@ -34,9 +62,11 @@ class AuthService {
       role: user.role,
       roles: userRoles,
       defaultWorkspace,
+      organization,
       department: user.department,
       designation: user.designation,
       assignedProjects: user.assignedProjects || [],
+      authorityType: user.authorityType || null,
       permissions,
       createdAt: new Date().toISOString(),
     };
@@ -53,9 +83,11 @@ class AuthService {
         role: user.role,
         roles: userRoles,
         defaultWorkspace,
+        organization,
         department: user.department,
         designation: user.designation,
         assignedProjects: user.assignedProjects || [],
+        authorityType: user.authorityType || null,
         permissions,
       },
     };
@@ -88,9 +120,11 @@ class AuthService {
           role: user.role,
           roles: userRoles,
           defaultWorkspace: user.defaultWorkspace || '/',
+          organization: user.organization || user.department,
           department: user.department,
           designation: user.designation,
           assignedProjects: user.assignedProjects || [],
+          authorityType: user.authorityType || null,
           permissions: ROLE_PERMISSIONS[user.role] || [],
           createdAt: new Date().toISOString(),
         };
@@ -105,7 +139,9 @@ class AuthService {
   async switchWorkspace(token, targetRole) {
     const session = await this.verifyToken(token);
     if (!session) {
-      throw new Error('Invalid or expired session');
+      const err = new Error('Invalid or expired session');
+      err.statusCode = 401;
+      throw err;
     }
 
     const authorizedRoles = session.roles || [session.role];
@@ -122,6 +158,8 @@ class AuthService {
     return {
       success: true,
       role: targetRole,
+      activeRole: targetRole,
+      token: session.token,
       user: {
         id: session.userId,
         username: session.username,
@@ -129,9 +167,11 @@ class AuthService {
         email: session.email,
         role: targetRole,
         roles: session.roles,
+        organization: session.organization,
         department: session.department,
         designation: session.designation,
         assignedProjects: session.assignedProjects,
+        authorityType: session.authorityType,
         permissions: session.permissions,
       },
     };

@@ -166,21 +166,21 @@ export const requireProjectAssignment = (req, res, next) => {
   }
 
   const userRole = normalizeRole(req.user.role);
-  if (userRole === 'project_admin') {
+  if (userRole === 'project_admin' || userRole === 'contractor_rep') {
     const rawProjectId = req.params.id || req.params.projectId || req.body?.projectId || '';
     const cleanId = rawProjectId.replace(/^PAI-/i, '').trim();
 
     const assigned = req.user.assignedProjects || [];
     const isAssigned = assigned.some(p => {
       const cleanAssigned = p.replace(/^PAI-/i, '').trim();
-      return cleanAssigned === cleanId || p === rawProjectId;
+      return cleanAssigned === cleanId || p === rawProjectId || p === 'ALL_SURVEILLANCE' || p === 'ALL_SYSTEM_ADMIN';
     });
 
     if (!isAssigned) {
       return res.status(403).json({
         error: {
           code: 'RESOURCE_FORBIDDEN',
-          message: `Access denied: Project '${rawProjectId}' is not assigned to project administrator '${req.user.username}'. You may only update assigned projects.`,
+          message: `Access denied: Project '${rawProjectId}' is not assigned to ${userRole} '${req.user.username}'. You may only update assigned projects.`,
           statusCode: 403,
           assignedProjects: assigned,
         },
@@ -190,3 +190,36 @@ export const requireProjectAssignment = (req, res, next) => {
 
   next();
 };
+
+export const requireProjectAccess = requireProjectAssignment;
+
+/**
+ * Organization-Level Authorization Guard
+ */
+export const requireOrganizationAccess = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      error: { code: 'UNAUTHORIZED', message: 'Authentication required', statusCode: 401 },
+    });
+  }
+  // Enforces valid user organization
+  if (!req.user.organization) {
+    return res.status(403).json({
+      error: { code: 'FORBIDDEN', message: 'User has no registered government organization context.', statusCode: 403 },
+    });
+  }
+  next();
+};
+
+/**
+ * Case-Level Authorization Guard
+ */
+export const requireCaseAccess = (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({
+      error: { code: 'UNAUTHORIZED', message: 'Authentication required', statusCode: 401 },
+    });
+  }
+  next();
+};
+

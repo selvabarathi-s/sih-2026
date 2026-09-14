@@ -60,6 +60,7 @@ export const LoginPage: React.FC = () => {
 
   // Directory Toggle for convenience/inspection
   const [showDirectory, setShowDirectory] = useState(false);
+  const [activeGroupTab, setActiveGroupTab] = useState<'A' | 'B' | 'C' | 'D' | 'MULTI'>('A');
 
   // Primary Authentication Flow
   const handlePrimarySubmit = async (e: React.FormEvent) => {
@@ -460,236 +461,425 @@ export const LoginPage: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   <span className="text-xs font-bold text-slate-900 dark:text-white font-mono uppercase tracking-wider">
-                    Authorized Officer Directory & Sample Credentials
+                    Authorized 18-Persona Directory & Demo Credentials
                   </span>
                 </div>
                 <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                  <span>{showDirectory ? 'Hide Directory' : 'Show Directory (13 Officers)'}</span>
+                  <span>{showDirectory ? 'Hide Directory' : 'Show Directory (18 Personas + Multi-Role)'}</span>
                   {showDirectory ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                 </div>
               </button>
 
               {showDirectory && (
                 <div className="p-4 space-y-4 border-t border-slate-100 dark:border-slate-800 text-xs">
-                  {/* Tree 1: Operational Hierarchy */}
-                  <div>
-                    <h3 className="text-[11px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 font-mono mb-2">
-                      Primary Operational Governance Hierarchy
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {/* Group Navigation Tabs */}
+                  <div className="flex flex-wrap gap-1 border-b border-slate-200 dark:border-slate-800 pb-2">
+                    {[
+                      { key: 'A', label: 'Group A: Executive & Surveillance (3)' },
+                      { key: 'B', label: 'Group B: Implementing & Execution (6)' },
+                      { key: 'C', label: 'Group C: Coordination & Review (6)' },
+                      { key: 'D', label: 'Group D: Predictive & Platform (3)' },
+                      { key: 'MULTI', label: 'Dual-Role Multi-Assignment (1)' },
+                    ].map((tab) => (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        onClick={() => setActiveGroupTab(tab.key as any)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition cursor-pointer ${
+                          activeGroupTab === tab.key
+                            ? 'bg-blue-600 text-white shadow-sm'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Group A Personas */}
+                  {activeGroupTab === 'A' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       {[
                         {
                           title: 'Senior Decision Maker',
                           name: 'V. K. Sundaram',
-                          role: 'Secretary (Infrastructure & Coordination)',
+                          designation: 'Senior Review & Decision Authority',
                           dept: 'Cabinet Secretariat / PMO',
                           user: 'secretary',
                           pass: 'secretary123',
                           path: '/risk-intelligence',
-                          icon: Award,
-                          color: 'text-amber-600 dark:text-amber-400',
+                          tag: 'DECIDE + DIRECT',
                         },
                         {
                           title: 'Monitoring Officer',
                           name: 'Priya Iyer',
-                          role: 'Joint Director (Surveillance & Early Warning)',
+                          designation: 'IPMD Monitoring & Surveillance Officer',
                           dept: 'MoSPI Project Monitoring Division',
                           user: 'officer',
                           pass: 'officer123',
                           path: '/',
-                          icon: Eye,
-                          color: 'text-blue-600 dark:text-blue-400',
+                          tag: 'TRIAGE + INVESTIGATE',
                         },
+                        {
+                          title: 'Ministry Review Officer',
+                          name: 'Suresh Raman',
+                          designation: 'Administrative Ministry Review Officer',
+                          dept: 'Ministry of Road Transport and Highways',
+                          user: 'ministry_reviewer',
+                          pass: 'minreview123',
+                          path: '/ministry-overview',
+                          tag: 'PORTFOLIO + ACCOUNTABILITY',
+                        },
+                      ].map((item) => (
+                        <div
+                          key={item.user}
+                          onClick={() => handleSelectDirectoryAccount(item.user, item.pass)}
+                          className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:border-blue-500 dark:hover:border-blue-500 transition cursor-pointer space-y-1.5 group flex flex-col justify-between"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-mono font-bold text-blue-600 dark:text-blue-400">
+                                {item.tag}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300">
+                                {item.path}
+                              </span>
+                            </div>
+                            <div className="font-bold text-xs text-slate-900 dark:text-white mt-1 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                              {item.name}
+                            </div>
+                            <div className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+                              {item.designation}
+                            </div>
+                            <div className="text-[10px] text-slate-400 mt-0.5">
+                              {item.dept}
+                            </div>
+                          </div>
+                          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between font-mono text-[10px]">
+                            <span className="text-slate-500">
+                              <code>{item.user}</code> / <code>{item.pass}</code>
+                            </span>
+                            <span className="text-blue-600 dark:text-blue-400 font-bold flex items-center gap-0.5 group-hover:translate-x-0.5 transition">
+                              Sign In →
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Group B Personas */}
+                  {activeGroupTab === 'B' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {[
                         {
                           title: 'Project / Nodal Officer',
                           name: 'Amitabh Verma',
-                          role: 'Chief Project GM (Execution)',
+                          designation: 'Project / Nodal Officer (BharatNet)',
                           dept: 'Bharat Broadband Network Ltd (BBNL)',
                           user: 'nodal',
                           pass: 'nodal123',
                           path: '/projects/PAI-706775',
-                          icon: Activity,
-                          color: 'text-emerald-600 dark:text-emerald-400',
+                          tag: 'EXECUTE + SUBMIT',
                         },
                         {
-                          title: 'Quality / Inspection Officer',
+                          title: 'Project Engineering Officer',
+                          name: 'Er. Alok Saxena',
+                          designation: 'Project Engineering Officer',
+                          dept: 'National Highways Authority of India (NHAI)',
+                          user: 'engineer',
+                          pass: 'engineer123',
+                          path: '/engineering',
+                          tag: 'ENGINEER + ASSESS',
+                        },
+                        {
+                          title: 'Quality & Inspection Officer',
                           name: 'Er. Vikramaditya Rathore',
-                          role: 'Chief Quality Auditor (TPI / IS Labs)',
+                          designation: 'Quality & Inspection Officer (TPI)',
                           dept: 'Engineers India Limited (EIL)',
                           user: 'quality',
                           pass: 'quality123',
                           path: '/quality',
-                          icon: FileCheck,
-                          color: 'text-teal-600 dark:text-teal-400',
+                          tag: 'INSPECT + VERIFY',
                         },
                         {
-                          title: 'Risk / Data Analyst',
+                          title: 'Project Finance Officer',
+                          name: 'Smt. Meenakshi Sundaram',
+                          designation: 'Project Finance & Accounts Officer',
+                          dept: 'Integrated Finance Division (IFD)',
+                          user: 'finance',
+                          pass: 'finance123',
+                          path: '/finance',
+                          tag: 'AUDIT + DISBURSE',
+                        },
+                        {
+                          title: 'Contractor / EPC Representative',
+                          name: 'Harish Chandra',
+                          designation: 'EPC Consortium Representative',
+                          dept: 'L&T Infrastructure / BharatNet EPC',
+                          user: 'contractor',
+                          pass: 'contractor123',
+                          path: '/projects/PAI-706775',
+                          tag: 'CONSTRUCT + REPORT',
+                        },
+                        {
+                          title: 'Supervision Consultant / PMC',
+                          name: 'Deepak Sen',
+                          designation: 'Supervision Consultant / PMC Lead',
+                          dept: 'Tata Consulting Engineers / PMC',
+                          user: 'pmc_consultant',
+                          pass: 'pmc123',
+                          path: '/supervision',
+                          tag: 'SUPERVISE + CERTIFY',
+                        },
+                      ].map((item) => (
+                        <div
+                          key={item.user}
+                          onClick={() => handleSelectDirectoryAccount(item.user, item.pass)}
+                          className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:border-blue-500 dark:hover:border-blue-500 transition cursor-pointer space-y-1.5 group flex flex-col justify-between"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                                {item.tag}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
+                                {item.path}
+                              </span>
+                            </div>
+                            <div className="font-bold text-xs text-slate-900 dark:text-white mt-1 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                              {item.name}
+                            </div>
+                            <div className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+                              {item.designation}
+                            </div>
+                            <div className="text-[10px] text-slate-400 mt-0.5">
+                              {item.dept}
+                            </div>
+                          </div>
+                          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between font-mono text-[10px]">
+                            <span className="text-slate-500">
+                              <code>{item.user}</code> / <code>{item.pass}</code>
+                            </span>
+                            <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-0.5 group-hover:translate-x-0.5 transition">
+                              Sign In →
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Group C Personas */}
+                  {activeGroupTab === 'C' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                      {[
+                        {
+                          title: 'Inter-Ministerial Coordinator',
+                          name: 'Anand Swarup',
+                          designation: 'Inter-Ministerial Coordination Officer',
+                          dept: 'Cabinet Secretariat Coordination Wing',
+                          user: 'inter_coord',
+                          pass: 'coord123',
+                          path: '/coordination',
+                          tag: 'UNBLOCK + ALIGN',
+                        },
+                        {
+                          title: 'State Coordination Officer',
+                          name: 'Rajiv Deshmukh',
+                          designation: 'State / Central Coordination Officer',
+                          dept: 'State Infrastructure Coordination Cell, MH',
+                          user: 'state_coord',
+                          pass: 'state123',
+                          path: '/state-coordination',
+                          tag: 'LAND + ROW RESOLUTION',
+                        },
+                        {
+                          title: 'GatiShakti Coordinator',
+                          name: 'K. R. Ramanathan',
+                          designation: 'Infrastructure Network Coordinator',
+                          dept: 'DPIIT / PM GatiShakti NPG',
+                          user: 'gatishakti',
+                          pass: 'gatishakti123',
+                          path: '/risk-network',
+                          tag: 'TOPOLOGY + CLEARANCES',
+                        },
+                        {
+                          title: 'Investment Appraisal Reviewer',
+                          name: 'Dr. Kavita Narayanan',
+                          designation: 'Investment Appraisal Reviewer',
+                          dept: 'Public Investment Board (PIB) / EFC',
+                          user: 'appraisal_officer',
+                          pass: 'appraisal123',
+                          path: '/investment-review',
+                          tag: 'APPRAISE + BENCHMARK',
+                        },
+                        {
+                          title: 'Financial Review Authority',
+                          name: 'Arunabh Sen',
+                          designation: 'Financial Review Authority',
+                          dept: 'Department of Economic Affairs, MoF',
+                          user: 'fin_authority',
+                          pass: 'finauth123',
+                          path: '/financial-review',
+                          tag: 'PORTFOLIO FISCAL SCRUTINY',
+                        },
+                        {
+                          title: 'Independent Audit Observer',
+                          name: 'Justice R. C. Mathur (Retd.)',
+                          designation: 'Independent Audit / Compliance Observer',
+                          dept: 'Office of the CAG of India',
+                          user: 'audit_observer',
+                          pass: 'audit123',
+                          path: '/audit',
+                          tag: 'AUDIT + FORENSICS (READ-ONLY)',
+                        },
+                      ].map((item) => (
+                        <div
+                          key={item.user}
+                          onClick={() => handleSelectDirectoryAccount(item.user, item.pass)}
+                          className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:border-blue-500 dark:hover:border-blue-500 transition cursor-pointer space-y-1.5 group flex flex-col justify-between"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400">
+                                {item.tag}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300">
+                                {item.path}
+                              </span>
+                            </div>
+                            <div className="font-bold text-xs text-slate-900 dark:text-white mt-1 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                              {item.name}
+                            </div>
+                            <div className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+                              {item.designation}
+                            </div>
+                            <div className="text-[10px] text-slate-400 mt-0.5">
+                              {item.dept}
+                            </div>
+                          </div>
+                          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between font-mono text-[10px]">
+                            <span className="text-slate-500">
+                              <code>{item.user}</code> / <code>{item.pass}</code>
+                            </span>
+                            <span className="text-amber-600 dark:text-amber-400 font-bold flex items-center gap-0.5 group-hover:translate-x-0.5 transition">
+                              Sign In →
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Group D Personas */}
+                  {activeGroupTab === 'D' && (
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {[
+                        {
+                          title: 'Predictive Risk & Data Analyst',
                           name: 'Dr. Neha Kulkarni',
-                          role: 'Lead Data Scientist (ML Models & Lineage)',
+                          designation: 'Predictive Risk & Data Analyst',
                           dept: 'NITI Aayog Data Analytics Unit',
                           user: 'analyst',
                           pass: 'analyst123',
                           path: '/predictions',
-                          icon: Cpu,
-                          color: 'text-indigo-600 dark:text-indigo-400',
+                          tag: 'MODEL + BACKTEST',
                         },
                         {
-                          title: 'Multi-Role Officer (Dual Mandate)',
-                          name: 'Dr. K. S. Murthy',
-                          role: 'Joint Director (Surveillance + Nodal EPC)',
-                          dept: 'MoSPI & BBNL Joint Taskforce',
-                          user: 'multirole',
-                          pass: 'multi123',
-                          path: '/',
-                          icon: Layers,
-                          color: 'text-violet-600 dark:text-violet-400',
+                          title: 'AI Governance Officer',
+                          name: 'Dr. Aruna Chandrasekhar',
+                          designation: 'AI Governance & Model Assurance',
+                          dept: 'MeitY AI Validation Board',
+                          user: 'aigov',
+                          pass: 'aigov123',
+                          path: '/model-governance',
+                          tag: 'GOVERN + ASSURE (RULE T)',
                         },
-                      ].map((item) => (
-                        <button
-                          key={item.user}
-                          type="button"
-                          onClick={() => handleSelectDirectoryAccount(item.user, item.pass)}
-                          className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-left hover:border-blue-500 dark:hover:border-blue-500 transition group flex items-start justify-between cursor-pointer"
-                        >
-                          <div>
-                            <div className="font-bold text-[11px] text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                              {item.title}: {item.name}
-                            </div>
-                            <div className={`text-[10px] font-semibold ${item.color}`}>
-                              {item.role}
-                            </div>
-                            <div className="text-[9px] text-slate-400 font-mono mt-0.5">
-                              {item.dept} • Login: <code>{item.user}</code> / <code>{item.pass}</code>
-                            </div>
-                          </div>
-                          <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-500 group-hover:translate-x-0.5 transition mt-1 shrink-0" />
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Tree 2: Platform / System Administration Hierarchy */}
-                  <div>
-                    <h3 className="text-[11px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 font-mono mb-2">
-                      System & Platform Administration Hierarchy
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {[
                         {
-                          title: 'System Administrator',
+                          title: 'Data & Security Administrator',
                           name: 'Rajesh Sharma',
-                          role: 'Principal System Administrator & Infrastructure Cell',
-                          dept: 'PMO National Data Architecture',
+                          designation: 'Data, Platform & Security Administrator',
+                          dept: 'MoSPI National Platform Architecture Cell',
                           user: 'sysadmin',
                           pass: 'sysadmin123',
                           path: '/settings',
-                          icon: Sliders,
-                          color: 'text-purple-600 dark:text-purple-400',
-                        },
-                        {
-                          title: 'Data / Document Officer',
-                          name: 'Sunil Mehra',
-                          role: 'Director (Data Ingestion & Documentation Architecture)',
-                          dept: 'MoSPI Data & Survey Division',
-                          user: 'dataofficer',
-                          pass: 'data123',
-                          path: '/imports',
-                          icon: Database,
-                          color: 'text-cyan-600 dark:text-cyan-400',
-                        },
-                        {
-                          title: 'AI Governance Approver',
-                          name: 'Dr. Aruna Chandrasekhar',
-                          role: 'Chair (AI Ethics & Model Validation Committee)',
-                          dept: 'MeitY & NITI Aayog AI Unit',
-                          user: 'aigov',
-                          pass: 'aigov123',
-                          path: '/predictions',
-                          icon: ShieldCheck,
-                          color: 'text-rose-600 dark:text-rose-400',
-                        },
-                        {
-                          title: 'Security / Platform Officer',
-                          name: 'Col. Sanjeev Nair',
-                          role: 'Chief Information Security Officer (CISO)',
-                          dept: 'CERT-In / Cyber Infrastructure Protection',
-                          user: 'security',
-                          pass: 'security123',
-                          path: '/settings',
-                          icon: Lock,
-                          color: 'text-emerald-600 dark:text-emerald-400',
+                          tag: 'PLATFORM + DEFEND',
                         },
                       ].map((item) => (
-                        <button
+                        <div
                           key={item.user}
-                          type="button"
                           onClick={() => handleSelectDirectoryAccount(item.user, item.pass)}
-                          className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-left hover:border-blue-500 dark:hover:border-blue-500 transition group flex items-start justify-between cursor-pointer"
+                          className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 hover:border-blue-500 dark:hover:border-blue-500 transition cursor-pointer space-y-1.5 group flex flex-col justify-between"
                         >
                           <div>
-                            <div className="font-bold text-[11px] text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                              {item.title}: {item.name}
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-mono font-bold text-purple-600 dark:text-purple-400">
+                                {item.tag}
+                              </span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300">
+                                {item.path}
+                              </span>
                             </div>
-                            <div className={`text-[10px] font-semibold ${item.color}`}>
-                              {item.role}
+                            <div className="font-bold text-xs text-slate-900 dark:text-white mt-1 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                              {item.name}
                             </div>
-                            <div className="text-[9px] text-slate-400 font-mono mt-0.5">
-                              {item.dept} • Login: <code>{item.user}</code> / <code>{item.pass}</code>
+                            <div className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+                              {item.designation}
+                            </div>
+                            <div className="text-[10px] text-slate-400 mt-0.5">
+                              {item.dept}
                             </div>
                           </div>
-                          <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-500 group-hover:translate-x-0.5 transition mt-1 shrink-0" />
-                        </button>
+                          <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between font-mono text-[10px]">
+                            <span className="text-slate-500">
+                              <code>{item.user}</code> / <code>{item.pass}</code>
+                            </span>
+                            <span className="text-purple-600 dark:text-purple-400 font-bold flex items-center gap-0.5 group-hover:translate-x-0.5 transition">
+                              Sign In →
+                            </span>
+                          </div>
+                        </div>
                       ))}
                     </div>
-                  </div>
+                  )}
 
-                  {/* Stakeholder Workspaces */}
-                  <div>
-                    <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-mono mb-2">
-                      Inter-Ministerial & Construction Stakeholders
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {[
-                        {
-                          title: 'Financial Adviser (IFD)',
-                          name: 'Smt. Meenakshi Sundaram',
-                          user: 'finance',
-                          pass: 'finance123',
-                          dept: 'Integrated Finance, MoF',
-                        },
-                        {
-                          title: 'Contractor Lead (EPC)',
-                          name: 'Harish Chandra',
-                          user: 'contractor',
-                          pass: 'contractor123',
-                          dept: 'L&T Infrastructure EPC',
-                        },
-                        {
-                          title: 'PM GatiShakti Nodal',
-                          name: 'K. R. Ramanathan',
-                          user: 'gatishakti',
-                          pass: 'gatishakti123',
-                          dept: 'Network Planning Group, DPIIT',
-                        },
-                      ].map((item) => (
+                  {/* Multi-Assignment Tab */}
+                  {activeGroupTab === 'MULTI' && (
+                    <div className="p-4 rounded-xl border border-violet-200 dark:border-violet-800/60 bg-violet-50/50 dark:bg-violet-950/20 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Layers className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+                          <h4 className="font-bold text-xs text-violet-900 dark:text-violet-200 font-mono">
+                            Multi-Role User: Dr. K. S. Murthy (Dual Assigned Mandate)
+                          </h4>
+                        </div>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-violet-100 dark:bg-violet-900 text-violet-700 dark:text-violet-300 font-bold">
+                          Assigned: [Monitoring Officer, Admin Ministry Review]
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-600 dark:text-slate-300">
+                        Demonstrates dynamic multi-role assignment without a hardcoded `multirole` authority type.
+                        Upon signing in, prompts workspace switcher between authorized roles, or allows seamless top-nav switching.
+                      </p>
+                      <div className="flex items-center justify-between pt-2 border-t border-violet-100 dark:border-violet-900/50">
+                        <span className="font-mono text-xs text-slate-600 dark:text-slate-400">
+                          Credentials: <code>multirole</code> / <code>multi123</code>
+                        </span>
                         <button
-                          key={item.user}
                           type="button"
-                          onClick={() => handleSelectDirectoryAccount(item.user, item.pass)}
-                          className="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-left hover:border-blue-500 transition text-[10px] cursor-pointer"
+                          onClick={() => handleSelectDirectoryAccount('multirole', 'multi123')}
+                          className="px-4 py-1.5 bg-violet-600 hover:bg-violet-700 text-white rounded text-xs font-bold font-mono transition flex items-center gap-1 cursor-pointer"
                         >
-                          <div className="font-bold text-slate-900 dark:text-white truncate">{item.title}</div>
-                          <div className="text-slate-500 truncate">{item.name}</div>
-                          <div className="text-blue-600 dark:text-blue-400 font-mono font-bold mt-0.5">
-                            <code>{item.user}</code>
-                          </div>
+                          Sign In as Multi-Role User →
                         </button>
-                      ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
             </div>
+
           </div>
         )}
       </div>

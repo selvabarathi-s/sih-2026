@@ -82,6 +82,8 @@ export const listUsers = async (req, res, next) => {
       fullName: u.fullName,
       email: u.email,
       role: u.role,
+      roles: u.roles || [u.role],
+      organization: u.organization || u.department,
       department: u.department,
       designation: u.designation,
       assignedProjects: u.assignedProjects || [],
@@ -215,9 +217,10 @@ export const switchWorkspace = async (req, res, next) => {
 
     const result = await authService.switchWorkspace(authHeader, targetRole);
     await auditService.logEvent({
-      action: 'WORKSPACE_SWITCHED',
+      action: 'ROLE_SWITCH',
       userId: req.user?.userId || req.user?.id,
       userRole: targetRole,
+      organization: req.user?.organization || 'MoSPI National Infrastructure Surveillance Cell',
       resourceType: 'WORKSPACE',
       resourceId: targetRole,
       details: { previousRole: req.user?.role, targetRole },
@@ -227,6 +230,18 @@ export const switchWorkspace = async (req, res, next) => {
     res.status(200).json(result);
   } catch (err) {
     const status = err.statusCode || 400;
+    if (status === 403) {
+      await auditService.logEvent({
+        action: 'ROLE_SWITCH_DENIED',
+        userId: req.user?.userId || req.user?.id || 'unknown',
+        userRole: req.user?.role || 'UNKNOWN',
+        organization: req.user?.organization || 'UNKNOWN',
+        resourceType: 'WORKSPACE',
+        resourceId: req.body?.targetRole || 'N/A',
+        details: { targetRole: req.body?.targetRole, reason: err.message },
+        ipAddress: req.ip || '127.0.0.1',
+      });
+    }
     res.status(status).json({ error: err.message || 'Failed to switch workspace' });
   }
 };

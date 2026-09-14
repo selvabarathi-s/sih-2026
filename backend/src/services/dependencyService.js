@@ -104,6 +104,9 @@ class DependencyService {
 
   async calculateCascadeImpact(projectId, additionalDelayMonths = 6) {
     const cleanId = (projectId || '').trim();
+    const rawMonths = Number(additionalDelayMonths);
+    const validDelayMonths = Number.isFinite(rawMonths) && rawMonths >= 0 ? rawMonths : 6;
+
     const directDownstream = this.dependencies.filter(
       d => d.upstreamProjectId.toLowerCase() === cleanId.toLowerCase()
     );
@@ -112,7 +115,7 @@ class DependencyService {
     for (const dep of directDownstream) {
       const downProj = await projectRepository.findById(dep.downstreamProjectId);
       const bufferMonths = dep.bufferDays / 30;
-      const netSlippage = Math.max(0, additionalDelayMonths - bufferMonths);
+      const netSlippage = Math.max(0, validDelayMonths - bufferMonths);
 
       if (netSlippage > 0) {
         impacts.push({

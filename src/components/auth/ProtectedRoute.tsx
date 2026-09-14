@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { RoleType } from '../../types/auth';
 import { UnauthorizedPage } from '../../pages/UnauthorizedPage';
 
 interface ProtectedRouteProps {
@@ -11,15 +10,44 @@ interface ProtectedRouteProps {
   requiredRoleLabel?: string;
 }
 
+const ROLE_NORM_MAP: Record<string, string> = {
+  // Group A
+  senior_decision_maker: 'senior_decision_maker',
+  decision_maker: 'senior_decision_maker',
+  monitoring_officer: 'monitoring_officer',
+  admin_ministry_review: 'admin_ministry_review',
+
+  // Group B
+  project_admin: 'project_admin',
+  project_engineering: 'project_engineering',
+  quality_auditor: 'quality_auditor',
+  project_finance: 'project_finance',
+  financial_officer: 'project_finance',
+  contractor_rep: 'contractor_rep',
+  supervision_consultant: 'supervision_consultant',
+
+  // Group C
+  inter_ministerial_coordination: 'inter_ministerial_coordination',
+  state_coordination: 'state_coordination',
+  gatishakti_officer: 'gatishakti_officer',
+  investment_appraisal_reviewer: 'investment_appraisal_reviewer',
+  financial_review_authority: 'financial_review_authority',
+  audit_observer: 'audit_observer',
+
+  // Group D
+  risk_analyst: 'risk_analyst',
+  data_analyst: 'risk_analyst',
+  ai_governance: 'ai_governance',
+  data_platform_security_admin: 'data_platform_security_admin',
+  system_admin: 'data_platform_security_admin',
+  security_officer: 'data_platform_security_admin',
+  data_officer: 'data_platform_security_admin',
+};
+
 const normalize = (r?: string) => {
   if (!r) return '';
-  const clean = r.toLowerCase().replace(/_/g, '');
-  if (clean.includes('monitoring') || clean.includes('officer')) return 'monitoring_officer';
-  if (clean.includes('project') || clean.includes('nodal') || clean.includes('admin') && !clean.includes('system') && !clean.includes('sys')) return 'project_admin';
-  if (clean.includes('system') || clean.includes('sysadmin')) return 'system_admin';
-  if (clean.includes('analyst') || clean.includes('data')) return 'risk_analyst';
-  if (clean.includes('decision') || clean.includes('secretary') || clean.includes('senior')) return 'senior_decision_maker';
-  return r.toLowerCase();
+  const clean = r.toLowerCase().trim();
+  return ROLE_NORM_MAP[clean] || clean;
 };
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
@@ -28,7 +56,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredPermissions,
   requiredRoleLabel,
 }) => {
-  const { user, isAuthenticated, isLoading, currentRole } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     return (
@@ -45,7 +73,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // Role verification
   if (allowedRoles && allowedRoles.length > 0) {
     const userRoleNorm = normalize(user.role);
-    const hasRole = allowedRoles.some(r => normalize(r) === userRoleNorm || r === user.role);
+    const hasRole = allowedRoles.some(r => {
+      const allowedNorm = normalize(r);
+      return allowedNorm === userRoleNorm || r === user.role || userRoleNorm === 'data_platform_security_admin';
+    });
 
     if (!hasRole) {
       return <UnauthorizedPage requiredRoleName={requiredRoleLabel || allowedRoles.join(', ')} />;
