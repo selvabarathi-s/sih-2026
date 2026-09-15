@@ -1,52 +1,245 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { UserSession } from '../api/auth';
-import { ROLES, ROLE_METADATA, SEED_USERS_FRONTEND } from '../types/auth';
+import { ROLE_METADATA } from '../types/auth';
 import {
   ShieldCheck,
   Eye,
   EyeOff,
-  Activity,
-  Sliders,
-  Award,
   Lock,
   User,
   ArrowRight,
-  Database,
-  Cpu,
-  Building2,
-  HelpCircle,
-  KeyRound,
   LogIn,
   AlertCircle,
   CheckCircle2,
-  FileCheck,
-  IndianRupee,
-  Wrench,
-  Network,
-  X,
   RefreshCw,
   Layers,
+  KeyRound,
+  X,
+  Building2,
   ChevronDown,
-  ChevronUp,
-  Sparkles,
-  TrendingUp,
-  ShieldAlert,
+  ArrowLeft,
 } from 'lucide-react';
+
+interface RoleEntry {
+  key: string;
+  name: string;
+  username: string;
+  defaultPass: string;
+  department: string;
+  scope: string;
+  targetPath: string;
+  securityClearance: string;
+}
+
+const ALL_ROLES: RoleEntry[] = [
+  {
+    key: 'senior_decision_maker',
+    name: 'Senior Review & Decision Authority',
+    username: 'secretary',
+    defaultPass: 'secretary123',
+    department: 'Cabinet Secretariat / PMO',
+    scope: 'National Portfolios & Cabinet Directives',
+    targetPath: '/risk-intelligence',
+    securityClearance: 'LEVEL-4 SECRET',
+  },
+  {
+    key: 'monitoring_officer',
+    name: 'IPMD Monitoring & Surveillance Officer',
+    username: 'officer',
+    defaultPass: 'officer123',
+    department: 'MoSPI Project Monitoring Division',
+    scope: 'National Surveillance Portfolio (1,981 Projects)',
+    targetPath: '/',
+    securityClearance: 'LEVEL-3 SURVEILLANCE',
+  },
+  {
+    key: 'admin_ministry_review',
+    name: 'Administrative Ministry Review Officer',
+    username: 'ministry_reviewer',
+    defaultPass: 'minreview123',
+    department: 'Ministry of Road Transport and Highways (MoRTH)',
+    scope: 'MoRTH Line Ministry Portfolio (74 Projects)',
+    targetPath: '/ministry-overview',
+    securityClearance: 'LEVEL-3 LINE MINISTRY',
+  },
+  {
+    key: 'project_admin',
+    name: 'Project / Nodal Officer',
+    username: 'nodal',
+    defaultPass: 'nodal123',
+    department: 'Bharat Broadband Network Ltd (BBNL)',
+    scope: 'PAI-706775 (BharatNet Package B)',
+    targetPath: '/projects/PAI-706775',
+    securityClearance: 'LEVEL-2 NODAL LEAD',
+  },
+  {
+    key: 'project_engineering',
+    name: 'Project Engineering Officer',
+    username: 'engineer',
+    defaultPass: 'engineer123',
+    department: 'National Highways Authority of India (NHAI)',
+    scope: 'Technical Specs & BoQ (PAI-706775)',
+    targetPath: '/engineering',
+    securityClearance: 'LEVEL-2 ENGINEERING',
+  },
+  {
+    key: 'quality_auditor',
+    name: 'Quality & Inspection Officer (TPI)',
+    username: 'quality',
+    defaultPass: 'quality123',
+    department: 'Engineers India Limited (EIL)',
+    scope: 'TPI Quality IS Audits & Certified Lab NCRs',
+    targetPath: '/quality',
+    securityClearance: 'LEVEL-2 QUALITY AUDIT',
+  },
+  {
+    key: 'project_finance',
+    name: 'Project Finance & Accounts Officer',
+    username: 'finance',
+    defaultPass: 'finance123',
+    department: 'Integrated Finance Division (IFD)',
+    scope: 'Project Accounts, Vouchers & RCE Preparation',
+    targetPath: '/finance',
+    securityClearance: 'LEVEL-2 FINANCIAL',
+  },
+  {
+    key: 'contractor_rep',
+    name: 'Contractor / EPC Representative',
+    username: 'contractor',
+    defaultPass: 'contractor123',
+    department: 'L&T Infrastructure / BharatNet EPC',
+    scope: 'Assigned EPC Package B Submissions Only',
+    targetPath: '/monthly-updates',
+    securityClearance: 'EXTERNAL CONTRACTOR EPC',
+  },
+  {
+    key: 'supervision_consultant',
+    name: 'Supervision Consultant / PMC Lead',
+    username: 'pmc_consultant',
+    defaultPass: 'pmc123',
+    department: 'Tata Consulting Engineers / PMC',
+    scope: 'Site Inspection & Milestone Verification',
+    targetPath: '/supervision',
+    securityClearance: 'LEVEL-2 PMC LEAD',
+  },
+  {
+    key: 'inter_ministerial_coordination',
+    name: 'Inter-Ministerial Coordination Lead',
+    username: 'inter_coord',
+    defaultPass: 'intercoord123',
+    department: 'Cabinet Committee on Infrastructure (CCI)',
+    scope: 'Inter-Ministerial Dependencies & Directives',
+    targetPath: '/coordination',
+    securityClearance: 'LEVEL-3 COORDINATION',
+  },
+  {
+    key: 'state_coordination',
+    name: 'State Project Coordination Officer',
+    username: 'state_coord',
+    defaultPass: 'statecoord123',
+    department: 'State Infrastructure & Land Revenue Board',
+    scope: 'State Land Acquisition & RoW Clearances',
+    targetPath: '/state-coordination',
+    securityClearance: 'LEVEL-2 STATE REVENUE',
+  },
+  {
+    key: 'gatishakti_officer',
+    name: 'PM GatiShakti Network Coordinator',
+    username: 'gatishakti',
+    defaultPass: 'gatishakti123',
+    department: 'DPIIT / PM GatiShakti NPG',
+    scope: 'Multi-Modal Network Topology & Cascading Delay',
+    targetPath: '/risk-network',
+    securityClearance: 'LEVEL-3 GATISHAKTI NPG',
+  },
+  {
+    key: 'investment_appraisal_reviewer',
+    name: 'Investment Appraisal Reviewer',
+    username: 'appraisal_officer',
+    defaultPass: 'appraisal123',
+    department: 'Public Investment Board (PIB) / EFC',
+    scope: 'Cost-Benefit (EIRR/FIRR), Appraisal & RCE',
+    targetPath: '/investment-review',
+    securityClearance: 'LEVEL-3 INVESTMENT PIB',
+  },
+  {
+    key: 'financial_review_authority',
+    name: 'Financial Review Authority',
+    username: 'fin_authority',
+    defaultPass: 'finauth123',
+    department: 'Department of Economic Affairs, MoF',
+    scope: 'Portfolio Fiscal Risk & Macro Overrun Exposure',
+    targetPath: '/financial-review',
+    securityClearance: 'LEVEL-4 MOF FISCAL',
+  },
+  {
+    key: 'audit_observer',
+    name: 'Independent Audit Observer (CAG)',
+    username: 'audit_observer',
+    defaultPass: 'audit123',
+    department: 'Office of the CAG of India',
+    scope: 'Append-Only Cryptographic Audit Vault (Read-Only)',
+    targetPath: '/audit',
+    securityClearance: 'CAG STATUTORY READ-ONLY',
+  },
+  {
+    key: 'risk_analyst',
+    name: 'Predictive Risk & Data Analyst',
+    username: 'analyst',
+    defaultPass: 'analyst123',
+    department: 'NITI Aayog Data Analytics Unit',
+    scope: 'Temporal ML Predictions & Feature Drift',
+    targetPath: '/predictions',
+    securityClearance: 'LEVEL-3 DATA SCIENCE',
+  },
+  {
+    key: 'ai_governance',
+    name: 'AI Governance & Model Assurance Officer',
+    username: 'aigov',
+    defaultPass: 'aigov123',
+    department: 'MeitY AI Validation Board',
+    scope: 'Rule T Temporal Verification & Model Cards',
+    targetPath: '/model-governance',
+    securityClearance: 'LEVEL-4 AI GOVERNANCE',
+  },
+  {
+    key: 'data_platform_security_admin',
+    name: 'Data, Platform & Security Administrator',
+    username: 'sysadmin',
+    defaultPass: 'sysadmin123',
+    department: 'MoSPI National Platform Architecture Cell',
+    scope: 'SOC Telemetry, Ingestion Pipeline & RBAC Config',
+    targetPath: '/settings',
+    securityClearance: 'LEVEL-4 ROOT SECADMIN',
+  },
+  {
+    key: 'multirole',
+    name: 'Multi-Role User (Dual Mandate)',
+    username: 'multirole',
+    defaultPass: 'multi123',
+    department: 'MoSPI & Line Ministry Joint Infrastructure Cell',
+    scope: 'Dual Assigned: Monitoring Officer + Ministry Reviewer',
+    targetPath: '/',
+    securityClearance: 'DUAL ASSIGNED MANDATE',
+  },
+];
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, forgotPassword, resetPassword, switchRole } = useAuth();
 
-  // Primary Login Form Fields
-  const [identifier, setIdentifier] = useState('');
-  const [password, setPassword] = useState('');
+  // Selected Role State (default: Monitoring Officer)
+  const [selectedRoleKey, setSelectedRoleKey] = useState<string>('monitoring_officer');
+
+  // Form Fields
+  const [identifier, setIdentifier] = useState('officer');
+  const [password, setPassword] = useState('officer123');
   const [rememberSession, setRememberSession] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [authenticatingUser, setAuthenticatingUser] = useState<string | null>(null);
 
   // Multi-Role Workspace Selection State
   const [pendingUser, setPendingUser] = useState<UserSession | null>(null);
@@ -62,14 +255,25 @@ export const LoginPage: React.FC = () => {
   const [recoveryError, setRecoveryError] = useState<string | null>(null);
   const [isRecovering, setIsRecovering] = useState(false);
 
-  // Active Tab for Institutional Tracks & Custom Credentials
-  const [activeTab, setActiveTab] = useState<'A' | 'B' | 'C' | 'D' | 'MULTI' | 'CUSTOM'>('A');
+  // Current Role Object
+  const currentRoleObj = ALL_ROLES.find(r => r.key === selectedRoleKey) || ALL_ROLES[1];
+
+  // Role Selection Handler
+  const handleSelectRole = (roleKey: string) => {
+    setSelectedRoleKey(roleKey);
+    const found = ALL_ROLES.find(r => r.key === roleKey);
+    if (found) {
+      setIdentifier(found.username);
+      setPassword(found.defaultPass);
+    }
+    setErrorMsg(null);
+  };
 
   // Primary Authentication Flow
-  const handlePrimarySubmit = async (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!identifier.trim() || !password.trim()) {
-      setErrorMsg('Please enter both official identifier (username or email) and password');
+      setErrorMsg('Please fill both official identifier and password');
       return;
     }
 
@@ -80,7 +284,7 @@ export const LoginPage: React.FC = () => {
       const result = await login(identifier.trim(), password.trim(), rememberSession);
 
       if (!result.success || !result.user) {
-        setErrorMsg(result.error || 'Authentication failed. Please verify your government credentials.');
+        setErrorMsg(result.error || 'Authentication failed. Please verify credentials.');
         setIsSubmitting(false);
         return;
       }
@@ -89,9 +293,11 @@ export const LoginPage: React.FC = () => {
       const roles = authenticated.roles && authenticated.roles.length > 0 ? authenticated.roles : [authenticated.role];
 
       if (roles.length === 1) {
-        const targetPath = authenticated.defaultWorkspace || ROLE_METADATA[roles[0]]?.defaultPath || '/';
+        // Single Role: Navigate directly to the role's authorized workspace
+        const targetPath = authenticated.defaultWorkspace || currentRoleObj.targetPath || ROLE_METADATA[roles[0]]?.defaultPath || '/';
         navigate(targetPath);
       } else {
+        // Multi Role: Prompt workspace selection
         setPendingUser(authenticated);
         setShowWorkspaceSelect(true);
       }
@@ -99,35 +305,6 @@ export const LoginPage: React.FC = () => {
       setErrorMsg(err.message || 'Invalid credentials. Please verify your official Gov ID and security token.');
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  // Quick autofill & sign-in handler for authorized directory
-  const handleSelectDirectoryAccount = async (username: string, defaultPass: string) => {
-    setIdentifier(username);
-    setPassword(defaultPass);
-    setErrorMsg(null);
-    setIsSubmitting(true);
-    setAuthenticatingUser(username);
-    try {
-      const result = await login(username, defaultPass, rememberSession);
-      if (result.success && result.user) {
-        const roles = result.user.roles && result.user.roles.length > 0 ? result.user.roles : [result.user.role];
-        if (roles.length === 1) {
-          const targetPath = result.user.defaultWorkspace || ROLE_METADATA[roles[0]]?.defaultPath || '/';
-          navigate(targetPath);
-        } else {
-          setPendingUser(result.user);
-          setShowWorkspaceSelect(true);
-        }
-      } else {
-        setErrorMsg(result.error || 'Authentication failed');
-      }
-    } catch (e: any) {
-      setErrorMsg(e.message || 'Authentication failed');
-    } finally {
-      setIsSubmitting(false);
-      setAuthenticatingUser(null);
     }
   };
 
@@ -189,375 +366,54 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  // Track Persona Definitions with Explicit Institutional Scope & Zero-Leakage Guarantees
-  const trackData = {
-    A: {
-      title: 'Track A: Macro Policy & National Surveillance',
-      badge: 'APEX EXECUTIVE OVERSIGHT',
-      summary: 'Central apex monitoring and macro surveillance across all 1,981 national infrastructure assets. Authorized for cabinet directives and cross-ministry investigation.',
-      color: 'blue',
-      personas: [
-        {
-          title: 'Senior Review & Decision Authority',
-          name: 'V. K. Sundaram',
-          initials: 'VS',
-          designation: 'Senior Decision Maker / Secretary',
-          dept: 'Cabinet Secretariat / PMO',
-          user: 'secretary',
-          pass: 'secretary123',
-          path: '/risk-intelligence',
-          scopeBadge: 'All-India National Portfolios & Cabinet Directives',
-          securityClearance: 'LEVEL-4 TOP SECRET',
-          boundaryText: 'Direct executive briefings; omni-sector surveillance across all ministries and projects.',
-          tag: 'DECIDE + DIRECT',
-          colorScheme: 'from-indigo-600 to-blue-700',
-        },
-        {
-          title: 'IPMD Monitoring Officer',
-          name: 'Priya Iyer',
-          initials: 'PI',
-          designation: 'IPMD Monitoring & Surveillance Officer',
-          dept: 'MoSPI Project Monitoring Division',
-          user: 'officer',
-          pass: 'officer123',
-          path: '/',
-          scopeBadge: 'National Surveillance Portfolio (1,981 Projects)',
-          securityClearance: 'LEVEL-3 SURVEILLANCE',
-          boundaryText: 'Real-time telemetry, weak deterioration signals, and inter-agency case triaging.',
-          tag: 'TRIAGE + INVESTIGATE',
-          colorScheme: 'from-blue-600 to-cyan-700',
-        },
-        {
-          title: 'Administrative Ministry Reviewer',
-          name: 'Suresh Raman',
-          initials: 'SR',
-          designation: 'Administrative Ministry Review Officer',
-          dept: 'Ministry of Road Transport and Highways (MoRTH)',
-          user: 'ministry_reviewer',
-          pass: 'minreview123',
-          path: '/ministry-overview',
-          scopeBadge: 'MoRTH Line Ministry Portfolio (74 Projects)',
-          securityClearance: 'LEVEL-3 LINE MINISTRY',
-          boundaryText: 'Strictly locked to MoRTH projects; zero access to unrelated ministries or non-highways portfolios.',
-          tag: 'MINISTRY PORTFOLIO ONLY',
-          colorScheme: 'from-amber-600 to-orange-700',
-        },
-      ],
-    },
-    B: {
-      title: 'Track B: Implementing Agencies, Quality & Execution',
-      badge: 'GROUND EXECUTION & STRICT PACKAGE ISOLATION',
-      summary: 'Project delivery teams, quality inspectors, finance officers, and EPC contractors. Strictly isolated to assigned packages with zero leakage to national surveillance.',
-      color: 'emerald',
-      personas: [
-        {
-          title: 'Project / Nodal Officer',
-          name: 'Amitabh Verma',
-          initials: 'AV',
-          designation: 'Project / Nodal Officer (BharatNet)',
-          dept: 'Bharat Broadband Network Ltd (BBNL)',
-          user: 'nodal',
-          pass: 'nodal123',
-          path: '/projects/PAI-706775',
-          scopeBadge: 'PAI-706775 (BharatNet Package B)',
-          securityClearance: 'LEVEL-2 NODAL LEAD',
-          boundaryText: 'Confined to BharatNet project; strictly isolated from national surveillance and unassigned projects.',
-          tag: 'EXECUTE + SUBMIT',
-          colorScheme: 'from-emerald-600 to-teal-700',
-        },
-        {
-          title: 'Project Engineering Lead',
-          name: 'Er. Alok Saxena',
-          initials: 'AS',
-          designation: 'Project Engineering Officer',
-          dept: 'National Highways Authority of India (NHAI)',
-          user: 'engineer',
-          pass: 'engineer123',
-          path: '/engineering',
-          scopeBadge: 'Technical Specs & BoQ (PAI-706775)',
-          securityClearance: 'LEVEL-2 ENGINEERING',
-          boundaryText: 'Confined to engineering specifications, structural drawings, and hindrance resolution.',
-          tag: 'ENGINEER + ASSESS',
-          colorScheme: 'from-teal-600 to-cyan-700',
-        },
-        {
-          title: 'Quality & Inspection Officer',
-          name: 'Er. Vikramaditya Rathore',
-          initials: 'VR',
-          designation: 'Third-Party Inspection Officer (TPI)',
-          dept: 'Engineers India Limited (EIL)',
-          user: 'quality',
-          pass: 'quality123',
-          path: '/quality',
-          scopeBadge: 'TPI IS Codes & Certified Lab NCRs',
-          securityClearance: 'LEVEL-2 QUALITY AUDIT',
-          boundaryText: 'Confined to 6-stage NCR lifecycle, slump tests, cube tests, and lab verification.',
-          tag: 'INSPECT + VERIFY',
-          colorScheme: 'from-sky-600 to-blue-700',
-        },
-        {
-          title: 'Project Finance & Accounts Officer',
-          name: 'Smt. Meenakshi Sundaram',
-          initials: 'MS',
-          designation: 'Project Finance & Accounts Officer',
-          dept: 'Integrated Finance Division (IFD)',
-          user: 'finance',
-          pass: 'finance123',
-          path: '/finance',
-          scopeBadge: 'Project Accounts, Vouchers & RCE Preparation',
-          securityClearance: 'LEVEL-2 FINANCIAL',
-          boundaryText: 'Confined to assigned package vouchers and cost variance; zero access to national macro budget.',
-          tag: 'AUDIT + DISBURSE',
-          colorScheme: 'from-amber-600 to-yellow-700',
-        },
-        {
-          title: 'EPC Contractor Representative',
-          name: 'Harish Chandra',
-          initials: 'HC',
-          designation: 'EPC Consortium Lead',
-          dept: 'L&T Infrastructure / BharatNet EPC',
-          user: 'contractor',
-          pass: 'contractor123',
-          path: '/monthly-updates',
-          scopeBadge: 'EPC Package B Ground Submissions Only',
-          securityClearance: 'EXTERNAL CONTRACTOR EPC',
-          boundaryText: 'Zero-leakage external contractor view. Only sees assigned claims, rework, and monthly submissions.',
-          tag: 'CONSTRUCT + REPORT',
-          colorScheme: 'from-rose-600 to-pink-700',
-        },
-        {
-          title: 'Supervision Consultant / PMC Lead',
-          name: 'Deepak Sen',
-          initials: 'DS',
-          designation: 'Supervision Consultant / PMC Lead',
-          dept: 'Tata Consulting Engineers / PMC',
-          user: 'pmc_consultant',
-          pass: 'pmc123',
-          path: '/supervision',
-          scopeBadge: 'Site Inspection & Milestone Verification',
-          securityClearance: 'LEVEL-2 PMC LEAD',
-          boundaryText: 'Confined to physical site verification logs, drone telemetry, and joint measurement.',
-          tag: 'SUPERVISE + CERTIFY',
-          colorScheme: 'from-purple-600 to-indigo-700',
-        },
-      ],
-    },
-    C: {
-      title: 'Track C: Inter-Agency Coordination & Statutory Audit',
-      badge: 'CROSS-AGENCY CLEARANCES & CAG COMPLIANCE',
-      summary: 'Inter-ministerial taskforces, State Land & RoW desks, PM GatiShakti multi-modal alignments, and CAG statutory audit.',
-      color: 'amber',
-      personas: [
-        {
-          title: 'Inter-Ministerial Coordination Lead',
-          name: 'Rajeshwar Singh',
-          initials: 'RS',
-          designation: 'Inter-Ministerial Coordination Officer',
-          dept: 'Cabinet Committee on Infrastructure (CCI)',
-          user: 'inter_coord',
-          pass: 'intercoord123',
-          path: '/coordination',
-          scopeBadge: 'Inter-Ministerial Dependencies & Directives',
-          securityClearance: 'LEVEL-3 COORDINATION',
-          boundaryText: 'Confined to inter-agency bottleneck resolution, empowered committees, and meeting directives.',
-          tag: 'MULTI-AGENCY SYNC',
-          colorScheme: 'from-amber-600 to-orange-700',
-        },
-        {
-          title: 'State Project Coordinator',
-          name: 'Anandita Mukherjee',
-          initials: 'AM',
-          designation: 'State Infrastructure Project Coordinator',
-          dept: 'State Infrastructure & Land Revenue Board',
-          user: 'state_coord',
-          pass: 'statecoord123',
-          path: '/state-coordination',
-          scopeBadge: 'State Land Acquisition, RoW & Forest Clearances',
-          securityClearance: 'LEVEL-2 STATE REVENUE',
-          boundaryText: 'Confined to state-level RoW clearances, compensation disbursals, and utility shifting pipelines.',
-          tag: 'STATE ROW + CLEARANCE',
-          colorScheme: 'from-yellow-600 to-amber-700',
-        },
-        {
-          title: 'PM GatiShakti Coordinator',
-          name: 'Col. Sanjeev Deshmukh (Retd)',
-          initials: 'SD',
-          designation: 'Infrastructure Network Coordinator',
-          dept: 'National Planning Group (NPG) / DPIIT',
-          user: 'gatishakti',
-          pass: 'gatishakti123',
-          path: '/risk-network',
-          scopeBadge: 'Multi-Modal Network Topology & Cascading Delay',
-          securityClearance: 'LEVEL-3 GATISHAKTI NPG',
-          boundaryText: 'Confined to GIS multi-modal connectivity layers, network bottlenecks, and spatial alignment.',
-          tag: 'NETWORK TOPOLOGY',
-          colorScheme: 'from-blue-600 to-indigo-700',
-        },
-        {
-          title: 'Investment Appraisal Reviewer',
-          name: 'Dr. Kavita Narayanan',
-          initials: 'KN',
-          designation: 'Investment Appraisal Reviewer',
-          dept: 'Public Investment Board (PIB) / EFC',
-          user: 'appraisal_officer',
-          pass: 'appraisal123',
-          path: '/investment-review',
-          scopeBadge: 'Cost-Benefit (EIRR/FIRR), Appraisal & RCE',
-          securityClearance: 'LEVEL-3 INVESTMENT PIB',
-          boundaryText: 'Confined to pre-sanction evaluations, cost overrun benchmarks, and EIRR/FIRR economic models.',
-          tag: 'APPRAISE + BENCHMARK',
-          colorScheme: 'from-indigo-600 to-purple-700',
-        },
-        {
-          title: 'Financial Review Authority',
-          name: 'Arunabh Sen',
-          initials: 'AS',
-          designation: 'Financial Review Authority',
-          dept: 'Department of Economic Affairs, MoF',
-          user: 'fin_authority',
-          pass: 'finauth123',
-          path: '/financial-review',
-          scopeBadge: 'Portfolio Fiscal Risk & Macro Overrun Exposure',
-          securityClearance: 'LEVEL-4 MOF FISCAL',
-          boundaryText: 'Confined to fiscal exposure modeling, revised cost sanctions, and union expenditure limits.',
-          tag: 'FISCAL SCRUTINY',
-          colorScheme: 'from-emerald-600 to-teal-700',
-        },
-        {
-          title: 'CAG Statutory Audit Observer',
-          name: 'Justice R. C. Mathur (Retd.)',
-          initials: 'RM',
-          designation: 'Independent Audit / Compliance Observer',
-          dept: 'Office of the CAG of India',
-          user: 'audit_observer',
-          pass: 'audit123',
-          path: '/audit',
-          scopeBadge: 'Append-Only Cryptographic Audit Vault (Read-Only)',
-          securityClearance: 'CAG STATUTORY READ-ONLY',
-          boundaryText: 'Read-only immutable ledger access; decision forensics, SHA-256 proofs, and PAC compliance exports.',
-          tag: 'CAG AUDIT VAULT',
-          colorScheme: 'from-slate-700 to-zinc-900',
-        },
-      ],
-    },
-    D: {
-      title: 'Track D: Predictive AI, Governance & Platform SOC',
-      badge: 'TEMPORAL ML, RULE T GATES & PLATFORM DEFENSE',
-      summary: 'Data science backtesting, algorithmic temporal gates (Rule T), model fairness assurances, and SOC telemetry.',
-      color: 'purple',
-      personas: [
-        {
-          title: 'Predictive Risk & Data Analyst',
-          name: 'Dr. Neha Kulkarni',
-          initials: 'NK',
-          designation: 'Predictive Risk & Data Analyst',
-          dept: 'NITI Aayog Data Analytics Unit',
-          user: 'analyst',
-          pass: 'analyst123',
-          path: '/predictions',
-          scopeBadge: 'Temporal ML Predictions, Backtesting & Feature Drift',
-          securityClearance: 'LEVEL-3 DATA SCIENCE',
-          boundaryText: 'Confined to model training telemetry, temporal backtesting curves, and feature distribution drift.',
-          tag: 'MODEL + BACKTEST',
-          colorScheme: 'from-purple-600 to-violet-700',
-        },
-        {
-          title: 'AI Governance & Model Assurance',
-          name: 'Dr. Aruna Chandrasekhar',
-          initials: 'AC',
-          designation: 'AI Governance & Model Assurance Officer',
-          dept: 'MeitY AI Validation Board',
-          user: 'aigov',
-          pass: 'aigov123',
-          path: '/model-governance',
-          scopeBadge: 'Rule T Temporal Verification & Model Cards',
-          securityClearance: 'LEVEL-4 AI GOVERNANCE',
-          boundaryText: 'Confined to temporal leakage checks, model validation sign-offs, fairness metrics, and ethics gates.',
-          tag: 'GOVERN + ASSURE',
-          colorScheme: 'from-violet-600 to-fuchsia-700',
-        },
-        {
-          title: 'Data, Platform & Security Admin',
-          name: 'Rajesh Sharma',
-          initials: 'RS',
-          designation: 'Data, Platform & Security Administrator',
-          dept: 'MoSPI National Platform Architecture Cell',
-          user: 'sysadmin',
-          pass: 'sysadmin123',
-          path: '/settings',
-          scopeBadge: 'SOC Telemetry, Data Pipeline & RBAC Config',
-          securityClearance: 'LEVEL-4 ROOT SECADMIN',
-          boundaryText: 'Platform SOC posture, access tokens, append-only logs, and database ingestion integrity.',
-          tag: 'PLATFORM + DEFEND',
-          colorScheme: 'from-slate-800 to-slate-950',
-        },
-      ],
-    },
-  };
-
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans transition-colors duration-200 pb-16">
       {/* Top Government Portal Header */}
       <div className="bg-slate-900 text-white text-[11px] font-mono py-2.5 px-4 sm:px-8 border-b border-slate-800 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="font-bold text-amber-400">GOVERNMENT OF INDIA</span>
-          <span className="text-slate-500">|</span>
-          <span className="truncate">Ministry of Statistics and Programme Implementation (MoSPI)</span>
-          <span className="hidden md:inline text-slate-500">|</span>
-          <span className="hidden md:inline">PMO Central Infrastructure Monitoring Cell</span>
+          <Link to="/" className="text-blue-400 hover:text-blue-300 flex items-center gap-1 font-semibold transition">
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Default Home Page</span>
+          </Link>
+          <span className="text-slate-600">|</span>
+          <span className="font-bold text-amber-400 hidden sm:inline">GOVERNMENT OF INDIA</span>
+          <span className="text-slate-600 hidden sm:inline">|</span>
+          <span className="truncate">Ministry of Statistics & Programme Implementation (MoSPI)</span>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span className="text-emerald-400 font-semibold hidden sm:inline">NIC Parichay SSO Gateway</span>
-          <span className="text-slate-500 hidden sm:inline">•</span>
-          <span className="text-slate-300 font-mono text-[10px]">TLS 1.3 Active</span>
         </div>
       </div>
 
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-7">
-        {/* Hero Title & Government Badges */}
-        <div className="text-center space-y-3">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+        {/* Title Header */}
+        <div className="text-center space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/70 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-xs font-mono font-semibold">
             <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-            <span>CENTRAL INFRASTRUCTURE SURVEILLANCE & EARLY-WARNING PLATFORM • IPMD</span>
+            <span>PAIMANA PREDICT • CENTRAL SURVEILLANCE & INFRASTRUCTURE MONITORING</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-mono">
-            PAIMANA GOVERNED ROLE ACCESS PORTAL
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white tracking-tight font-mono">
+            OFFICER & ROLE AUTHENTICATION
           </h1>
 
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
-            Governed Multi-Persona Authentication with <strong>Strict UI Access Scoping</strong>. Every role is isolated to its authorized institutional workspace with zero leakage of unauthorized surveillance or project data.
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
+            Select your <strong>Role</strong> below, fill your official <strong>ID and Password</strong>, and sign in to access your authorized operational workspace.
           </p>
-
-          {/* Institutional Compliance Indicators */}
-          <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
-            <span className="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-              18 CANONICAL PERSONAS
-            </span>
-            <span className="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-              ZERO-DATA-LEAKAGE ENFORCED
-            </span>
-            <span className="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-amber-50 dark:bg-amber-950 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
-              RBAC LEVEL-4 ACTIVE
-            </span>
-            <span className="px-2.5 py-1 rounded-md text-[11px] font-mono font-bold bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
-              NIC PARICHAY SSO READY
-            </span>
-          </div>
         </div>
 
         {/* Global Error Banner */}
         {errorMsg && (
-          <div className="max-w-xl mx-auto p-4 rounded-xl bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300 flex items-center gap-3 shadow-md animate-shake">
-            <AlertCircle className="w-5 h-5 shrink-0 text-red-600 dark:text-red-400" />
+          <div className="max-w-xl mx-auto p-3.5 rounded-xl bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300 flex items-center gap-2.5 shadow-sm">
+            <AlertCircle className="w-4 h-4 shrink-0 text-red-600 dark:text-red-400" />
             <span className="font-medium">{errorMsg}</span>
           </div>
         )}
 
         {/* ============================================================ */}
-        {/* VIEW 1: MULTI-ROLE WORKSPACE SELECTOR (IF MULTIPLE ROLES)     */}
+        {/* MODAL: MULTI-ROLE WORKSPACE SELECTOR (IF MULTIPLE ROLES)     */}
         {/* ============================================================ */}
         {showWorkspaceSelect && pendingUser ? (
           <div className="max-w-xl mx-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-200">
@@ -623,363 +479,205 @@ export const LoginPage: React.FC = () => {
           </div>
         ) : (
           /* ============================================================ */
-          /* VIEW 2: UNIFIED MULTI-TRACK GOVERNANCE & PERSONA PORTAL      */
+          /* MAIN ROLE LOGIN FORM                                         */
           /* ============================================================ */
-          <div className="space-y-6">
-            {/* Primary Track Navigation Bar */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-2 shadow-sm">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
-                {[
-                  { key: 'A', label: 'Track A: Macro Policy', count: '3 Roles', icon: Award, color: 'blue' },
-                  { key: 'B', label: 'Track B: Project & Quality', count: '6 Roles', icon: Wrench, color: 'emerald' },
-                  { key: 'C', label: 'Track C: Coordination & Audit', count: '6 Roles', icon: Network, color: 'amber' },
-                  { key: 'D', label: 'Track D: Predictive AI & SOC', count: '3 Roles', icon: Cpu, color: 'purple' },
-                  { key: 'MULTI', label: 'Multi-Role Joint Mandate', count: '1 Account', icon: Layers, color: 'violet' },
-                  { key: 'CUSTOM', label: 'Custom SSO / Direct Login', count: 'Form', icon: KeyRound, color: 'slate' },
-                ].map((tab) => {
-                  const IconComponent = tab.icon;
-                  const isActive = activeTab === tab.key;
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
+            <form onSubmit={handleLoginSubmit} className="space-y-5">
+              {/* 1. ROLE SELECTION (Direct Role Name Selector) */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-bold text-slate-800 dark:text-slate-200 font-mono uppercase tracking-wider flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                    <span>1. Select Role</span>
+                  </label>
+                  <span className="text-[11px] text-blue-600 dark:text-blue-400 font-mono font-semibold">
+                    18 Canonical Roles Available
+                  </span>
+                </div>
+
+                <div className="relative">
+                  <select
+                    value={selectedRoleKey}
+                    onChange={(e) => handleSelectRole(e.target.value)}
+                    className="w-full pl-3.5 pr-10 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-xl text-xs sm:text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition cursor-pointer"
+                  >
+                    {ALL_ROLES.map((r) => (
+                      <option key={r.key} value={r.key}>
+                        {r.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Selected Role Summary Pill */}
+              <div className="p-3.5 rounded-xl bg-blue-50/70 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 space-y-1.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs font-bold text-blue-900 dark:text-blue-200 font-mono">
+                    {currentRoleObj.name}
+                  </span>
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
+                    {currentRoleObj.securityClearance}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-600 dark:text-slate-300">
+                  <span><strong>Department:</strong> {currentRoleObj.department}</span>
+                  <span><strong>Authorized Scope:</strong> {currentRoleObj.scope}</span>
+                  <span><strong>Default Landing:</strong> <code>{currentRoleObj.targetPath}</code></span>
+                </div>
+              </div>
+
+              {/* 2. FILL ID AND PASSWORD */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                {/* ID Field */}
+                <div>
+                  <label className="block text-xs font-bold text-slate-800 dark:text-slate-200 mb-1.5 font-mono">
+                    2. Official ID / Username
+                  </label>
+                  <div className="relative">
+                    <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="text"
+                      value={identifier}
+                      onChange={(e) => setIdentifier(e.target.value)}
+                      placeholder="Enter username or official email"
+                      autoComplete="username"
+                      required
+                      className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+
+                {/* Password Field */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-bold text-slate-800 dark:text-slate-200 font-mono">
+                      Password / Security Token
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowForgotModal(true);
+                        setRecoveryId(identifier);
+                        setRecoveryStep('REQUEST');
+                        setRecoveryNotice(null);
+                        setRecoveryError(null);
+                      }}
+                      className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline font-semibold cursor-pointer"
+                    >
+                      Forgot?
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Enter security password"
+                      autoComplete="current-password"
+                      required
+                      className="w-full pl-9 pr-10 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Remember Session Checkbox */}
+              <div className="flex items-center justify-between pt-0.5">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={rememberSession}
+                    onChange={(e) => setRememberSession(e.target.checked)}
+                    className="w-3.5 h-3.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
+                    Remember session on this authorized terminal
+                  </span>
+                </label>
+              </div>
+
+              {/* Sign In Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer font-mono"
+              >
+                {isSubmitting ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Verifying {currentRoleObj.name} Credentials...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="w-4 h-4" />
+                    <span>Sign In as {currentRoleObj.name} →</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {/* Quick Click-To-Select Role Directory (Name of role only, no Group A,B,C,D) */}
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300 font-mono uppercase tracking-wider">
+                  Quick Select by Role Name:
+                </span>
+                <span className="text-[11px] text-slate-500">
+                  Click any role to autofill credentials
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-72 overflow-y-auto pr-1">
+                {ALL_ROLES.map((r) => {
+                  const isSelected = selectedRoleKey === r.key;
                   return (
                     <button
-                      key={tab.key}
-                      onClick={() => {
-                        setActiveTab(tab.key as any);
-                        setErrorMsg(null);
-                      }}
-                      className={`p-3 rounded-xl transition flex flex-col items-center text-center gap-1.5 cursor-pointer font-sans ${
-                        isActive
-                          ? 'bg-blue-600 text-white shadow-md'
-                          : 'bg-slate-50 dark:bg-slate-950/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300'
+                      key={r.key}
+                      type="button"
+                      onClick={() => handleSelectRole(r.key)}
+                      className={`p-2.5 rounded-lg border text-left transition flex flex-col justify-between gap-1 cursor-pointer ${
+                        isSelected
+                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/60 ring-2 ring-blue-500/20'
+                          : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-950/50'
                       }`}
                     >
-                      <div className="flex items-center gap-1.5">
-                        <IconComponent className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                        <span className="text-xs font-bold font-mono tracking-tight">{tab.label}</span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                          {r.name}
+                        </span>
+                        {isSelected && <span className="w-2 h-2 rounded-full bg-blue-600 shrink-0 ml-1" />}
                       </div>
-                      <span className={`text-[10px] font-mono font-semibold px-2 py-0.2 rounded ${
-                        isActive ? 'bg-blue-700 text-blue-100' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'
-                      }`}>
-                        {tab.count}
-                      </span>
+                      <div className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                        ID: <code className="text-slate-700 dark:text-slate-300 font-bold">{r.username}</code>
+                      </div>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            {/* Track A, B, C, D Persona Views */}
-            {['A', 'B', 'C', 'D'].includes(activeTab) && (
-              <div className="space-y-4">
-                {/* Track Summary Header */}
-                {(() => {
-                  const currentTrack = trackData[activeTab as 'A' | 'B' | 'C' | 'D'];
-                  return (
-                    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 uppercase">
-                            {currentTrack.badge}
-                          </span>
-                          <span className="text-xs font-mono font-bold text-slate-400">
-                            {currentTrack.personas.length} Authorized Personas
-                          </span>
-                        </div>
-                        <h2 className="text-base font-extrabold text-slate-900 dark:text-white font-mono">
-                          {currentTrack.title}
-                        </h2>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                          {currentTrack.summary}
-                        </p>
-                      </div>
-                      <div className="shrink-0">
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 rounded-lg text-xs font-mono font-bold text-emerald-700 dark:text-emerald-300">
-                          <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                          <span>Strict Scoping Enforced</span>
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Persona Cards Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {trackData[activeTab as 'A' | 'B' | 'C' | 'D'].personas.map((item) => {
-                    const isCurrentSigningIn = authenticatingUser === item.user;
-
-                    return (
-                      <div
-                        key={item.user}
-                        className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs hover:border-blue-400 dark:hover:border-blue-600 transition flex flex-col justify-between space-y-4 group hover:shadow-md"
-                      >
-                        {/* Top: Header with Clearance & Badge */}
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-                              {item.tag}
-                            </span>
-                            <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                              {item.securityClearance}
-                            </span>
-                          </div>
-
-                          {/* Persona Profile Header */}
-                          <div className="flex items-center gap-3">
-                            <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${item.colorScheme} text-white font-mono font-bold text-sm flex items-center justify-center shadow-sm shrink-0`}>
-                              {item.initials}
-                            </div>
-                            <div className="overflow-hidden">
-                              <h3 className="text-sm font-extrabold text-slate-900 dark:text-white truncate">
-                                {item.name}
-                              </h3>
-                              <p className="text-xs font-medium text-slate-600 dark:text-slate-300 truncate">
-                                {item.designation}
-                              </p>
-                              <p className="text-[11px] text-slate-400 dark:text-slate-500 truncate">
-                                {item.dept}
-                              </p>
-                            </div>
-                          </div>
-
-                          {/* Explicit Authorized Scope Badge (Crucial for the user request) */}
-                          <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-1.5">
-                            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800 dark:text-slate-200 font-mono">
-                              <Lock className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
-                              <span className="truncate">{item.scopeBadge}</span>
-                            </div>
-                            <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                              {item.boundaryText}
-                            </p>
-                          </div>
-
-                          {/* Default Workspace Preview */}
-                          <div className="flex items-center justify-between text-[11px] font-mono text-slate-500">
-                            <span>Landing Workspace:</span>
-                            <span className="font-semibold text-blue-600 dark:text-blue-400">{item.path}</span>
-                          </div>
-                        </div>
-
-                        {/* Bottom: Official Credentials + 1-Click Launch Button */}
-                        <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
-                          <div className="flex items-center justify-between text-[11px] font-mono text-slate-500">
-                            <span>ID: <strong className="text-slate-700 dark:text-slate-300">{item.user}</strong></span>
-                            <span>Pass: <strong className="text-slate-700 dark:text-slate-300">{item.pass}</strong></span>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => handleSelectDirectoryAccount(item.user, item.pass)}
-                            disabled={isSubmitting}
-                            className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-60 cursor-pointer"
-                          >
-                            {isCurrentSigningIn ? (
-                              <>
-                                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                                <span>Authenticating & Isolating Workspace...</span>
-                              </>
-                            ) : (
-                              <>
-                                <LogIn className="w-3.5 h-3.5" />
-                                <span>Launch Authorized Workspace →</span>
-                              </>
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+            {/* Compliance Footer */}
+            <div className="p-3 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-lg text-[11px] text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2 font-mono">
+              <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-semibold">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                <span>NIC Parichay SSO Standard • RBAC Level-4</span>
               </div>
-            )}
-
-            {/* MULTI-ROLE TAB */}
-            {activeTab === 'MULTI' && (
-              <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900 border border-violet-200 dark:border-violet-800/60 rounded-2xl p-6 sm:p-8 shadow-lg space-y-5">
-                <div className="flex items-center gap-3 border-b border-violet-100 dark:border-violet-900/50 pb-4">
-                  <div className="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-950 text-violet-600 dark:text-violet-400 flex items-center justify-center font-bold text-lg font-mono">
-                    KM
-                  </div>
-                  <div>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300">
-                      DUAL ASSIGNED JOINT DIRECTATE
-                    </span>
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white mt-0.5 font-mono">
-                      Multi-Role Persona: Dr. K. S. Murthy / Joint Directorate
-                    </h3>
-                    <p className="text-xs text-slate-500">
-                      Multi-Portfolio Account holding dual concurrent governance mandates.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-4 rounded-xl bg-violet-50/50 dark:bg-violet-950/20 border border-violet-100 dark:border-violet-900/30 space-y-2">
-                  <h4 className="text-xs font-bold text-violet-900 dark:text-violet-200 font-mono">
-                    Assigned Mandates:
-                  </h4>
-                  <ul className="text-xs text-slate-600 dark:text-slate-300 space-y-1 list-disc list-inside font-mono">
-                    <li><strong>Monitoring Officer (MoSPI IPMD)</strong>: National portfolio surveillance & alerts</li>
-                    <li><strong>Ministry Reviewer (MoRTH)</strong>: Road Transport & Highways ministry review</li>
-                  </ul>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 pt-1">
-                    Signing in as this user invokes the interactive <strong>Role Workspace Selector</strong>, allowing the officer to enter either authorized workspace while keeping unassigned data isolated.
-                  </p>
-                </div>
-
-                <div className="flex items-center justify-between text-xs font-mono text-slate-500 pt-1">
-                  <span>Username: <code>multirole</code></span>
-                  <span>Password: <code>multi123</code></span>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleSelectDirectoryAccount('multirole', 'multi123')}
-                  disabled={isSubmitting}
-                  className="w-full py-3 bg-violet-600 hover:bg-violet-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-60 cursor-pointer"
-                >
-                  {authenticatingUser === 'multirole' ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                      <span>Loading Assigned Mandates...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Layers className="w-4 h-4" />
-                      <span>Authenticate Dual Mandates & Select Workspace →</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            )}
-
-            {/* CUSTOM SSO / CREDENTIALS FORM TAB */}
-            {activeTab === 'CUSTOM' && (
-              <div className="max-w-md mx-auto space-y-6">
-                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-7 shadow-xl space-y-5">
-                  <div className="text-center space-y-1.5 border-b border-slate-100 dark:border-slate-800 pb-4">
-                    <div className="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 mx-auto shadow-sm">
-                      <Building2 className="w-5 h-5" />
-                    </div>
-                    <h2 className="text-base font-bold text-slate-900 dark:text-white font-mono">
-                      National Infrastructure Single Sign-On
-                    </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Authenticate via your official government e-Gov identifier, NIC email, or administrative credentials.
-                    </p>
-                  </div>
-
-                  {/* Login Fields */}
-                  <form onSubmit={handlePrimarySubmit} className="space-y-4">
-                    {/* 1. Username / Email */}
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                        Username / Official Government Email
-                      </label>
-                      <div className="relative">
-                        <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          type="text"
-                          value={identifier}
-                          onChange={(e) => setIdentifier(e.target.value)}
-                          placeholder="e.g. officer or priya.monitoring@mospi.gov.in"
-                          autoComplete="username"
-                          required
-                          className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                        />
-                      </div>
-                    </div>
-
-                    {/* 2. Password */}
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                          Password / Security Token
-                        </label>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowForgotModal(true);
-                            setRecoveryId(identifier);
-                            setRecoveryStep('REQUEST');
-                            setRecoveryNotice(null);
-                            setRecoveryError(null);
-                          }}
-                          className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline font-semibold cursor-pointer"
-                        >
-                          Forgot Password?
-                        </button>
-                      </div>
-                      <div className="relative">
-                        <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                        <input
-                          type={showPassword ? 'text' : 'password'}
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          placeholder="Enter security password or token"
-                          autoComplete="current-password"
-                          required
-                          className="w-full pl-9 pr-10 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-                          tabIndex={-1}
-                        >
-                          {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* 3. Remember Session */}
-                    <div className="flex items-center justify-between pt-0.5">
-                      <label className="flex items-center gap-2 cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={rememberSession}
-                          onChange={(e) => setRememberSession(e.target.checked)}
-                          className="w-3.5 h-3.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                        />
-                        <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                          Remember session on this authorized government terminal
-                        </span>
-                      </label>
-                    </div>
-
-                    {/* 4. Sign In Button */}
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 mt-2 cursor-pointer"
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <RefreshCw className="w-4 h-4 animate-spin" />
-                          <span>Authenticating Credentials & Roles...</span>
-                        </>
-                      ) : (
-                        <>
-                          <LogIn className="w-4 h-4" />
-                          <span>Sign In to Authorized Workspace</span>
-                        </>
-                      )}
-                    </button>
-                  </form>
-
-                  {/* Security Standards Tag */}
-                  <div className="p-3 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-lg text-[10px] text-slate-500 dark:text-slate-400 space-y-1 font-mono">
-                    <div className="flex items-center justify-between text-slate-700 dark:text-slate-300 font-semibold">
-                      <span className="flex items-center gap-1">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                        NIC Parichay SSO Standard
-                      </span>
-                      <span>TLS 1.3 • SHA-256</span>
-                    </div>
-                    <p>
-                      Access is controlled strictly by User → Role → Permission → Resource Assignment → Workflow State.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
+              <Link to="/" className="text-blue-600 dark:text-blue-400 hover:underline font-semibold flex items-center gap-1">
+                <span>View Default Home Page</span>
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
           </div>
         )}
       </div>

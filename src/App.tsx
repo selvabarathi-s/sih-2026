@@ -56,8 +56,8 @@ export function App() {
               {/* Main Application Layout with Strict 18-Role RBAC Route Guards */}
               <Route path="/" element={<AppLayout />}>
                 {/* 1. Dashboard & Workload Inbox */}
-                <Route index element={<RoleHomeDispatcher />} />
-                <Route path="overview" element={<Navigate to="/" replace />} />
+                <Route index element={<OverviewPage />} />
+                <Route path="overview" element={<OverviewPage />} />
                 <Route path="inbox" element={<InboxPage />} />
 
                 {/* 2. Projects Directory: Available to all authenticated users */}

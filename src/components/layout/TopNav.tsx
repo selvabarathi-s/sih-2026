@@ -145,6 +145,16 @@ export const TopNav: React.FC = () => {
         {/* Multilingual Translate Language Selector (English + 22 Indic Languages) */}
         <LanguageSelector />
 
+        {/* Quick Role Login Link */}
+        <button
+          onClick={() => navigate('/login')}
+          className="hidden lg:flex items-center gap-1.5 px-2.5 py-1.5 bg-blue-50 dark:bg-blue-950/70 hover:bg-blue-100 dark:hover:bg-blue-900/80 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 rounded-lg text-xs font-bold font-mono transition shadow-2xs cursor-pointer"
+          title="Login / Select Role"
+        >
+          <LogIn className="w-3.5 h-3.5" />
+          <span>Login / Roles</span>
+        </button>
+
         {/* Theme Toggle Button */}
         <button
           onClick={toggleTheme}
