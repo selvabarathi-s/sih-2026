@@ -30,6 +30,18 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { ROLE_METADATA } from '../../types/auth';
 
+export interface NavItem {
+  name: string;
+  path: string;
+  icon: React.ComponentType<any>;
+  badge?: string;
+}
+
+export interface NavSection {
+  primary: NavItem[];
+  secondary: NavItem[];
+}
+
 const NAV_KEY_MAP: Record<string, string> = {
   'National Overview': 'nav.national_overview',
   'Portfolio Surveillance': 'nav.portfolio_surveillance',
@@ -176,7 +188,23 @@ export const Sidebar: React.FC = () => {
   const role = (currentRole || '').toLowerCase().trim();
 
   // Dynamic Navigation Configuration tailored to each of the 18 roles
-  const getNavItems = () => {
+  const getNavItems = (): NavSection => {
+    // 0. Public Visitor / Unauthenticated Default State (Home Screen)
+    if (!user) {
+      return {
+        primary: [
+          { name: 'National Overview', path: '/', icon: LayoutDashboard },
+          { name: 'Projects Directory', path: '/projects', icon: FolderKanban },
+          { name: 'Sector Benchmarking', path: '/benchmarking', icon: BarChart3 },
+          { name: 'Data Health & Integrity', path: '/data-health', icon: Database },
+          { name: 'PAIMANA Copilot', path: '/assistant', icon: BotMessageSquare },
+        ],
+        secondary: [
+          { name: 'Official Sign In / Roles', path: '/login', icon: KeyRound, badge: 'Login' },
+        ],
+      };
+    }
+
     // 1. Senior Review & Decision Authority
     if (role === 'senior_decision_maker' || role === 'decision_maker' || role === 'secretary') {
       return {
@@ -487,25 +515,41 @@ export const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* Role Workspace Banner */}
-      <div className="px-3.5 py-2.5 bg-blue-50/70 dark:bg-blue-950/40 border-b border-blue-100 dark:border-blue-900/50">
-        <div className="flex items-center justify-between gap-1.5 mb-0.5">
-          <span className="text-xs font-mono uppercase font-extrabold text-blue-900 dark:text-blue-200 leading-tight">
-            {t('role.' + currentRole, roleMeta.title)}
-          </span>
-          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-blue-200/80 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-bold shrink-0">
-            {roleMeta.valueTag}
-          </span>
+      {/* Role Workspace Banner / Public Portal Banner */}
+      {!user ? (
+        <div className="px-3.5 py-2.5 bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800">
+          <div className="flex items-center justify-between gap-1.5 mb-0.5">
+            <span className="text-xs font-mono uppercase font-extrabold text-slate-800 dark:text-slate-200 leading-tight">
+              National Portal
+            </span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold shrink-0">
+              PUBLIC
+            </span>
+          </div>
+          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate">
+            Central Infrastructure Repository
+          </p>
         </div>
-        <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 truncate">
-          {t('role_focus.' + currentRole, roleMeta.focus)}
-        </p>
-      </div>
+      ) : (
+        <div className="px-3.5 py-2.5 bg-blue-50/70 dark:bg-blue-950/40 border-b border-blue-100 dark:border-blue-900/50">
+          <div className="flex items-center justify-between gap-1.5 mb-0.5">
+            <span className="text-xs font-mono uppercase font-extrabold text-blue-900 dark:text-blue-200 leading-tight">
+              {t('role.' + currentRole, roleMeta.title)}
+            </span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-blue-200/80 dark:bg-blue-900 text-blue-800 dark:text-blue-200 font-bold shrink-0">
+              {roleMeta.valueTag}
+            </span>
+          </div>
+          <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 truncate">
+            {t('role_focus.' + currentRole, roleMeta.focus)}
+          </p>
+        </div>
+      )}
 
       {/* Navigation Links */}
       <nav className="flex-1 overflow-y-auto p-3 space-y-1">
         <div className="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider px-3 py-1.5 font-mono">
-          {t('nav.authorized_modules', 'Authorized Modules')}
+          {user ? t('nav.authorized_modules', 'Authorized Modules') : t('nav.public_modules', 'Public Portal Modules')}
         </div>
 
         {nav.primary.map(item => {
@@ -562,20 +606,40 @@ export const Sidebar: React.FC = () => {
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="p-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
-        <div className="flex items-center justify-between mb-1">
-          <span className="font-bold text-slate-800 dark:text-slate-200 font-mono text-xs truncate max-w-[140px]">
-            {user?.fullName || roleMeta.persona}
-          </span>
-          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold shrink-0">
-            {t('nav.rbac_active', 'RBAC Active')}
-          </span>
+      {/* Footer: User Profile Card or Public Sign-In CTA */}
+      {!user ? (
+        <div className="p-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 text-xs">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="font-bold text-slate-800 dark:text-slate-200 font-mono text-xs">
+              Official Access
+            </span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold">
+              PARICHAY SSO
+            </span>
+          </div>
+          <NavLink
+            to="/login"
+            className="w-full py-2 px-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-2xs font-mono"
+          >
+            <KeyRound className="w-3.5 h-3.5" />
+            <span>Official Login / Roles</span>
+          </NavLink>
         </div>
-        <p className="text-xs text-slate-500 dark:text-slate-400 truncate font-medium">
-          {user?.organization && user.organization.length > 30 ? 'MoSPI • Infrastructure Monitoring (IPMD)' : (user?.organization || roleMeta.organization || 'MoSPI • Infrastructure Monitoring (IPMD)')}
-        </p>
-      </div>
+      ) : (
+        <div className="p-3 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400">
+          <div className="flex items-center justify-between mb-1">
+            <span className="font-bold text-slate-800 dark:text-slate-200 font-mono text-xs truncate max-w-[140px]">
+              {user.fullName || roleMeta.persona}
+            </span>
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold shrink-0">
+              {t('nav.rbac_active', 'RBAC Active')}
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 truncate font-medium">
+            {user.organization && user.organization.length > 30 ? 'MoSPI • Infrastructure Monitoring (IPMD)' : (user.organization || roleMeta.organization || 'MoSPI • Infrastructure Monitoring (IPMD)')}
+          </p>
+        </div>
+      )}
     </aside>
   );
 };

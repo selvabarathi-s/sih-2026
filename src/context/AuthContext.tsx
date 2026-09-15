@@ -26,30 +26,12 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Default to Monitoring Officer
-  const defaultUser: UserSession = {
-    id: 'usr-officer-01',
-    username: 'officer',
-    fullName: 'Priya Iyer',
-    email: 'priya.monitoring@mospi.gov.in',
-    role: ROLES.MONITORING_OFFICER,
-    roles: [ROLES.MONITORING_OFFICER],
-    defaultWorkspace: '/',
-    organization: 'MoSPI / IPMD',
-    department: 'MoSPI Project Monitoring Division',
-    designation: 'Joint Director (Surveillance)',
-    assignedProjects: ['ALL_SURVEILLANCE'],
-    permissions: [
-      'view:portfolio', 'investigate:projects', 'view:risks',
-      'review:warnings', 'acknowledge:warnings', 'assign:interventions',
-      'generate:briefs', 'monitor:actions'
-    ],
-  };
-
-  const [user, setUser] = useState<UserSession | null>(defaultUser);
+  // By default, the application opens in public / unauthenticated state on the Home Screen.
+  // Officers explicitly sign in via /login to access authorized departmental workspaces.
+  const [user, setUser] = useState<UserSession | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Restore authenticated session on mount
+  // Restore authenticated session on mount only if a valid token exists
   useEffect(() => {
     const restoreSession = async () => {
       try {
@@ -61,10 +43,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
           setUser(u);
         } else {
-          await login('officer', 'officer123');
+          setUser(null);
         }
       } catch (err) {
-        console.warn('Could not restore backend session, using default role.');
+        setUser(null);
       } finally {
         setIsLoading(false);
       }
@@ -189,9 +171,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: !!user,
+        isAuthenticated: Boolean(user),
         isLoading,
-        currentRole: user?.role || ROLES.MONITORING_OFFICER,
+        currentRole: user?.role || '',
         authorizedRoles,
         hasMultipleRoles,
         login,

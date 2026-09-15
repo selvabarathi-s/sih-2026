@@ -21,12 +21,16 @@ import {
   Flame,
   HelpCircle,
   Award,
+  KeyRound,
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 
 export const OverviewPage: React.FC = () => {
   const navigate = useNavigate();
   const { t, formatCurrency, formatNumber } = useLanguage();
+  const { user, currentRole } = useAuth();
+  const isSurveillanceRole = Boolean(user && ['monitoring_officer', 'MONITORING_OFFICER', 'system_admin', 'SYSTEM_ADMIN', 'data_platform_security_admin'].includes(currentRole));
 
   // Authoritative Real PAIMANA data
   const realSummary = paimanaDataService.getPortfolioSummary();
@@ -86,56 +90,97 @@ export const OverviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Operational Command Center Workload Banner */}
-      <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-xl p-4 sm:p-5 text-white shadow-md border border-blue-800/40">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="px-2 py-0.5 text-xs font-extrabold uppercase tracking-wider bg-blue-500/30 text-blue-200 border border-blue-400/30 rounded font-mono">
-                {t('overview.live_record_system', 'Live Operational System of Record')}
-              </span>
-              <span className="text-xs text-blue-200/90 font-mono font-semibold">
-                {t('overview.cycle_active', 'Cycle: July 2026 Active')}
-              </span>
+      {/* Operational Command Center Workload Banner: Only shown to authenticated surveillance officers */}
+      {user && isSurveillanceRole ? (
+        <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-xl p-4 sm:p-5 text-white shadow-md border border-blue-800/40">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="px-2 py-0.5 text-xs font-extrabold uppercase tracking-wider bg-blue-500/30 text-blue-200 border border-blue-400/30 rounded font-mono">
+                  {t('overview.live_record_system', 'Live Operational System of Record')}
+                </span>
+                <span className="text-xs text-blue-200/90 font-mono font-semibold">
+                  {t('overview.cycle_active', 'Cycle: July 2026 Active')}
+                </span>
+              </div>
+              <h2 className="text-lg sm:text-xl font-black text-white tracking-tight">
+                {t('overview.command_center_title', 'Government Infrastructure Workflow & Workload Command Center')}
+              </h2>
+              <p className="text-xs sm:text-sm text-blue-100/80 max-w-3xl leading-relaxed">
+                {t('overview.command_center_desc', 'Real-world multi-tiered project governance: Dispatch monthly telemetry updates, conduct 11-factor root-cause investigations, manage SLA breaches, and execute binding executive directives.')}
+              </p>
             </div>
-            <h2 className="text-lg sm:text-xl font-black text-white tracking-tight">
-              {t('overview.command_center_title', 'Government Infrastructure Workflow & Workload Command Center')}
-            </h2>
-            <p className="text-xs sm:text-sm text-blue-100/80 max-w-3xl leading-relaxed">
-              {t('overview.command_center_desc', 'Real-world multi-tiered project governance: Dispatch monthly telemetry updates, conduct 11-factor root-cause investigations, manage SLA breaches, and execute binding executive directives.')}
-            </p>
+
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <button
+                onClick={() => navigate('/inbox')}
+                className="px-3.5 py-2 text-xs sm:text-sm font-bold bg-blue-500 hover:bg-blue-400 text-slate-950 rounded-lg flex items-center gap-1.5 shadow-md shadow-blue-500/20 transition-all cursor-pointer"
+              >
+                {t('overview.open_inbox', 'Open Workload Inbox')}
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <button
-              onClick={() => navigate('/inbox')}
-              className="px-3.5 py-2 text-xs sm:text-sm font-bold bg-blue-500 hover:bg-blue-400 text-slate-950 rounded-lg flex items-center gap-1.5 shadow-md shadow-blue-500/20 transition-all"
-            >
-              {t('overview.open_inbox', 'Open Workload Inbox')}
-              <ChevronRight className="w-4 h-4" />
-            </button>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4 pt-4 border-t border-white/10 text-xs">
+            <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
+              <span className="text-blue-200/80 block text-xs font-medium">{t('overview.active_interventions', 'Active Interventions')}</span>
+              <span className="text-xl sm:text-2xl font-black text-white mt-0.5 block">{t('overview.assigned_count', '2 Assigned')}</span>
+            </div>
+            <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
+              <span className="text-blue-200/80 block text-xs font-medium">{t('overview.unack_signals', 'Unacknowledged Signals')}</span>
+              <span className="text-xl sm:text-2xl font-black text-amber-300 mt-0.5 block">{t('overview.pending_count', '18 Pending')}</span>
+            </div>
+            <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
+              <span className="text-blue-200/80 block text-xs font-medium">{t('overview.monthly_submissions', 'Monthly Submissions')}</span>
+              <span className="text-xl sm:text-2xl font-black text-purple-300 mt-0.5 block">{t('overview.for_review_count', '1 For Review')}</span>
+            </div>
+            <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
+              <span className="text-blue-200/80 block text-xs font-medium">{t('overview.auto_escalations', 'Automated Escalations')}</span>
+              <span className="text-xl sm:text-2xl font-black text-rose-300 mt-0.5 block">{t('overview.daemon_active', 'Daemon Active (60s)')}</span>
+            </div>
           </div>
         </div>
+      ) : !user ? (
+        /* Public Visitor Welcome & Role Sign-in Gateway Banner */
+        <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 rounded-xl p-5 sm:p-6 text-white shadow-md border border-blue-900/60">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="space-y-1.5 max-w-3xl">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="px-2.5 py-0.5 text-xs font-extrabold uppercase tracking-wider bg-blue-500/20 text-blue-300 border border-blue-400/30 rounded font-mono">
+                  {t('overview.portal_badge', 'Official Public Surveillance Portal')}
+                </span>
+                <span className="text-xs text-blue-200/90 font-mono font-semibold">
+                  {t('overview.portal_tag', 'MoSPI • Infrastructure Project Monitoring Division (IPMD)')}
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                {t('overview.public_hero_title', 'Central Sector Infrastructure Risk Intelligence Platform')}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                {t('overview.public_hero_desc', 'Predictive delay forecasting, 0–100 risk scoring, and multi-tiered governance across 1,981 central infrastructure projects costing ₹150 Cr and above. Officials and stakeholders may sign in to access authorized operational workspaces.')}
+              </p>
+            </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-4 pt-4 border-t border-white/10 text-xs">
-          <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
-            <span className="text-blue-200/80 block text-xs font-medium">{t('overview.active_interventions', 'Active Interventions')}</span>
-            <span className="text-xl sm:text-2xl font-black text-white mt-0.5 block">{t('overview.assigned_count', '2 Assigned')}</span>
-          </div>
-          <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
-            <span className="text-blue-200/80 block text-xs font-medium">{t('overview.unack_signals', 'Unacknowledged Signals')}</span>
-            <span className="text-xl sm:text-2xl font-black text-amber-300 mt-0.5 block">{t('overview.pending_count', '18 Pending')}</span>
-          </div>
-          <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
-            <span className="text-blue-200/80 block text-xs font-medium">{t('overview.monthly_submissions', 'Monthly Submissions')}</span>
-            <span className="text-xl sm:text-2xl font-black text-purple-300 mt-0.5 block">{t('overview.for_review_count', '1 For Review')}</span>
-          </div>
-          <div className="p-2.5 bg-white/5 rounded-xl border border-white/10">
-            <span className="text-blue-200/80 block text-xs font-medium">{t('overview.auto_escalations', 'Automated Escalations')}</span>
-            <span className="text-xl sm:text-2xl font-black text-rose-300 mt-0.5 block">{t('overview.daemon_active', 'Daemon Active (60s)')}</span>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
+              <button
+                onClick={() => navigate('/login')}
+                className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition shadow-sm flex items-center justify-center gap-2 cursor-pointer font-mono"
+              >
+                <KeyRound className="w-4 h-4" />
+                <span>{t('overview.login_cta', 'Official Login / Select Role')}</span>
+              </button>
+              <button
+                onClick={() => navigate('/projects')}
+                className="px-3.5 py-2.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer font-mono"
+              >
+                <FolderKanban className="w-4 h-4" />
+                <span>{t('overview.explore_cta', 'Explore 1,981 Projects')}</span>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      ) : null}
 
       {/* Page Title & Executive Banner */}
       <div className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-xl p-4 sm:p-5 space-y-3.5 shadow-sm">
