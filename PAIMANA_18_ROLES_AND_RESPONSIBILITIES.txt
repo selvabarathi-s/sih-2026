@@ -1,0 +1,271 @@
+================================================================================
+PAIMANA PREDICT — 18 INSTITUTIONAL ROLES & RESPONSIBILITIES SPECIFICATION
+AI-Powered Infrastructure Risk Intelligence & Early Warning System
+Ministry of Statistics & Programme Implementation (MoSPI), Government of India
+Problem Statement 26103 (Smart India Hackathon 2026)
+================================================================================
+
+OVERVIEW
+--------
+The operational governance architecture of PAIMANA PREDICT is structured into 
+18 specialized institutional personas across 4 governance tiers. Each role is 
+strictly scoped with its own authorized workspace, operational responsibilities, 
+and Role-Based Access Control (RBAC) boundaries to eliminate data leakage.
+
+================================================================================
+TIER 1: EXECUTIVE & CENTRAL MONITORING (MACRO OVERSIGHT)
+================================================================================
+
+1. SENIOR REVIEW & DECISION AUTHORITY
+   - Role Key: senior_decision_maker (Alias: secretary, decision_maker)
+   - Organization: Cabinet Secretariat / Prime Minister's Office (PMO)
+   - Department: Cabinet Secretariat Infrastructure Cell
+   - Default Workspace / Route: /risk-intelligence (Executive Decisions & Directives)
+   - Core Responsibilities & Works:
+     * Monitors national macro capital exposure across the ₹42.78 Lakh Cr portfolio (1,981 projects).
+     * Reviews critical project rankings, sector benchmarks, and systemic inter-ministerial disputes.
+     * Evaluates projected cost escalation envelopes and delay distributions across 22 infrastructure sectors.
+     * Records and issues high-level binding Cabinet Directives with assigned accountability.
+     * Tracks the real-world resolution velocity and effectiveness of executive interventions.
+     * Generates executive decision briefs for the Empowered Group of Secretaries (EGoS).
+
+2. IPMD MONITORING & SURVEILLANCE OFFICER
+   - Role Key: monitoring_officer (Alias: officer)
+   - Organization: Ministry of Statistics & Programme Implementation (MoSPI)
+   - Department: Infrastructure and Project Monitoring Division (IPMD)
+   - Default Workspace / Route: /overview (Portfolio Surveillance & Early Warning Signals)
+   - Core Responsibilities & Works:
+     * Conducts daily continuous surveillance over all 1,981 central sector projects (costing >= ₹150 Cr).
+     * Triages automated early warnings, weak deterioration signals, and velocity drop anomalies.
+     * Opens governed monitoring cases and assigns time-bound interventions with strict SLA escalation timers.
+     * Executes human-in-the-loop risk reviews with mandatory cryptographically logged justifications.
+     * Tracks intervention recovery trajectories and escalates unresolved bottlenecks to line ministries.
+
+3. ADMINISTRATIVE MINISTRY / PROJECT REVIEW OFFICER
+   - Role Key: admin_ministry_review (Alias: ministry_reviewer)
+   - Organization: Line Ministries (e.g., MoRTH, Ministry of Railways, Ministry of Power, DoT)
+   - Department: Ministry Project Coordination Directorate
+   - Default Workspace / Route: /ministry-overview (Line Ministry Review Hub)
+   - Core Responsibilities & Works:
+     * Reviews ministry-scoped project portfolio, expenditure ceilings, and physical timelines.
+     * Manages ministry-level bottleneck cases escalated from IPMD surveillance.
+     * Issues corrective action directives to subordinate Public Sector Undertakings (PSUs) and project authorities.
+     * Monitors agency compliance responses and validates submitted ground evidence.
+     * Escalates unresolved cross-departmental hurdles to IPMD and the Cabinet Secretariat.
+
+================================================================================
+TIER 2: IMPLEMENTING AGENCY & PROJECT EXECUTION (GROUND TRUTH)
+================================================================================
+
+4. PROJECT / NODAL OFFICER
+   - Role Key: project_admin (Alias: nodal)
+   - Organization: Project Implementing Agencies / PSUs (e.g., BBNL, NHAI PIU, RVNL)
+   - Department: Project Execution Directorate
+   - Default Workspace / Route: /projects/PAI-706775 (Assigned Project Hub)
+   - Core Responsibilities & Works:
+     * Submits authoritative monthly physical progress actuals and verified cumulative expenditures.
+     * Updates scheduled milestone deadlines, revised completion targets, and official delay causes.
+     * Uploads ground evidence, engineering drawings, and geo-tagged site photographs.
+     * Formulates formal action plans in response to IPMD early warning flags and monitoring cases.
+     * Verifies contractor milestone completion claims before payment certification.
+
+5. PROJECT ENGINEERING OFFICER
+   - Role Key: project_engineering (Alias: engineer)
+   - Organization: Technical & Engineering Wing (e.g., NHAI Engineering Division)
+   - Department: Technical & Engineering Directorate
+   - Default Workspace / Route: /engineering (Engineering Review Hub)
+   - Core Responsibilities & Works:
+     * Conducts structural and technical progress assessments against approved Bill of Quantities (BoQ).
+     * Evaluates site engineering hindrances, geological variations, and technical design changes.
+     * Reviews milestone technical completions alongside Third Party Inspection (TPI) consultants.
+     * Records site engineering observations and technical recommendations for rework or readiness.
+     * Validates structural telemetry, drone imagery, and material testing data.
+
+6. QUALITY & INSPECTION OFFICER
+   - Role Key: quality_auditor (Alias: quality, auditor)
+   - Organization: Third Party Inspection (TPI) Agencies (e.g., Engineers India Limited - EIL, RITES)
+   - Department: TPI Inspection & Quality Assurance Directorate
+   - Default Workspace / Route: /quality (Quality & Compliance Center)
+   - Core Responsibilities & Works:
+     * Performs independent technical quality audits across active project construction packages.
+     * Issues Non-Conformance Reports (NCRs) and manages their 6-stage verification lifecycle.
+     * Inspects certified laboratory test reports (IS 516 concrete, IS 1786 rebar, IS 2720 soil).
+     * Audits contractor rework submissions and signs independent TPI verification certificates.
+     * Closes verified NCRs only after independent engineering re-tests (contractors cannot close their own NCRs).
+
+7. PROJECT FINANCE & ACCOUNTS OFFICER
+   - Role Key: project_finance (Alias: finance, financial_officer)
+   - Organization: Project Finance & Accounts Division / Integrated Finance Division (IFD)
+   - Department: Finance & Accounts Division
+   - Default Workspace / Route: /finance (Project Financial Ledger)
+   - Core Responsibilities & Works:
+     * Audits monthly cumulative expenditure claims against original sanctioned cost ceilings.
+     * Detects physical-financial divergence (capital burn without proportional physical progress).
+     * Reviews contractor payment claims, price variation clauses, and bank guarantee validity.
+     * Prepares Revised Cost Estimate (RCE) financial dossiers and cost variance breakdowns.
+     * Submits financial observations on cost overrun triggers and contingent liabilities.
+
+8. CONTRACTOR / EPC REPRESENTATIVE
+   - Role Key: contractor_rep (Alias: contractor, epc)
+   - Organization: EPC Contractors / Concessionaires (e.g., L&T Infrastructure, BharatNet EPC Consortium)
+   - Department: EPC Execution Consortium
+   - Default Workspace / Route: /monthly-updates (Contractor Execution Hub)
+   - Core Responsibilities & Works:
+     * Submits contract package physical milestone claims and daily work actuals.
+     * Responds to Non-Conformance Reports (NCRs) and executes mandatory site rework.
+     * Uploads NABL-certified laboratory test reports and material compliance records.
+     * Submits geo-tagged ground progress evidence and drone visual telemetry.
+     * Formulates formal hindrance claims regarding land handover, right-of-way, and utility shifting.
+
+9. SUPERVISION CONSULTANT / PMC
+   - Role Key: supervision_consultant (Alias: pmc_consultant, pmc)
+   - Organization: Independent Project Management Consultancy (e.g., Tata Consulting Engineers)
+   - Department: Independent Engineering & Supervision Cell
+   - Default Workspace / Route: /supervision (PMC Supervision Workspace)
+   - Core Responsibilities & Works:
+     * Performs contractually mandated daily construction supervision and progress verification.
+     * Conducts independent engineering measurements of completed contract milestones.
+     * Submits independent technical observations and PMC recommendations to government authorities.
+     * Reviews contractor quality test logs, safety protocols, and daily labor turnout records.
+     * Escalates field hindrances, site safety breaches, and design deviations to implementing agencies.
+
+================================================================================
+TIER 3: COORDINATION & HIGHER REVIEW (CROSS-SECTOR)
+================================================================================
+
+10. INTER-MINISTERIAL COORDINATION OFFICER
+    - Role Key: inter_ministerial_coordination (Alias: inter_coord)
+    - Organization: Cabinet Secretariat / Coordination Wing
+    - Department: Inter-Ministerial Project Group
+    - Default Workspace / Route: /coordination (Inter-Ministerial Coordination Hub)
+    - Core Responsibilities & Works:
+      * Coordinates multi-agency infrastructure conflicts where execution spans multiple ministries.
+      * Manages cross-departmental bottleneck cases with defined agency ownership matrices.
+      * Records minutes, binding commitments, and action items of Inter-Ministerial Committee (IMC) meetings.
+      * Tracks statutory environmental, forest, railway crossing, and defense clearances.
+      * Escalates chronic inter-agency deadlocks directly to the Cabinet Secretary / PMO.
+
+11. STATE / CENTRAL PROJECT COORDINATION OFFICER
+    - Role Key: state_coordination (Alias: state_coord)
+    - Organization: State Infrastructure Coordination Cells (State Chief Secretary / PWD)
+    - Department: State Urban Development & RoW Cell
+    - Default Workspace / Route: /state-coordination (State Coordination Directorate)
+    - Core Responsibilities & Works:
+      * Coordinates state-level dependencies: Land Acquisition awards, RoW handovers, and district clearances.
+      * Manages utility shifting pipelines (high-voltage power transmission lines, water mains, gas pipelines).
+      * Assigns bottleneck accountability to District Collectors and state utility boards.
+      * Monitors state compliance deadlines and progress response packages.
+      * Bridges field project authorities with state chief secretaries and central ministries.
+
+12. GATISHAKTI / INFRASTRUCTURE NETWORK COORDINATOR
+    - Role Key: gatishakti_officer (Alias: gatishakti)
+    - Organization: DPIIT / PM GatiShakti National Master Plan
+    - Department: Network Planning Group (NPG)
+    - Default Workspace / Route: /risk-network (PM GatiShakti Network Topology)
+    - Core Responsibilities & Works:
+      * Surveils multi-modal infrastructure network topology and shared Right-of-Way alignments.
+      * Simulates cascading delay ripples: models how delay in an upstream project impacts downstream corridors.
+      * Identifies topological bottleneck centrality across 1,981 central infrastructure assets.
+      * Issues Network Planning Group (NPG) synchronization directives to line agencies.
+      * Calculates downstream delay impact and secondary capital exposure across multi-modal logistics hubs.
+
+13. INVESTMENT APPRAISAL & PROJECT REVIEW OFFICER
+    - Role Key: investment_appraisal_reviewer (Alias: appraisal_officer)
+    - Organization: Public Investment Board (PIB) / Expenditure Finance Committee (EFC)
+    - Department: Department of Expenditure / PIB Secretariat
+    - Default Workspace / Route: /investment-review (Investment Appraisal Directorate)
+    - Core Responsibilities & Works:
+      * Evaluates pre-investment appraisal packages and Revised Cost Estimates (RCE).
+      * Benchmarks proposed project costs against 22 historical infrastructure sectors.
+      * Executes sensitivity simulations on Interest During Construction (IDC) and inflation impact.
+      * Assembles comprehensive risk-adjusted project appraisal dossiers for appraisal bodies.
+      * Reviews historical peer project performance to inform capital allocation decisions.
+
+14. FINANCIAL REVIEW AUTHORITY
+    - Role Key: financial_review_authority (Alias: fin_authority)
+    - Organization: Integrated Finance Division (IFD), Ministry of Finance / DEA
+    - Department: Capital Budget & Outlay Directorate
+    - Default Workspace / Route: /financial-review (Fiscal Scrutiny Authority)
+    - Core Responsibilities & Works:
+      * Scrutinizes macro fiscal risk exposure across the national ₹42.78 Lakh Cr capital envelope.
+      * Evaluates mega-project Revised Cost Estimates (RCE) and macroeconomic cost escalation drivers.
+      * Detects sectoral capital misallocation and long-tail cost divergence trends.
+      * Recommends fiscal restructuring milestones and expenditure phasing ceilings.
+      * Assesses sovereign contingent liabilities arising from prolonged project disputes and arbitration.
+
+15. INDEPENDENT AUDIT / COMPLIANCE OBSERVER
+    - Role Key: audit_observer (Alias: cag)
+    - Organization: Office of the Comptroller & Auditor General (CAG) of India
+    - Department: Independent Project Audit & Compliance Cell
+    - Default Workspace / Route: /audit (Statutory Audit Vault)
+    - Core Responsibilities & Works:
+      * Conducts independent, strictly read-only examination of the append-only cryptographic audit trail.
+      * Inspects historical monthly project snapshots, baseline revisions, and financial sanction history.
+      * Reviews human risk-override justifications to ensure transparency and prevent arbitrary manipulation.
+      * Traces end-to-end data lineage from source flash reports to predictive ML risk outputs.
+      * Exports statutory compliance audit dossiers for legislative scrutiny.
+
+================================================================================
+TIER 4: PREDICTIVE INTELLIGENCE & PLATFORM GOVERNANCE (AI & SECURITY)
+================================================================================
+
+16. PREDICTIVE RISK & DATA ANALYST
+    - Role Key: risk_analyst (Alias: analyst, data_analyst)
+    - Organization: NITI Aayog Data Analytics Unit / MoSPI Analytics Cell
+    - Department: Infrastructure Intelligence Directorate
+    - Default Workspace / Route: /predictions (Predictive Intelligence Hub)
+    - Core Responsibilities & Works:
+      * Inspects and fine-tunes temporal Gradient Boosting models (time-gbm-v1.4: ROC-AUC 0.8850, Brier 0.1714).
+      * Analyzes 90-day delay probabilities and cost overrun risk scores across all 1,981 projects.
+      * Evaluates multi-period backtesting calibration curves (ECE 0.041) and Brier scores.
+      * Inspects SHAP feature importances, anomaly scores, and risk momentum distributions.
+      * Conducts scenario stress testing (monsoon intensity, supply chain price shocks, labor availability).
+
+17. AI GOVERNANCE & MODEL ASSURANCE OFFICER
+    - Role Key: ai_governance (Alias: aigov)
+    - Organization: Ministry of Electronics and Information Technology (MeitY)
+    - Department: National Model Assurance & Ethics Board
+    - Default Workspace / Route: /model-governance (AI Assurance & Rule T Gatekeeper)
+    - Core Responsibilities & Works:
+      * Enforces Rule T temporal anti-leakage compliance (strictly t <= T for all feature calculations).
+      * Audits model cards, algorithmic fairness, training lineage, and evaluation metrics.
+      * Monitors Kolmogorov-Smirnov feature drift and Population Stability Index (PSI).
+      * Gatekeeps and signs off on production model promotions.
+      * Evaluates calibration reliability and decision-threshold trade-offs under high-risk thresholds.
+
+18. DATA, PLATFORM & SECURITY ADMINISTRATOR
+    - Role Key: data_platform_security_admin (Alias: sysadmin, system_admin)
+    - Organization: MoSPI / National Platform Architecture Cell
+    - Department: Platform Infrastructure & Security Operations Center (SOC)
+    - Default Workspace / Route: /settings (Platform Administration & SOC)
+    - Core Responsibilities & Works:
+      * Manages user identity provisioning, 18-persona RBAC access controls, and cryptographic JWT sessions.
+      * Oversees Table 6 project data ingestion and verifies 100.0% mathematical data reconciliation.
+      * Audits SOC telemetry, brute-force login attempts, 403 access violations, and background worker queues.
+      * Inspects system health endpoints (/health, /health/data, /health/ml).
+      * Enforces security governance policies, cryptographic audit logging integrity, and system configurations.
+
+================================================================================
+QUICK REFERENCE MATRIX
+================================================================================
+No. | Role Title                          | Key                            | Tier   | Default Workspace
+----+-------------------------------------+--------------------------------+--------+--------------------
+ 1  | Senior Review & Decision Authority  | senior_decision_maker          | Tier 1 | /risk-intelligence
+ 2  | IPMD Monitoring & Surveillance      | monitoring_officer             | Tier 1 | /overview
+ 3  | Administrative Ministry Reviewer    | admin_ministry_review          | Tier 1 | /ministry-overview
+ 4  | Project / Nodal Officer             | project_admin                  | Tier 2 | /projects/PAI-706775
+ 5  | Project Engineering Officer         | project_engineering            | Tier 2 | /engineering
+ 6  | Quality & Inspection Officer        | quality_auditor                | Tier 2 | /quality
+ 7  | Project Finance & Accounts Officer  | project_finance                | Tier 2 | /finance
+ 8  | Contractor / EPC Representative     | contractor_rep                 | Tier 2 | /monthly-updates
+ 9  | Supervision Consultant / PMC        | supervision_consultant         | Tier 2 | /supervision
+ 10 | Inter-Ministerial Coordination      | inter_ministerial_coordination | Tier 3 | /coordination
+ 11 | State Project Coordination Officer  | state_coordination             | Tier 3 | /state-coordination
+ 12 | GatiShakti Network Coordinator      | gatishakti_officer             | Tier 3 | /risk-network
+ 13 | Investment Appraisal Reviewer       | investment_appraisal_reviewer  | Tier 3 | /investment-review
+ 14 | Financial Review Authority          | financial_review_authority     | Tier 3 | /financial-review
+ 15 | Independent Audit Observer (CAG)    | audit_observer                 | Tier 3 | /audit
+ 16 | Predictive Risk & Data Analyst      | risk_analyst                   | Tier 4 | /predictions
+ 17 | AI Governance & Model Assurance     | ai_governance                  | Tier 4 | /model-governance
+ 18 | Data, Platform & Security Admin     | data_platform_security_admin   | Tier 4 | /settings
+================================================================================
