@@ -1,44 +1,317 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { UserSession } from '../api/auth';
-import { ROLES, ROLE_METADATA, SEED_USERS_FRONTEND } from '../types/auth';
+import { ROLE_METADATA } from '../types/auth';
 import {
   ShieldCheck,
   Eye,
   EyeOff,
-  Activity,
-  Sliders,
-  Award,
   Lock,
   User,
   ArrowRight,
-  Database,
-  Cpu,
   Building2,
-  HelpCircle,
   KeyRound,
   LogIn,
   AlertCircle,
   CheckCircle2,
-  FileCheck,
-  IndianRupee,
-  Wrench,
-  Network,
   X,
   RefreshCw,
   Layers,
   ChevronDown,
-  ChevronUp,
+  Sparkles,
+  ExternalLink,
 } from 'lucide-react';
+
+export interface CanonicalRoleItem {
+  key: string;
+  title: string;
+  user: string;
+  pass: string;
+  clearance: string;
+  clearanceColor: string;
+  tier: 1 | 2 | 3 | 4;
+  dept: string;
+  scope: string;
+  landing: string;
+}
+
+export const CANONICAL_ROLES: CanonicalRoleItem[] = [
+  // TIER 1: Apex Governance & Central Monitoring
+  {
+    key: 'senior_decision_maker',
+    title: 'Senior Review & Decision Authority',
+    user: 'secretary',
+    pass: 'secretary123',
+    clearance: 'LEVEL-4 SECRET',
+    clearanceColor: 'bg-red-50 dark:bg-red-950/70 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800',
+    tier: 1,
+    dept: 'Cabinet Secretariat / PMO',
+    scope: 'National Portfolios & Cabinet Directives',
+    landing: '/risk-intelligence',
+  },
+  {
+    key: 'monitoring_officer',
+    title: 'IPMD Monitoring & Surveillance Officer',
+    user: 'officer',
+    pass: 'officer123',
+    clearance: 'LEVEL-3 CONFIDENTIAL',
+    clearanceColor: 'bg-amber-50 dark:bg-amber-950/70 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800',
+    tier: 1,
+    dept: 'MoSPI Project Monitoring Division',
+    scope: 'Central Infrastructure Portfolio Surveillance',
+    landing: '/',
+  },
+  {
+    key: 'admin_ministry_review',
+    title: 'Administrative Ministry Review Officer',
+    user: 'ministry',
+    pass: 'ministry123',
+    clearance: 'LEVEL-3 CONFIDENTIAL',
+    clearanceColor: 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800',
+    tier: 1,
+    dept: 'MoRTH Line Ministry',
+    scope: 'Ministry Portfolios & Statutory Clearances',
+    landing: '/ministry-overview',
+  },
+
+  // TIER 2: Field Delivery & Project Execution
+  {
+    key: 'project_admin',
+    title: 'Project / Nodal Officer',
+    user: 'nodal',
+    pass: 'nodal123',
+    clearance: 'LEVEL-2 OFFICIAL',
+    clearanceColor: 'bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
+    tier: 2,
+    dept: 'Bharat Broadband Network Limited (BBNL)',
+    scope: 'Assigned Project Execution & Progress Updates',
+    landing: '/projects/PAI-706775',
+  },
+  {
+    key: 'project_engineering',
+    title: 'Project Engineering Officer',
+    user: 'engineer',
+    pass: 'engineer123',
+    clearance: 'LEVEL-2 OFFICIAL',
+    clearanceColor: 'bg-cyan-50 dark:bg-cyan-950/70 text-cyan-700 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800',
+    tier: 2,
+    dept: 'Central Design & Engineering Directorate',
+    scope: 'Technical Hindrances & Engineering Assessment',
+    landing: '/engineering',
+  },
+  {
+    key: 'quality_auditor',
+    title: 'Quality & Inspection Officer (TPI)',
+    user: 'quality',
+    pass: 'quality123',
+    clearance: 'LEVEL-2 OFFICIAL',
+    clearanceColor: 'bg-teal-50 dark:bg-teal-950/70 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-800',
+    tier: 2,
+    dept: 'Engineers India Limited (EIL)',
+    scope: 'Quality Assurance & Statutory IS Compliance',
+    landing: '/quality',
+  },
+  {
+    key: 'project_finance',
+    title: 'Project Finance & Accounts Officer',
+    user: 'finance',
+    pass: 'finance123',
+    clearance: 'LEVEL-2 OFFICIAL',
+    clearanceColor: 'bg-green-50 dark:bg-green-950/70 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800',
+    tier: 2,
+    dept: 'BBNL Project Finance Cell',
+    scope: 'Capital Outlays & Expenditure Velocity',
+    landing: '/finance',
+  },
+  {
+    key: 'contractor_rep',
+    title: 'Contractor / EPC Representative',
+    user: 'contractor',
+    pass: 'contractor123',
+    clearance: 'LEVEL-1 OPERATIONAL',
+    clearanceColor: 'bg-orange-50 dark:bg-orange-950/70 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800',
+    tier: 2,
+    dept: 'L&T Infrastructure EPC',
+    scope: 'Field Construction & Work Package Claims',
+    landing: '/projects/PAI-706775',
+  },
+  {
+    key: 'supervision_consultant',
+    title: 'Supervision Consultant / PMC Lead',
+    user: 'supervision',
+    pass: 'supervision123',
+    clearance: 'LEVEL-2 OFFICIAL',
+    clearanceColor: 'bg-lime-50 dark:bg-lime-950/70 text-lime-700 dark:text-lime-300 border-lime-200 dark:border-lime-800',
+    tier: 2,
+    dept: 'Feedback Infra Supervision PMC',
+    scope: 'Independent Supervision & PMC Verification',
+    landing: '/supervision',
+  },
+
+  // TIER 3: Cross-Governance & Macro Scrutiny
+  {
+    key: 'inter_ministerial_coordination',
+    title: 'Inter-Ministerial Coordination Lead',
+    user: 'coordination',
+    pass: 'coordination123',
+    clearance: 'LEVEL-3 CONFIDENTIAL',
+    clearanceColor: 'bg-purple-50 dark:bg-purple-950/70 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800',
+    tier: 3,
+    dept: 'Inter-Ministerial Project Steering Committee',
+    scope: 'Cross-Ministry Dispute Resolution & SLAs',
+    landing: '/coordination',
+  },
+  {
+    key: 'state_coordination',
+    title: 'State Project Coordination Officer',
+    user: 'state',
+    pass: 'state123',
+    clearance: 'LEVEL-2 OFFICIAL',
+    clearanceColor: 'bg-violet-50 dark:bg-violet-950/70 text-violet-700 dark:text-violet-300 border-violet-200 dark:border-violet-800',
+    tier: 3,
+    dept: 'Maharashtra PWD Infrastructure Cell',
+    scope: 'State Land Acquisition & RoW Clearances',
+    landing: '/state-coordination',
+  },
+  {
+    key: 'gatishakti_officer',
+    title: 'PM GatiShakti Network Coordinator',
+    user: 'gatishakti',
+    pass: 'gatishakti123',
+    clearance: 'LEVEL-3 CONFIDENTIAL',
+    clearanceColor: 'bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800',
+    tier: 3,
+    dept: 'PM GatiShakti NPG / DPIIT',
+    scope: 'Multimodal Dependency & Cascade Delay Simulation',
+    landing: '/risk-network',
+  },
+  {
+    key: 'investment_appraisal_reviewer',
+    title: 'Investment Appraisal Reviewer',
+    user: 'appraisal',
+    pass: 'appraisal123',
+    clearance: 'LEVEL-3 CONFIDENTIAL',
+    clearanceColor: 'bg-fuchsia-50 dark:bg-fuchsia-950/70 text-fuchsia-700 dark:text-fuchsia-300 border-fuchsia-200 dark:border-fuchsia-800',
+    tier: 3,
+    dept: 'Public Investment Board (PIB)',
+    scope: 'PIB / EFC Investment Appraisal & Benchmarking',
+    landing: '/investment-review',
+  },
+  {
+    key: 'financial_review_authority',
+    title: 'Financial Review Authority',
+    user: 'finreview',
+    pass: 'finreview123',
+    clearance: 'LEVEL-3 CONFIDENTIAL',
+    clearanceColor: 'bg-pink-50 dark:bg-pink-950/70 text-pink-700 dark:text-pink-300 border-pink-200 dark:border-pink-800',
+    tier: 3,
+    dept: 'Department of Expenditure, MoF',
+    scope: 'Macro Fiscal Scrutiny & RCE Evaluation',
+    landing: '/financial-review',
+  },
+  {
+    key: 'audit_observer',
+    title: 'Independent Audit Observer (CAG)',
+    user: 'audit',
+    pass: 'audit123',
+    clearance: 'LEVEL-3 CONFIDENTIAL',
+    clearanceColor: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700',
+    tier: 3,
+    dept: 'Comptroller and Auditor General (C&AG)',
+    scope: 'Immutable Audit Trail & Compliance Inspection',
+    landing: '/audit',
+  },
+
+  // TIER 4: Predictive Intelligence & Platform Administration
+  {
+    key: 'risk_analyst',
+    title: 'Predictive Risk & Data Analyst',
+    user: 'analyst',
+    pass: 'analyst123',
+    clearance: 'LEVEL-3 CONFIDENTIAL',
+    clearanceColor: 'bg-cyan-50 dark:bg-cyan-950/70 text-cyan-700 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800',
+    tier: 4,
+    dept: 'NITI Aayog Infrastructure Modeling Unit',
+    scope: 'Temporal ML Models & Risk Analytics',
+    landing: '/predictions',
+  },
+  {
+    key: 'ai_governance',
+    title: 'AI Governance & Model Assurance',
+    user: 'aigov',
+    pass: 'aigov123',
+    clearance: 'LEVEL-3 CONFIDENTIAL',
+    clearanceColor: 'bg-rose-50 dark:bg-rose-950/70 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800',
+    tier: 4,
+    dept: 'MeitY AI Ethics & Validation Council',
+    scope: 'AI Ethics & Model Assurance (Rule T)',
+    landing: '/model-governance',
+  },
+  {
+    key: 'data_platform_security_admin',
+    title: 'Data, Platform & Security Admin',
+    user: 'sysadmin',
+    pass: 'sysadmin123',
+    clearance: 'LEVEL-4 SECRET',
+    clearanceColor: 'bg-red-50 dark:bg-red-950/70 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800',
+    tier: 4,
+    dept: 'National Informatics Centre (NIC) / PMO',
+    scope: 'Platform Operations, Ingestion & Security',
+    landing: '/settings',
+  },
+];
+
+export const MULTI_ROLE_ITEM: CanonicalRoleItem = {
+  key: 'multirole',
+  title: 'Joint Monitoring Officer (MoSPI & MoRTH)',
+  user: 'multirole',
+  pass: 'multi123',
+  clearance: 'LEVEL-3 DUAL ROLE',
+  clearanceColor: 'bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800',
+  tier: 1,
+  dept: 'MoSPI & Ministry Joint Infrastructure Cell',
+  scope: 'Dual Role: MoSPI Surveillance + MoRTH Review',
+  landing: '/',
+};
+
+const TIER_METADATA = [
+  {
+    tier: 1 as const,
+    title: 'TIER 1 • APEX GOVERNANCE',
+    subtitle: 'PMO • MoSPI IPMD • Line Ministries',
+    badgeClass: 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800',
+  },
+  {
+    tier: 2 as const,
+    title: 'TIER 2 • FIELD DELIVERY',
+    subtitle: 'Nodal • Engineering • TPI Quality • Finance • EPC • PMC',
+    badgeClass: 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800',
+  },
+  {
+    tier: 3 as const,
+    title: 'TIER 3 • CROSS-GOVERNANCE',
+    subtitle: 'Steering • State RoW • GatiShakti • PIB • MoF • C&AG',
+    badgeClass: 'bg-purple-100 dark:bg-purple-950/80 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-800',
+  },
+  {
+    tier: 4 as const,
+    title: 'TIER 4 • AI & SECURITY',
+    subtitle: 'NITI Aayog • MeitY AI Council • NIC Platform',
+    badgeClass: 'bg-cyan-100 dark:bg-cyan-950/80 text-cyan-800 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800',
+  },
+];
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, forgotPassword, resetPassword, switchRole } = useAuth();
 
+  // Selected Canonical Role Key (Defaults to Senior Review & Decision Authority)
+  const [selectedRoleKey, setSelectedRoleKey] = useState<string>('senior_decision_maker');
+
   // Primary Login Form Fields
-  const [identifier, setIdentifier] = useState('');
-  const [password, setPassword] = useState('');
+  const [identifier, setIdentifier] = useState('secretary');
+  const [password, setPassword] = useState('secretary123');
   const [rememberSession, setRememberSession] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -58,8 +331,19 @@ export const LoginPage: React.FC = () => {
   const [recoveryError, setRecoveryError] = useState<string | null>(null);
   const [isRecovering, setIsRecovering] = useState(false);
 
-  // Directory Toggle for convenience/inspection
-  const [showDirectory, setShowDirectory] = useState(false);
+  // Active Role Lookup
+  const activeRole: CanonicalRoleItem =
+    selectedRoleKey === 'multirole'
+      ? MULTI_ROLE_ITEM
+      : CANONICAL_ROLES.find((r) => r.key === selectedRoleKey) || CANONICAL_ROLES[0];
+
+  // When selected role changes, synchronize form inputs
+  const handleSelectRole = (item: CanonicalRoleItem) => {
+    setSelectedRoleKey(item.key);
+    setIdentifier(item.user);
+    setPassword(item.pass);
+    setErrorMsg(null);
+  };
 
   // Primary Authentication Flow
   const handlePrimarySubmit = async (e: React.FormEvent) => {
@@ -91,41 +375,14 @@ export const LoginPage: React.FC = () => {
       // -> DETERMINE DEFAULT WORKSPACE
       // -> REDIRECT TO AUTHORIZED WORKSPACE
       if (roles.length === 1) {
-        // Single Role: Go directly to authorized workspace
         const targetPath = authenticated.defaultWorkspace || ROLE_METADATA[roles[0]]?.defaultPath || '/';
         navigate(targetPath);
       } else {
-        // Multiple Roles: Show ONLY the workspaces assigned to this account
         setPendingUser(authenticated);
         setShowWorkspaceSelect(true);
       }
     } catch (err: any) {
       setErrorMsg(err.message || 'Invalid credentials. Please verify your official Gov ID and security token.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Quick autofill & sign-in handler for authorized directory
-  const handleSelectDirectoryAccount = async (username: string, defaultPass: string) => {
-    setIdentifier(username);
-    setPassword(defaultPass);
-    setErrorMsg(null);
-    setIsSubmitting(true);
-    try {
-      const result = await login(username, defaultPass, rememberSession);
-      if (result.success && result.user) {
-        const roles = result.user.roles && result.user.roles.length > 0 ? result.user.roles : [result.user.role];
-        if (roles.length === 1) {
-          const targetPath = result.user.defaultWorkspace || ROLE_METADATA[roles[0]]?.defaultPath || '/';
-          navigate(targetPath);
-        } else {
-          setPendingUser(result.user);
-          setShowWorkspaceSelect(true);
-        }
-      }
-    } catch (e: any) {
-      setErrorMsg(e.message || 'Authentication failed');
     } finally {
       setIsSubmitting(false);
     }
@@ -207,51 +464,7 @@ export const LoginPage: React.FC = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-8">
-        {/* Hero Title & Mandate */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/70 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-xs font-mono font-semibold">
-            <ShieldCheck className="w-4 h-4" />
-            <span>CENTRAL INFRASTRUCTURE SURVEILLANCE & EARLY-WARNING PLATFORM • IPMD</span>
-          </div>
-
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight font-mono">
-            PAIMANA PREDICT PORTAL AUTHENTICATION
-          </h1>
-
-          <p className="text-xs text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-            Governed Single Sign-On gateway for MoSPI Surveillance Officers, Line Ministry Project Directors,
-            Quality Auditors, Financial Controllers, and Economic Advisers.
-          </p>
-
-          {/* Operational Workflow Bar */}
-          <div className="pt-2 overflow-x-auto pb-1">
-            <div className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold bg-white dark:bg-slate-900 p-2 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-              <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">PAIMANA TELEMETRY</span>
-              <span className="text-slate-400">→</span>
-              <span className="px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400">SURVEILLANCE</span>
-              <span className="text-slate-400">→</span>
-              <span className="px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">TEMPORAL ML</span>
-              <span className="text-slate-400">→</span>
-              <span className="px-2 py-0.5 rounded bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400">EARLY WARNING</span>
-              <span className="text-slate-400">→</span>
-              <span className="px-2 py-0.5 rounded bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-400">QUALITY (IS/NCR)</span>
-              <span className="text-slate-400">→</span>
-              <span className="px-2 py-0.5 rounded bg-amber-50 dark:bg-amber-950 text-amber-600 dark:text-amber-400">EXECUTIVE DIRECTIVE</span>
-              <span className="text-slate-400">→</span>
-              <span className="px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400">IMMUTABLE AUDIT</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Global Error Banner */}
-        {errorMsg && (
-          <div className="max-w-md mx-auto p-3.5 rounded-lg bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300 flex items-center gap-2 shadow-sm">
-            <AlertCircle className="w-4 h-4 shrink-0 text-red-600 dark:text-red-400" />
-            <span>{errorMsg}</span>
-          </div>
-        )}
-
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
         {/* ============================================================ */}
         {/* VIEW 1: MULTI-ROLE WORKSPACE SELECTOR (IF MULTIPLE ROLES)     */}
         {/* ============================================================ */}
@@ -320,50 +533,137 @@ export const LoginPage: React.FC = () => {
           </div>
         ) : (
           /* ============================================================ */
-          /* VIEW 2: PRIMARY SINGLE SECURE LOGIN FORM                     */
+          /* VIEW 2: UNIFIED 4-TIER GOVERNANCE AUTHENTICATION PORTAL      */
           /* ============================================================ */
-          <div className="max-w-md mx-auto space-y-6">
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-7 shadow-xl space-y-5">
-              <div className="text-center space-y-1.5 border-b border-slate-100 dark:border-slate-800 pb-4">
-                <div className="w-11 h-11 rounded-xl bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 flex items-center justify-center text-blue-600 dark:text-blue-400 mx-auto shadow-sm">
-                  <Building2 className="w-5 h-5" />
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
+            {/* Global Error Alert */}
+            {errorMsg && (
+              <div className="p-3.5 rounded-lg bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300 flex items-center gap-2 shadow-sm animate-in fade-in">
+                <AlertCircle className="w-4 h-4 shrink-0 text-red-600 dark:text-red-400" />
+                <span>{errorMsg}</span>
+              </div>
+            )}
+
+            {/* 1. SELECT ROLE DROPDOWN & ACTIVE PREVIEW CARD */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 font-mono tracking-wider">
+                    1. SELECT ROLE
+                  </span>
                 </div>
-                <h2 className="text-base font-bold text-slate-900 dark:text-white font-mono">
-                  National Infrastructure Single Sign-On
-                </h2>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Authenticate via your official government e-Gov identifier, NIC email, or administrative credentials.
-                </p>
+                <span className="text-xs text-blue-600 dark:text-blue-400 font-mono">
+                  18 Canonical Roles Available
+                </span>
               </div>
 
-              {/* Login Fields: Username/Email, Password, Remember Session, Sign In, Forgot Password */}
-              <form onSubmit={handlePrimarySubmit} className="space-y-4">
-                {/* 1. Username / Email */}
+              {/* Role Selector Dropdown */}
+              <div className="relative">
+                <select
+                  value={selectedRoleKey}
+                  onChange={(e) => {
+                    const key = e.target.value;
+                    const found =
+                      key === 'multirole'
+                        ? MULTI_ROLE_ITEM
+                        : CANONICAL_ROLES.find((r) => r.key === key);
+                    if (found) handleSelectRole(found);
+                  }}
+                  className="w-full appearance-none px-4 py-3 bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-semibold text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 cursor-pointer shadow-sm pr-10"
+                >
+                  <optgroup label="Tier 1 — Apex Governance & Central Monitoring">
+                    {CANONICAL_ROLES.filter((r) => r.tier === 1).map((r) => (
+                      <option key={r.key} value={r.key}>
+                        {r.title}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Tier 2 — Field Delivery & Project Execution">
+                    {CANONICAL_ROLES.filter((r) => r.tier === 2).map((r) => (
+                      <option key={r.key} value={r.key}>
+                        {r.title}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Tier 3 — Cross-Governance & Macro Scrutiny">
+                    {CANONICAL_ROLES.filter((r) => r.tier === 3).map((r) => (
+                      <option key={r.key} value={r.key}>
+                        {r.title}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Tier 4 — Predictive Intelligence & Platform Administration">
+                    {CANONICAL_ROLES.filter((r) => r.tier === 4).map((r) => (
+                      <option key={r.key} value={r.key}>
+                        {r.title}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Multi-Assignment Demo Identity">
+                    <option value="multirole">{MULTI_ROLE_ITEM.title}</option>
+                  </optgroup>
+                </select>
+                <ChevronDown className="w-4 h-4 text-slate-400 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
+
+              {/* Active Role Detail Banner */}
+              <div className="p-3.5 rounded-xl bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200/80 dark:border-blue-900/60 space-y-1.5 shadow-sm">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <span className="text-xs font-bold text-blue-900 dark:text-blue-200 font-mono">
+                    {activeRole.title}
+                  </span>
+                  <span
+                    className={`text-[10px] font-mono px-2 py-0.5 rounded border font-bold ${activeRole.clearanceColor}`}
+                  >
+                    {activeRole.clearance}
+                  </span>
+                </div>
+                <div className="flex items-center flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-600 dark:text-slate-400 font-mono">
+                  <div>
+                    <span className="text-slate-400 dark:text-slate-500">Department:</span>{' '}
+                    <span className="text-slate-700 dark:text-slate-300">{activeRole.dept}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 dark:text-slate-500">Authorized Scope:</span>{' '}
+                    <span className="text-slate-700 dark:text-slate-300">{activeRole.scope}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 dark:text-slate-500">Default Landing:</span>{' '}
+                    <span className="text-blue-600 dark:text-blue-400 font-semibold">{activeRole.landing}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. CREDENTIALS INPUT FORM */}
+            <form onSubmit={handlePrimarySubmit} className="space-y-4 pt-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* 2. Official ID / Username */}
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Username / Official Government Email
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 font-mono">
+                    2. Official ID / Username
                   </label>
                   <div className="relative">
-                    <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
                       value={identifier}
                       onChange={(e) => setIdentifier(e.target.value)}
-                      placeholder="e.g. monitoring.officer@mospi.gov.in or officer"
+                      placeholder="e.g. secretary or officer"
                       autoComplete="username"
                       required
-                      className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      className="w-full pl-10 pr-3 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     />
                   </div>
                 </div>
 
-                {/* 2. Password */}
+                {/* Password / Security Token */}
                 <div>
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 font-mono">
                       Password / Security Token
                     </label>
-                    {/* 5. Forgot Password */}
                     <button
                       type="button"
                       onClick={() => {
@@ -373,13 +673,13 @@ export const LoginPage: React.FC = () => {
                         setRecoveryNotice(null);
                         setRecoveryError(null);
                       }}
-                      className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline font-semibold cursor-pointer"
+                      className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline font-mono cursor-pointer"
                     >
-                      Forgot Password?
+                      Forgot?
                     </button>
                   </div>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       value={password}
@@ -387,434 +687,181 @@ export const LoginPage: React.FC = () => {
                       placeholder="Enter security password or token"
                       autoComplete="current-password"
                       required
-                      className="w-full pl-9 pr-10 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                      className="w-full pl-10 pr-10 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                       tabIndex={-1}
                     >
                       {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
+              </div>
 
-                {/* 3. Remember Session Checkbox */}
-                <div className="flex items-center justify-between pt-0.5">
-                  <label className="flex items-center gap-2 cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={rememberSession}
-                      onChange={(e) => setRememberSession(e.target.checked)}
-                      className="w-3.5 h-3.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="text-[11px] text-slate-600 dark:text-slate-400 font-medium">
-                      Remember session on this authorized government terminal
-                    </span>
-                  </label>
-                </div>
-
-                {/* 4. Sign In Button */}
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center gap-2 shadow-sm disabled:opacity-50 mt-2 cursor-pointer"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                      <span>Authenticating Credentials & Roles...</span>
-                    </>
-                  ) : (
-                    <>
-                      <LogIn className="w-4 h-4" />
-                      <span>Sign In to Authorized Workspace</span>
-                    </>
-                  )}
-                </button>
-              </form>
-
-              {/* Security Standards Tag */}
-              <div className="p-3 bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 rounded-lg text-[10px] text-slate-500 dark:text-slate-400 space-y-1 font-mono">
-                <div className="flex items-center justify-between text-slate-700 dark:text-slate-300 font-semibold">
-                  <span className="flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-                    NIC Parichay SSO Standard
+              {/* Remember Session */}
+              <div className="flex items-center justify-between pt-0.5">
+                <label className="flex items-center gap-2 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={rememberSession}
+                    onChange={(e) => setRememberSession(e.target.checked)}
+                    className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                  />
+                  <span className="text-xs text-slate-600 dark:text-slate-400 font-medium">
+                    Remember session on this authorized terminal
                   </span>
-                  <span>TLS 1.3 • SHA-256</span>
+                </label>
+              </div>
+
+              {/* Primary Action Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 shadow-md hover:shadow-lg disabled:opacity-50 cursor-pointer font-mono tracking-wide"
+              >
+                {isSubmitting ? (
+                  <>
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <span>Authenticating Credentials & Roles...</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="w-4 h-4" />
+                    <span>Sign In as {activeRole.title} →</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {/* ============================================================ */}
+            {/* 3. QUICK SELECT BY ROLE NAME — 4-TIER HIERARCHY              */}
+            {/* ============================================================ */}
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-6">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-white font-mono tracking-wider">
+                    QUICK SELECT BY ROLE NAME:
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 font-bold border border-blue-200 dark:border-blue-800">
+                    4-TIER GOVERNANCE
+                  </span>
                 </div>
-                <p>
-                  Access is controlled strictly by User → Role → Permission → Resource Assignment → Workflow State.
-                </p>
+                <span className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                  Click any role to autofill credentials
+                </span>
+              </div>
+
+              {/* 4 TIERS DISPLAY */}
+              <div className="space-y-6">
+                {TIER_METADATA.map((tierMeta) => {
+                  const rolesInTier = CANONICAL_ROLES.filter((r) => r.tier === tierMeta.tier);
+
+                  return (
+                    <div key={tierMeta.tier} className="space-y-2.5">
+                      {/* Tier Section Header */}
+                      <div className="flex items-center justify-between px-1">
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${tierMeta.badgeClass}`}
+                          >
+                            {tierMeta.title}
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500 hidden sm:inline">
+                          {tierMeta.subtitle}
+                        </span>
+                      </div>
+
+                      {/* Tier Cards Grid (3 Columns) */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                        {rolesInTier.map((role) => {
+                          const isSelected = selectedRoleKey === role.key;
+
+                          return (
+                            <button
+                              key={role.key}
+                              type="button"
+                              onClick={() => handleSelectRole(role)}
+                              className={`p-3 rounded-xl border text-left transition relative group cursor-pointer flex flex-col justify-between ${
+                                isSelected
+                                  ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/40 ring-1 ring-blue-500 shadow-sm'
+                                  : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-slate-50/50 dark:hover:bg-slate-900/50'
+                              }`}
+                            >
+                              <div className="flex items-start justify-between gap-2 w-full">
+                                <div className="font-semibold text-xs text-slate-900 dark:text-white leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                                  {role.title}
+                                </div>
+                                {isSelected && (
+                                  <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0 mt-1 shadow-sm" />
+                                )}
+                              </div>
+                              <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-2">
+                                ID: <span className="text-slate-700 dark:text-slate-300">{role.user}</span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                {/* Multi-Assignment Capability Test Identity */}
+                <div className="p-3.5 rounded-xl border border-blue-200 dark:border-blue-900/60 bg-blue-50/30 dark:bg-blue-950/20 space-y-2">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <span className="text-[11px] font-bold text-blue-900 dark:text-blue-300 font-mono uppercase">
+                      Multi-Assignment Capability Test Identity
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-bold">
+                      user.assigned_roles = [monitoring_officer, admin_ministry_review]
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectRole(MULTI_ROLE_ITEM)}
+                    className={`w-full p-3 rounded-lg border text-left transition flex items-center justify-between cursor-pointer ${
+                      selectedRoleKey === 'multirole'
+                        ? 'border-blue-500 bg-white dark:bg-slate-900 ring-1 ring-blue-500 shadow-sm'
+                        : 'border-blue-200 dark:border-blue-800/80 bg-white dark:bg-slate-900 hover:border-blue-400'
+                    }`}
+                  >
+                    <div>
+                      <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-2">
+                        <span>Joint Monitoring Officer — Dual Assignment Demo</span>
+                        {selectedRoleKey === 'multirole' && (
+                          <span className="w-2 h-2 rounded-full bg-blue-500" />
+                        )}
+                      </div>
+                      <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                        Demonstrates seamless authorized workspace switching and RBAC denial when requesting unassigned roles.
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs font-mono text-blue-600 dark:text-blue-400 shrink-0 font-bold pl-3">
+                      <span>ID: multirole</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition" />
+                    </div>
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Quick Access Directory Accordion */}
-            <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-white dark:bg-slate-900 shadow-sm">
-              <button
-                type="button"
-                onClick={() => setShowDirectory(!showDirectory)}
-                className="w-full p-3.5 bg-slate-50 dark:bg-slate-950/60 hover:bg-slate-100 dark:hover:bg-slate-900 transition flex items-center justify-between text-left cursor-pointer"
+            {/* Footer Status Bar */}
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 font-mono">
+              <div className="flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                <span>NIC Parichay SSO Standard • RBAC Level-4 Governed</span>
+              </div>
+              <Link
+                to="/"
+                className="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
               >
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                  <span className="text-xs font-bold text-slate-900 dark:text-white font-mono uppercase tracking-wider">
-                    Authorized Government Directory (18 Real-World Roles + Multi-Role)
-                  </span>
-                </div>
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-                  <span>{showDirectory ? 'Collapse Directory' : 'Show All 18 Workspaces & Credentials'}</span>
-                  {showDirectory ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-                </div>
-              </button>
-
-              {showDirectory && (
-                <div className="p-4 space-y-6 border-t border-slate-100 dark:border-slate-800 text-xs max-h-[500px] overflow-y-auto">
-                  {/* Group A: Executive & Central Monitoring */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-[11px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 font-mono">
-                        Group A — Executive & Central Monitoring
-                      </h3>
-                      <span className="text-[10px] font-mono text-slate-400">PMO • MoSPI IPMD • Line Ministries</span>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {[
-                        {
-                          title: 'Senior Review & Decision Authority',
-                          name: 'Senior Decision Maker',
-                          role: 'Secretary (Infrastructure & Coordination)',
-                          dept: 'Cabinet Secretariat / PMO',
-                          user: 'secretary',
-                          pass: 'secretary123',
-                          path: '/risk-intelligence',
-                          color: 'text-amber-600 dark:text-amber-400',
-                        },
-                        {
-                          title: 'IPMD Monitoring Officer',
-                          name: 'Monitoring Officer',
-                          role: 'Joint Director (Surveillance)',
-                          dept: 'MoSPI Project Monitoring Division',
-                          user: 'officer',
-                          pass: 'officer123',
-                          path: '/',
-                          color: 'text-blue-600 dark:text-blue-400',
-                        },
-                        {
-                          title: 'Administrative Ministry Review',
-                          name: 'Administrative Ministry Reviewer',
-                          role: 'Joint Secretary (Highways Review)',
-                          dept: 'MoRTH Line Ministry',
-                          user: 'ministry',
-                          pass: 'ministry123',
-                          path: '/ministry-overview',
-                          color: 'text-indigo-600 dark:text-indigo-400',
-                        },
-                      ].map((item) => (
-                        <button
-                          key={item.user}
-                          type="button"
-                          onClick={() => handleSelectDirectoryAccount(item.user, item.pass)}
-                          className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-left hover:border-blue-500 transition group flex flex-col justify-between cursor-pointer"
-                        >
-                          <div>
-                            <div className="font-bold text-[11px] text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400">
-                              {item.title}
-                            </div>
-                            <div className={`text-[10px] font-semibold ${item.color} mt-0.5`}>
-                              {item.name}
-                            </div>
-                            <div className="text-[9px] text-slate-400 font-mono mt-1">
-                              {item.dept}
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between text-[9px] font-mono text-blue-600 dark:text-blue-400 mt-2 pt-1 border-t border-slate-200/60 dark:border-slate-800">
-                            <span><code>{item.user}</code> / <code>{item.pass}</code></span>
-                            <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition" />
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Group B: Implementing Agency & Project Execution */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-mono">
-                        Group B — Implementing Agency & Project Execution
-                      </h3>
-                      <span className="text-[10px] font-mono text-slate-400">Nodal • Engineering • TPI • Finance • EPC • PMC</span>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {[
-                        {
-                          title: 'Project / Nodal Officer',
-                          name: 'Project Administrator',
-                          role: 'Chief Project General Manager',
-                          dept: 'Bharat Broadband Network Ltd (BBNL)',
-                          user: 'nodal',
-                          pass: 'nodal123',
-                          color: 'text-emerald-600 dark:text-emerald-400',
-                        },
-                        {
-                          title: 'Project Engineering Officer',
-                          name: 'Project Engineering Officer',
-                          role: 'Chief Infrastructure Engineer',
-                          dept: 'Central Design & Engineering Directorate',
-                          user: 'engineer',
-                          pass: 'engineer123',
-                          color: 'text-cyan-600 dark:text-cyan-400',
-                        },
-                        {
-                          title: 'Quality & Inspection Officer',
-                          name: 'Quality Auditor',
-                          role: 'Lead Independent Engineer (TPI)',
-                          dept: 'Engineers India Limited (EIL)',
-                          user: 'quality',
-                          pass: 'quality123',
-                          color: 'text-teal-600 dark:text-teal-400',
-                        },
-                        {
-                          title: 'Project Finance & Accounts',
-                          name: 'Project Finance Officer',
-                          role: 'Senior Accounts Officer (Outlays)',
-                          dept: 'BBNL Project Finance Cell',
-                          user: 'finance',
-                          pass: 'finance123',
-                          color: 'text-green-600 dark:text-green-400',
-                        },
-                        {
-                          title: 'Contractor / EPC Representative',
-                          name: 'Contractor Representative',
-                          role: 'Project Director & EPC Lead',
-                          dept: 'L&T Infrastructure EPC',
-                          user: 'contractor',
-                          pass: 'contractor123',
-                          color: 'text-orange-600 dark:text-orange-400',
-                        },
-                        {
-                          title: 'Supervision Consultant / PMC',
-                          name: 'Supervision Consultant',
-                          role: 'Resident Supervision Engineer',
-                          dept: 'Feedback Infra Supervision PMC',
-                          user: 'supervision',
-                          pass: 'supervision123',
-                          color: 'text-lime-600 dark:text-lime-400',
-                        },
-                      ].map((item) => (
-                        <button
-                          key={item.user}
-                          type="button"
-                          onClick={() => handleSelectDirectoryAccount(item.user, item.pass)}
-                          className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-left hover:border-emerald-500 transition group flex flex-col justify-between cursor-pointer"
-                        >
-                          <div>
-                            <div className="font-bold text-[11px] text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
-                              {item.title}
-                            </div>
-                            <div className={`text-[10px] font-semibold ${item.color} mt-0.5`}>
-                              {item.name}
-                            </div>
-                            <div className="text-[9px] text-slate-400 font-mono mt-1">
-                              {item.dept}
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between text-[9px] font-mono text-emerald-600 dark:text-emerald-400 mt-2 pt-1 border-t border-slate-200/60 dark:border-slate-800">
-                            <span><code>{item.user}</code> / <code>{item.pass}</code></span>
-                            <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition" />
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Group C: Coordination & Higher-Level Review */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-[11px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 font-mono">
-                        Group C — Coordination & Higher-Level Review
-                      </h3>
-                      <span className="text-[10px] font-mono text-slate-400">Steering • State RoW • GatiShakti • PIB • MoF • C&AG</span>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {[
-                        {
-                          title: 'Inter-Ministerial Coordination',
-                          name: 'Inter-Ministerial Coordinator',
-                          role: 'Director (Inter-Ministerial Steering)',
-                          dept: 'Inter-Ministerial Project Steering Committee',
-                          user: 'coordination',
-                          pass: 'coordination123',
-                          color: 'text-purple-600 dark:text-purple-400',
-                        },
-                        {
-                          title: 'State Coordination Officer',
-                          name: 'State Coordination Officer',
-                          role: 'Special Nodal Officer (Land & RoW)',
-                          dept: 'Maharashtra PWD Infrastructure Cell',
-                          user: 'state',
-                          pass: 'state123',
-                          color: 'text-violet-600 dark:text-violet-400',
-                        },
-                        {
-                          title: 'GatiShakti Network Planner',
-                          name: 'GatiShakti Officer',
-                          role: 'Director (Multimodal Logistics)',
-                          dept: 'PM GatiShakti NPG / DPIIT',
-                          user: 'gatishakti',
-                          pass: 'gatishakti123',
-                          color: 'text-indigo-600 dark:text-indigo-400',
-                        },
-                        {
-                          title: 'Investment Appraisal Reviewer',
-                          name: 'Investment Appraisal Reviewer',
-                          role: 'Appraisal Officer (PIB Review)',
-                          dept: 'Public Investment Board (PIB)',
-                          user: 'appraisal',
-                          pass: 'appraisal123',
-                          color: 'text-fuchsia-600 dark:text-fuchsia-400',
-                        },
-                        {
-                          title: 'Financial Review Authority',
-                          name: 'Financial Review Authority',
-                          role: 'Joint Secretary & Financial Adviser (JS&FA)',
-                          dept: 'Department of Expenditure, MoF',
-                          user: 'finreview',
-                          pass: 'finreview123',
-                          color: 'text-pink-600 dark:text-pink-400',
-                        },
-                        {
-                          title: 'Independent Audit Observer',
-                          name: 'Audit Observer',
-                          role: 'Senior Principal Auditor (Infrastructure)',
-                          dept: 'Comptroller and Auditor General (C&AG)',
-                          user: 'audit',
-                          pass: 'audit123',
-                          color: 'text-slate-600 dark:text-slate-300',
-                        },
-                      ].map((item) => (
-                        <button
-                          key={item.user}
-                          type="button"
-                          onClick={() => handleSelectDirectoryAccount(item.user, item.pass)}
-                          className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-left hover:border-purple-500 transition group flex flex-col justify-between cursor-pointer"
-                        >
-                          <div>
-                            <div className="font-bold text-[11px] text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
-                              {item.title}
-                            </div>
-                            <div className={`text-[10px] font-semibold ${item.color} mt-0.5`}>
-                              {item.name}
-                            </div>
-                            <div className="text-[9px] text-slate-400 font-mono mt-1">
-                              {item.dept}
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between text-[9px] font-mono text-purple-600 dark:text-purple-400 mt-2 pt-1 border-t border-slate-200/60 dark:border-slate-800">
-                            <span><code>{item.user}</code> / <code>{item.pass}</code></span>
-                            <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition" />
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Group D: Predictive & Platform Layer */}
-                  <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="text-[11px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400 font-mono">
-                        Group D — Predictive & Platform Layer
-                      </h3>
-                      <span className="text-[10px] font-mono text-slate-400">NITI Aayog • MeitY AI Council • NIC Security</span>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      {[
-                        {
-                          title: 'Predictive Risk & Data Analyst',
-                          name: 'Risk / Data Analyst',
-                          role: 'Lead Infrastructure Data Scientist',
-                          dept: 'NITI Aayog Infrastructure Modeling Unit',
-                          user: 'analyst',
-                          pass: 'analyst123',
-                          color: 'text-cyan-600 dark:text-cyan-400',
-                        },
-                        {
-                          title: 'AI Governance & Model Assurance',
-                          name: 'AI Governance Officer',
-                          role: 'Chair (AI Ethics & Validation Council)',
-                          dept: 'MeitY AI Ethics & Model Validation Council',
-                          user: 'aigov',
-                          pass: 'aigov123',
-                          color: 'text-rose-600 dark:text-rose-400',
-                        },
-                        {
-                          title: 'Data, Platform & Security Admin',
-                          name: 'System Administrator',
-                          role: 'Director (Platform & Security Operations)',
-                          dept: 'National Informatics Centre (NIC) / PMO',
-                          user: 'sysadmin',
-                          pass: 'sysadmin123',
-                          color: 'text-emerald-600 dark:text-emerald-400',
-                        },
-                      ].map((item) => (
-                        <button
-                          key={item.user}
-                          type="button"
-                          onClick={() => handleSelectDirectoryAccount(item.user, item.pass)}
-                          className="p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-left hover:border-cyan-500 transition group flex flex-col justify-between cursor-pointer"
-                        >
-                          <div>
-                            <div className="font-bold text-[11px] text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400">
-                              {item.title}
-                            </div>
-                            <div className={`text-[10px] font-semibold ${item.color} mt-0.5`}>
-                              {item.name}
-                            </div>
-                            <div className="text-[9px] text-slate-400 font-mono mt-1">
-                              {item.dept}
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between text-[9px] font-mono text-cyan-600 dark:text-cyan-400 mt-2 pt-1 border-t border-slate-200/60 dark:border-slate-800">
-                            <span><code>{item.user}</code> / <code>{item.pass}</code></span>
-                            <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition" />
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Multi-Assignment Capability Test User */}
-                  <div className="p-3 bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900/50 rounded-lg">
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-[11px] font-bold text-blue-800 dark:text-blue-300 font-mono uppercase">
-                        Multi-Assignment Capability Test Identity
-                      </span>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-bold">
-                        user.assigned_roles = [monitoring_officer, admin_ministry_review]
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleSelectDirectoryAccount('multirole', 'multi123')}
-                      className="w-full p-2.5 rounded-lg border border-blue-200 dark:border-blue-800 bg-white dark:bg-slate-900 text-left hover:border-blue-500 transition group flex items-center justify-between cursor-pointer"
-                    >
-                      <div>
-                        <div className="font-bold text-[11px] text-slate-900 dark:text-white group-hover:text-blue-600">
-                          Joint Monitoring Officer — Dual Assignment Demo
-                        </div>
-                        <div className="text-[10px] text-slate-500 mt-0.5">
-                          Demonstrates seamless authorized workspace switching and RBAC denial when requesting unassigned roles.
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 text-[10px] font-mono text-blue-600 shrink-0 font-bold">
-                        <span><code>multirole</code> / <code>multi123</code></span>
-                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition" />
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              )}
+                <span>View Default Home Page</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
             </div>
           </div>
         )}
