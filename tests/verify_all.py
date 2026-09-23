@@ -18,6 +18,30 @@ def run_all_tests():
     print("PAIMANA PREDICT: UNIFIED COMPREHENSIVE PRODUCTION VERIFICATION SUITE (21 SUITES)")
     print("==================================================")
     
+    import urllib.request
+    import time
+    import atexit
+
+    server_running = False
+    try:
+        with urllib.request.urlopen("http://127.0.0.1:3000/health", timeout=2) as r:
+            if r.status == 200:
+                server_running = True
+    except Exception:
+        pass
+
+    if not server_running:
+        print("Starting local test server on port 3000...")
+        server_proc = subprocess.Popen(["node", "server.js"], cwd=os.path.join(os.path.dirname(__file__), ".."))
+        time.sleep(3)
+        def cleanup():
+            try:
+                server_proc.terminate()
+                server_proc.wait(timeout=3)
+            except Exception:
+                pass
+        atexit.register(cleanup)
+
     # 1. Core ML Model Metrics & Lineage Audit
     metrics_path = os.path.join(os.path.dirname(__file__), '..', 'src', 'data', 'computedModelMetrics.json')
     if not os.path.exists(metrics_path):

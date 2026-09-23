@@ -114,7 +114,7 @@ export const InboxPage: React.FC = () => {
                   Official Operational Workload Inbox
                 </h1>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Officer: <span className="font-bold text-slate-800 dark:text-slate-200">{user?.fullName || 'Priya Iyer'}</span> •{' '}
+                  Officer: <span className="font-bold text-slate-800 dark:text-slate-200">{user?.fullName || 'Monitoring Officer'}</span> •{' '}
                   <span className="font-semibold text-blue-600 dark:text-blue-400">{user?.designation || 'Joint Director (Surveillance)'}</span> •{' '}
                   {user?.department || 'MoSPI Infrastructure Monitoring Division'}
                 </p>

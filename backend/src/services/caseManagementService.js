@@ -46,7 +46,7 @@ class CaseManagementService {
       actionPlan: {
         planSummary: 'Establish dedicated state-level clearance taskforce with District Collectors and fast-track PWD road restoration NOCs.',
         targetResolutionDate: '2026-11-30',
-        submittedBy: 'Amitabh Verma (Chief PGM)',
+        submittedBy: 'Project Administrator',
         submittedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
       },
       evidenceList: [
@@ -55,7 +55,7 @@ class CaseManagementService {
           documentType: 'ROW_HANDOVER_PROTOCOL',
           title: 'District Collector Joint Inspection Protocol (Bhiwandi-Thane)',
           url: 'https://paimana.gov.in/cases/doc_row_thane.pdf',
-          uploadedBy: 'Amitabh Verma',
+          uploadedBy: 'Project Administrator',
           uploadedAt: new Date(Date.now() - 86400000 * 1).toISOString(),
           status: 'PENDING_VERIFICATION',
         }

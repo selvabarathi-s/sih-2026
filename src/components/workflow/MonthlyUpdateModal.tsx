@@ -159,7 +159,7 @@ export const MonthlyUpdateModal: React.FC<MonthlyUpdateModalProps> = ({
             <div className="text-xs font-semibold text-blue-800 dark:text-blue-300">Target Project</div>
             <div className="text-sm font-bold text-slate-900 dark:text-white mt-0.5">{projectName}</div>
             <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Identifier: <span className="font-mono">{projectId}</span> • Assigned Nodal Officer: <span className="font-medium">{user?.fullName || 'Amitabh Verma'}</span>
+              Identifier: <span className="font-mono">{projectId}</span> • Assigned Nodal Officer: <span className="font-medium">{user?.fullName || 'Project Administrator'}</span>
             </div>
           </div>
 

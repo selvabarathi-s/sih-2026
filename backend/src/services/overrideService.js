@@ -51,7 +51,7 @@ class OverrideService {
       justificationNotes: justification,
       evidenceLinks: data.evidenceLinks || [],
       officerId: user?.id || 'usr-officer-01',
-      officerName: user?.fullName || 'Priya Iyer',
+      officerName: user?.fullName || 'Monitoring Officer',
       officerRole: user?.role || 'MONITORING_OFFICER',
       officerDepartment: user?.department || 'MoSPI Monitoring Division',
       submittedAt: new Date().toISOString(),
@@ -69,7 +69,7 @@ class OverrideService {
       userId: user?.id || 'usr-officer-01',
       userRole: user?.role || 'MONITORING_OFFICER',
       officerId: user?.id || 'usr-officer-01',
-      officerName: user?.fullName || 'Priya Iyer',
+      officerName: user?.fullName || 'Monitoring Officer',
       resourceType: 'PROJECT_RISK_SCORE',
       resourceId: formattedId,
       details: {

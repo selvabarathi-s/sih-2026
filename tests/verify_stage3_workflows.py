@@ -116,7 +116,7 @@ def run_stage3_tests():
               "projectId": "PAI-706775",
               "projectName": "BharatNet",
               "title": "Establish Milestone Velocity Acceleration Plan",
-              "assignedTo": "Amitabh Verma",
+              "assignedTo": "Project Administrator",
               "assignedRole": "PROJECT_ADMIN",
               "priority": "CRITICAL",
               "initialNotes": "Coordinate right-of-way clearances with state telecom authorities."

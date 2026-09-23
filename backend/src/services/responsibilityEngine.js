@@ -38,8 +38,8 @@ class ResponsibilityEngine {
     // Supervising Monitoring Officer (MoSPI Surveillance Division)
     const supervisingOfficer = this.officerDirectory.find(u => u.role === ROLES.MONITORING_OFFICER) || {
       id: 'usr-officer-01',
-      fullName: 'Priya Iyer',
-      email: 'priya.monitoring@mospi.gov.in',
+      fullName: 'Monitoring Officer',
+      email: 'monitoring.officer@mospi.gov.in',
       role: ROLES.MONITORING_OFFICER,
       designation: 'Joint Director (Surveillance)',
     };
@@ -56,8 +56,8 @@ class ResponsibilityEngine {
     // Tier 3 Escalation Authority (Senior Decision Maker / PMO / Cabinet Sec)
     const tier3Escalation = this.officerDirectory.find(u => u.role === ROLES.DECISION_MAKER) || {
       id: 'usr-secretary-01',
-      fullName: 'V. K. Sundaram',
-      email: 'secretary.infra@cabinet.gov.in',
+      fullName: 'Senior Decision Maker',
+      email: 'senior.decisionmaker@cabinet.gov.in',
       role: ROLES.DECISION_MAKER,
       designation: 'Secretary (Infrastructure & Coordination)',
     };

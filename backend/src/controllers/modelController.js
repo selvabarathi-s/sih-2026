@@ -98,7 +98,7 @@ export const approveModel = async (req, res, next) => {
       approval: {
         modelId: id,
         status,
-        approvedBy: req.user?.fullName || 'Dr. Aruna Chandrasekhar',
+        approvedBy: req.user?.fullName || 'AI Governance Officer',
         role: req.user?.role || 'ai_governance',
         remarks: remarks || 'Temporal anti-leakage verified. Brier calibration acceptable.',
         timestamp: new Date().toISOString(),
@@ -117,7 +117,7 @@ export const signoffDrift = async (req, res, next) => {
       message: `Quarterly drift report sign-off recorded by AI Governance Approver.`,
       signoff: {
         status: 'DRIFT_ACCEPTABLE',
-        approvedBy: req.user?.fullName || 'Dr. Aruna Chandrasekhar',
+        approvedBy: req.user?.fullName || 'AI Governance Officer',
         role: req.user?.role || 'ai_governance',
         remarks: remarks || 'Feature drift within acceptable Kolmogorov-Smirnov thresholds (< 0.05).',
         timestamp: new Date().toISOString(),

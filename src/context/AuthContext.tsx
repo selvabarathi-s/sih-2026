@@ -30,8 +30,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const defaultUser: UserSession = {
     id: 'usr-officer-01',
     username: 'officer',
-    fullName: 'Priya Iyer',
-    email: 'priya.monitoring@mospi.gov.in',
+    fullName: 'Monitoring Officer',
+    email: 'monitoring.officer@mospi.gov.in',
     role: ROLES.MONITORING_OFFICER,
     roles: [ROLES.MONITORING_OFFICER],
     defaultWorkspace: '/',

@@ -349,7 +349,7 @@ export const LoginPage: React.FC = () => {
                       type="text"
                       value={identifier}
                       onChange={(e) => setIdentifier(e.target.value)}
-                      placeholder="e.g. priya.monitoring@mospi.gov.in or officer"
+                      placeholder="e.g. monitoring.officer@mospi.gov.in or officer"
                       autoComplete="username"
                       required
                       className="w-full pl-9 pr-3 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
@@ -483,7 +483,7 @@ export const LoginPage: React.FC = () => {
                       {[
                         {
                           title: 'Senior Review & Decision Authority',
-                          name: 'V. K. Sundaram (Demo)',
+                          name: 'Senior Decision Maker',
                           role: 'Secretary (Infrastructure & Coordination)',
                           dept: 'Cabinet Secretariat / PMO',
                           user: 'secretary',
@@ -493,7 +493,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'IPMD Monitoring Officer',
-                          name: 'Priya Iyer (Demo)',
+                          name: 'Monitoring Officer',
                           role: 'Joint Director (Surveillance)',
                           dept: 'MoSPI Project Monitoring Division',
                           user: 'officer',
@@ -503,7 +503,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'Administrative Ministry Review',
-                          name: 'R. C. Mathur (Demo)',
+                          name: 'Administrative Ministry Reviewer',
                           role: 'Joint Secretary (Highways Review)',
                           dept: 'MoRTH Line Ministry',
                           user: 'ministry',
@@ -550,7 +550,7 @@ export const LoginPage: React.FC = () => {
                       {[
                         {
                           title: 'Project / Nodal Officer',
-                          name: 'Amitabh Verma (Demo)',
+                          name: 'Project Administrator',
                           role: 'Chief Project General Manager',
                           dept: 'Bharat Broadband Network Ltd (BBNL)',
                           user: 'nodal',
@@ -559,7 +559,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'Project Engineering Officer',
-                          name: 'Er. Shweta Kulkarni (Demo)',
+                          name: 'Project Engineering Officer',
                           role: 'Chief Infrastructure Engineer',
                           dept: 'Central Design & Engineering Directorate',
                           user: 'engineer',
@@ -568,7 +568,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'Quality & Inspection Officer',
-                          name: 'Er. Vikramaditya Rathore (Demo)',
+                          name: 'Quality Auditor',
                           role: 'Lead Independent Engineer (TPI)',
                           dept: 'Engineers India Limited (EIL)',
                           user: 'quality',
@@ -577,7 +577,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'Project Finance & Accounts',
-                          name: 'S. Narayanan (Demo)',
+                          name: 'Project Finance Officer',
                           role: 'Senior Accounts Officer (Outlays)',
                           dept: 'BBNL Project Finance Cell',
                           user: 'finance',
@@ -586,7 +586,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'Contractor / EPC Representative',
-                          name: 'Harish Chandra (Demo)',
+                          name: 'Contractor Representative',
                           role: 'Project Director & EPC Lead',
                           dept: 'L&T Infrastructure EPC',
                           user: 'contractor',
@@ -595,7 +595,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'Supervision Consultant / PMC',
-                          name: 'Deepak Sen (Demo)',
+                          name: 'Supervision Consultant',
                           role: 'Resident Supervision Engineer',
                           dept: 'Feedback Infra Supervision PMC',
                           user: 'supervision',
@@ -641,7 +641,7 @@ export const LoginPage: React.FC = () => {
                       {[
                         {
                           title: 'Inter-Ministerial Coordination',
-                          name: 'Tanvi Saxena (Demo)',
+                          name: 'Inter-Ministerial Coordinator',
                           role: 'Director (Inter-Ministerial Steering)',
                           dept: 'Inter-Ministerial Project Steering Committee',
                           user: 'coordination',
@@ -650,7 +650,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'State Coordination Officer',
-                          name: 'Alok Deshmukh (Demo)',
+                          name: 'State Coordination Officer',
                           role: 'Special Nodal Officer (Land & RoW)',
                           dept: 'Maharashtra PWD Infrastructure Cell',
                           user: 'state',
@@ -659,7 +659,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'GatiShakti Network Planner',
-                          name: 'K. R. Ramanathan (Demo)',
+                          name: 'GatiShakti Officer',
                           role: 'Director (Multimodal Logistics)',
                           dept: 'PM GatiShakti NPG / DPIIT',
                           user: 'gatishakti',
@@ -668,7 +668,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'Investment Appraisal Reviewer',
-                          name: 'Manisha Roy (Demo)',
+                          name: 'Investment Appraisal Reviewer',
                           role: 'Appraisal Officer (PIB Review)',
                           dept: 'Public Investment Board (PIB)',
                           user: 'appraisal',
@@ -677,7 +677,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'Financial Review Authority',
-                          name: 'Smt. Meenakshi Sundaram (Demo)',
+                          name: 'Financial Review Authority',
                           role: 'Joint Secretary & Financial Adviser (JS&FA)',
                           dept: 'Department of Expenditure, MoF',
                           user: 'finreview',
@@ -686,7 +686,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'Independent Audit Observer',
-                          name: 'Suresh Ganguly (Demo)',
+                          name: 'Audit Observer',
                           role: 'Senior Principal Auditor (Infrastructure)',
                           dept: 'Comptroller and Auditor General (C&AG)',
                           user: 'audit',
@@ -732,7 +732,7 @@ export const LoginPage: React.FC = () => {
                       {[
                         {
                           title: 'Predictive Risk & Data Analyst',
-                          name: 'Dr. Neha Kulkarni (Demo)',
+                          name: 'Risk / Data Analyst',
                           role: 'Lead Infrastructure Data Scientist',
                           dept: 'NITI Aayog Infrastructure Modeling Unit',
                           user: 'analyst',
@@ -741,7 +741,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'AI Governance & Model Assurance',
-                          name: 'Dr. Aruna Chandrasekhar (Demo)',
+                          name: 'AI Governance Officer',
                           role: 'Chair (AI Ethics & Validation Council)',
                           dept: 'MeitY AI Ethics & Model Validation Council',
                           user: 'aigov',
@@ -750,7 +750,7 @@ export const LoginPage: React.FC = () => {
                         },
                         {
                           title: 'Data, Platform & Security Admin',
-                          name: 'Rajesh Sharma (Demo)',
+                          name: 'System Administrator',
                           role: 'Director (Platform & Security Operations)',
                           dept: 'National Informatics Centre (NIC) / PMO',
                           user: 'sysadmin',
@@ -801,7 +801,7 @@ export const LoginPage: React.FC = () => {
                     >
                       <div>
                         <div className="font-bold text-[11px] text-slate-900 dark:text-white group-hover:text-blue-600">
-                          Dr. K. S. Murthy (Demo) — Joint Director (MoSPI) & Nodal Reviewer (MoRTH)
+                          Joint Monitoring Officer — Dual Assignment Demo
                         </div>
                         <div className="text-[10px] text-slate-500 mt-0.5">
                           Demonstrates seamless authorized workspace switching and RBAC denial when requesting unassigned roles.
@@ -867,7 +867,7 @@ export const LoginPage: React.FC = () => {
                     type="text"
                     value={recoveryId}
                     onChange={(e) => setRecoveryId(e.target.value)}
-                    placeholder="e.g. officer or priya.monitoring@mospi.gov.in"
+                    placeholder="e.g. officer or monitoring.officer@mospi.gov.in"
                     required
                     className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
                   />

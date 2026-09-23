@@ -16,7 +16,7 @@ let COORDINATION_CASES = [
     bottleneckType: 'RIGHT_OF_WAY',
     severity: 'HIGH',
     status: 'ACTIVE_ESCALATION',
-    assignedOfficer: 'Tanvi Saxena (IMPSC)',
+    assignedOfficer: 'Inter-Ministerial Coordinator (IMPSC)',
     actionItems: [
       { id: 'ACT-C-01', agency: 'East Central Railway', task: 'Joint site survey with BBNL optical team', deadline: '2026-09-25', status: 'IN_PROGRESS' },
       { id: 'ACT-C-02', agency: 'Bihar PWD', task: 'Road cutting permission issuance', deadline: '2026-09-30', status: 'PENDING' },
@@ -35,7 +35,7 @@ let COORDINATION_CASES = [
     bottleneckType: 'UTILITY_SHIFTING',
     severity: 'CRITICAL',
     status: 'UNDER_REVIEW',
-    assignedOfficer: 'Tanvi Saxena (IMPSC)',
+    assignedOfficer: 'Inter-Ministerial Coordinator (IMPSC)',
     actionItems: [
       { id: 'ACT-C-03', agency: 'GAIL India', task: 'Review pipeline realignment drawings', deadline: '2026-09-20', status: 'IN_PROGRESS' },
     ],

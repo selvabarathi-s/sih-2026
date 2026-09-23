@@ -569,7 +569,7 @@ export const ProjectDetailPage: React.FC = () => {
               <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">ACTION_ASSIGNED</span>
             </div>
             <p className="text-xs text-slate-600 dark:text-slate-400">
-              Assigned to Amitabh Verma (Chief PGM) by Priya Iyer (Monitoring Officer).
+              Assigned to Project Administrator by Monitoring Officer.
             </p>
             <div className="pt-2 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-200 dark:border-slate-800">
               <span>Target COD: 2026-11-30</span>

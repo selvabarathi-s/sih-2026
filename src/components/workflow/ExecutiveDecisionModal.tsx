@@ -252,7 +252,7 @@ export const ExecutiveDecisionModal: React.FC<ExecutiveDecisionModalProps> = ({
         <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50">
           <div className="text-xs text-slate-500 flex items-center gap-1.5">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            Signatory: <span className="font-bold text-slate-800 dark:text-slate-200">{user?.fullName || 'V. K. Sundaram (Secretary)'}</span>
+            Signatory: <span className="font-bold text-slate-800 dark:text-slate-200">{user?.fullName || 'Senior Decision Maker'}</span>
           </div>
 
           <div className="flex items-center gap-3">

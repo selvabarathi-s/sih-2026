@@ -45,7 +45,7 @@ class MonthlyMonitoringService {
       projectCode: '706775',
       projectName: 'BharatNet Phase-II Optical Fiber Connectivity',
       status: MONITORING_UPDATE_STATES.SUBMITTED,
-      submittedBy: 'Amitabh Verma (Chief PGM)',
+      submittedBy: 'Project Administrator',
       submittedByUserId: 'usr-nodal-01',
       physicalProgress: 41.2,
       previousPhysicalProgress: 40.8,

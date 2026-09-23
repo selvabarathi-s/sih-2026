@@ -82,7 +82,7 @@ class InterventionEffectivenessService {
         riskReductionPts: 16,
         scheduleRecoveryMonths: 2.5,
         evidenceVerified: true,
-        verificationOfficer: 'Priya Iyer (Monitoring Officer)',
+        verificationOfficer: 'Monitoring Officer',
         provenanceTag: 'DEMO_CLOSED_LOOP_RECORD',
       },
     ];

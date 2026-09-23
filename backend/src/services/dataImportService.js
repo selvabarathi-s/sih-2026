@@ -93,7 +93,7 @@ class DataImportService {
         warningRows: 0,
         rejectedRows: 0,
         status: 'COMMITTED',
-        importedBy: 'V. K. Sundaram (System Admin)',
+        importedBy: 'System Administrator',
         importedAt: '2026-06-05T10:30:00Z',
       },
     ];

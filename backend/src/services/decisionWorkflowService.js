@@ -54,7 +54,7 @@ class DecisionWorkflowService {
       ],
       selectedOption: null,
       directiveIssued: null,
-      submittedBy: 'Priya Iyer (Joint Director MoSPI)',
+      submittedBy: 'Monitoring Officer',
       submittedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -142,7 +142,7 @@ class DecisionWorkflowService {
     brief.status = DECISION_STATES.DIRECTIVE_ISSUED;
     brief.directiveIssued = {
       directiveId: `DIR-${Date.now()}`,
-      issuedBy: actor?.fullName || 'V. K. Sundaram (Secretary Infrastructure)',
+      issuedBy: actor?.fullName || 'Senior Decision Maker',
       issuedByRole: actor?.role,
       directiveNoticeRef: directiveNoticeRef || `CAB-SEC/INFRA/${new Date().getFullYear()}/${brief.briefId}`,
       justification: justification.trim(),

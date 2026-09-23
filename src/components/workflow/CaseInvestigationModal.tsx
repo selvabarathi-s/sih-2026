@@ -58,7 +58,7 @@ export const CaseInvestigationModal: React.FC<CaseInvestigationModalProps> = ({
       title: 'District Collector Joint Inspection Protocol (Bhiwandi-Thane)',
       url: 'https://paimana.gov.in/cases/doc_row_thane.pdf',
       status: 'VERIFIED',
-      uploadedBy: 'Amitabh Verma',
+      uploadedBy: 'Project Administrator',
     },
     {
       evidenceId: 'EVD-002',
@@ -66,7 +66,7 @@ export const CaseInvestigationModal: React.FC<CaseInvestigationModalProps> = ({
       title: 'Discom 220kV Underground Cable Crossing Permission',
       url: 'https://paimana.gov.in/cases/discom_noc_clearance.pdf',
       status: 'PENDING_VERIFICATION',
-      uploadedBy: 'Amitabh Verma',
+      uploadedBy: 'Project Administrator',
     }
   ]);
 

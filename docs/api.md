@@ -26,8 +26,8 @@ Authenticates a user by username and password.
   "user": {
     "id": "usr-officer-01",
     "username": "officer",
-    "fullName": "Priya Iyer",
-    "email": "priya.monitoring@mospi.gov.in",
+    "fullName": "Monitoring Officer",
+    "email": "monitoring.officer@mospi.gov.in",
     "role": "MONITORING_OFFICER",
     "department": "MoSPI Project Monitoring Division",
     "designation": "Joint Director (Surveillance)",
@@ -100,7 +100,7 @@ Assign an administrative action to a Project Administrator.
 {
   "projectId": "PAI-706775",
   "title": "Establish Special Taskforce for GP Fiber Handover",
-  "assignedTo": "Amitabh Verma (Chief PGM)",
+  "assignedTo": "Project Administrator",
   "assignedRole": "PROJECT_ADMIN",
   "priority": "CRITICAL",
   "targetCompletionDate": "2026-11-30",

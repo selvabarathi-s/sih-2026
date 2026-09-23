@@ -7,8 +7,8 @@ export const SupervisionPage: React.FC = () => {
   const { user } = useAuth();
 
   const inspectionRecords = [
-    { id: 'INSP-2026-088', project: 'BharatNet Phase II OFC', chainage: 'Ch 42+000 to 58+000', inspector: 'Deepak Sen (PMC)', date: '2026-09-10', result: 'SATISFACTORY', remarks: 'Duct depth verified with ground penetrating radar (GPR) at 1.68m.' },
-    { id: 'INSP-2026-089', project: 'BharatNet Phase II OFC', chainage: 'Ch 60+400', inspector: 'Deepak Sen (PMC)', date: '2026-09-11', result: 'CORRECTIVE_ACTION_REQUIRED', remarks: 'Joint chamber manhole cover unsealed; rain water ingress detected.' },
+    { id: 'INSP-2026-088', project: 'BharatNet Phase II OFC', chainage: 'Ch 42+000 to 58+000', inspector: 'Supervision Consultant (PMC)', date: '2026-09-10', result: 'SATISFACTORY', remarks: 'Duct depth verified with ground penetrating radar (GPR) at 1.68m.' },
+    { id: 'INSP-2026-089', project: 'BharatNet Phase II OFC', chainage: 'Ch 60+400', inspector: 'Supervision Consultant (PMC)', date: '2026-09-11', result: 'CORRECTIVE_ACTION_REQUIRED', remarks: 'Joint chamber manhole cover unsealed; rain water ingress detected.' },
   ];
 
   return (
